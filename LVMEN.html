@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title> LVMEN Liturgicals </title>
+        <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
+        
+    </head>
+<body>
+<p class="text1" style="margin-left: 15%;"> <a href="AboutUs.html" target="_self"> ABOUT US </a>  &nbsp; &nbsp; &nbsp; <a href="Contact.html" target="_self"> CONTACT </a>  &nbsp; &nbsp; &nbsp;  <a href="Catalog.html" target="_self"> CATALOG </a>
+  &nbsp; &nbsp; &nbsp; FAQs  </p>
+
+<a href="LVMEN.html"> <img class="logo" src="LVMEN Logo.jpg" style="margin-left: 1%;"></a>
+<hr class="class1">
+
+<div class="slideshow-container">
+    <div class="mySlides fade"> 
+      <div class="numbertext"> 1/3 </div>
+      <img src="LVMEN Banner Website.png" style="width: 100%;">
+    </div>
+
+    <div class="mySlides fade"> 
+        <div class="numbertext"> 2/3 </div>
+        <img src="LVMEN BANNER 2 (3).png" style="width: 100%;">
+    </div>
+
+      <div class="mySlides fade"> 
+        <div class="numbertext"> 3/3 </div>
+        <img src="LVMEN Banner Website.png" style="width: 100%;">
+      </div>
+    
+    <a class="prev" onclick="plusSlides(-1)" style="color: white;"><</a>
+    <a class="next" onclick="plusSlides(1)">></a>
+    
+</div>
+<br>
+
+
+<script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
+    
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
+    }
+    
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+    
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      let dots = document.getElementsByClassName("dot");
+      if (n > slides.length) {slideIndex = 1}    
+      if (n < 1) {slideIndex = slides.length}
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex-1].style.display = "block";  
+      dots[slideIndex-1].className += " active";
+    }
+    </script>
+
+<div class="row"> 
+  <div class="card"> 
+    <img src="S5- Surplice.jpg" style="width: 100%;"> 
+    <h3> S5 - Surplice </h3>
+    <p class="price"> ₱5,500 </p>
+   </div>
+
+   <div class="card" style="margin-left: 0%;"> 
+    <img src="S6- Surplice.jpg" style="width: 100%;"> 
+    <h3> S6 - Surplice </h3>
+    <p class="price"> ₱5,500 </p>
+   </div>
+
+   <div class="card" style="margin-left: 0%;"> 
+    <img src="S7- Surplice.jpg" style="width: 100%;"> 
+    <h3> S7 - Surplice </h3>
+    <p class="price"> ₱5,500 </p>
+   </div>
+
+</div>
+
+<div class="row" style="margin-top: 2%;">
+  <div class="card" style="margin-left: 7.5%;"> 
+    <img src="S5- LACE.jpg" style="width: 100%;"> 
+    <h3> S5 - Lace </h3>
+    <p class="price"> 22cm - ₱1,500 per yard  </p>
+   </div> 
+
+   <div class="card" style="margin-left: 0%;"> 
+    <img src="S6-LACE.jpg" style="width: 100%;"> 
+    <h3>  S6 - Lace </h3>
+    <p class="price"> 22cm - ₱1,500 per yard </p>
+   </div>
+
+   <div class="card" style="margin-left: 0%;"> 
+    <img src="S7-LACE.jpg" style="width: 100%;"> 
+    <h3> S7 - Lace </h3>
+    <p class="price"> 22cm - ₱1,500 per yard </p>
+   </div> 
+
+</div>
+
+
+
+
+
+    
+
+
+
+</body>
+</html>
