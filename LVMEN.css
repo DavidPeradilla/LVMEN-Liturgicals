@@ -63,7 +63,7 @@ img.logo {
   
 }
 
-{box-sizing: border-box}
+* {box-sizing: border-box}
 body {font-family: Verdana, sans-serif; margin:0}
 .mySlides {display: none}
 img {vertical-align: middle;}
@@ -72,6 +72,7 @@ img {vertical-align: middle;}
   max-width: 1000px;
   position: relative;
   margin: auto;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .prev, .next {
@@ -87,6 +88,7 @@ img {vertical-align: middle;}
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
+  background: rgba(150, 130, 52, 0.38)
 }
 
 .next {
@@ -149,7 +151,7 @@ img {vertical-align: middle;}
 }
 
   .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 12px 0 rgba(0, 0, 0, 0.2);
     max-width: 300px;
     margin: auto;
     text-align: center;
@@ -162,13 +164,17 @@ img {vertical-align: middle;}
   }
 
   .aboutus{
-    max-width: 700px;
-    min-width: 0px;
+    max-width: 600px;
+    min-width: 0x;
+    font-size: larger;
+
   }
   
   img.logo2 {
     position: static;
-    width: 40%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 1%;
 }
 
 p.style2{
@@ -177,4 +183,82 @@ p.style2{
   font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
   color: #333;
 }
+
+.border2 {
+  border: 2px solid rgb(110, 13, 95);
+  margin-left: 1%;
+  width: 65%;
+  border-radius: 5px;
   
+  
+}
+
+.border3 {
+  border: 2px solid rgb(103, 99, 102);
+  margin-left: 16%;
+  width: 70%;
+  border-radius: 5px;
+}
+
+p.style2{
+  font-size: larger;
+  margin-right: 1%;
+}
+
+.card2{ 
+margin-left: 1%;
+display: inline;
+justify-content: space-between;
+flex-direction: row;
+
+
+}
+
+img.b:hover {
+  opacity: 0.5;
+}
+
+.headline {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.hr2 {
+ margin-left: 5%; 
+ margin-right: 5%;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: auto;
+  margin-bottom: -1%;
+}
+
+img.footer1 {
+ display: flex;
+ float: left;
+ width: 10%;
+}
+
+p.style3{
+  display: inline-block;
+  float: left;
+  padding-left: 20px;
+}
+
+p.style4{
+  display: inline-block;
+  float: left;
+  padding-left: 20px;
+}
+
+p.style5{
+  font-size: larger;
+  margin-left: 5%;
+  font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
+  color: #333;
+  margin-bottom: -3%;
+}
+
