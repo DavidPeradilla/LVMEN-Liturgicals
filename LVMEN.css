@@ -58,8 +58,10 @@ img.logo {
     background-color:gray;
   }
 .iframe {
-  margin-left: 10%;
+  margin-left: 8%;
   border: 0;
+  display: flex;
+  margin-top: -15%;
   
 }
 
@@ -156,6 +158,7 @@ img {vertical-align: middle;}
     margin: auto;
     text-align: center;
     font-family: arial;
+    border: solid black;
   }
 
   .price {
@@ -225,15 +228,16 @@ img.b:hover {
 }
 
 .hr2 {
- margin-left: 5%; 
- margin-right: 5%;
+ margin-left: 1%; 
+ margin-right: 1%;
+
 }
 
 .footer {
   display: flex;
   align-items: center;
   justify-content: auto;
-  margin-bottom: -1%;
+  margin-bottom: -2%;
 }
 
 img.footer1 {
@@ -261,4 +265,100 @@ p.style5{
   color: #333;
   margin-bottom: -3%;
 }
+
+
+p.style6{
+  font-size: larger;
+  margin-left: 21.3%;
+  font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
+  color: #333;
+  margin-top: -6%;
+}
+
+img.icons {
+  width: 2%;
+  margin-left: 36.5%;
+  margin-top: -6.8%;
+  padding: 0%;
+}
+
+.borderform{
+  border: 2px solid black; 
+  width: 30%;
+  margin-left:65%;
+  display: flex;
+  margin-top: -20%;
+  background-color: #e8e7e7;
+}
+
+.input1{
+  margin-left: 1%;
+}
+
+.maindiv1{
+  width: 100%;
+  display: flex;
+}
+
+.subdiv1 {
+  padding: 5px;
+  width: 50%;
+}
+
+.subdiv2 {
+  padding: 5px;
+  width: 50%;
+}
+
+p.style7{
+  font-size: larger;
+  margin-top: 2%;
+  font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
+  font-weight: bold;
+  
+}
+
+.subdiv3 {
+  padding: 10px;
+  width: 50%;
+}
+
+.input2{
+  width: 220%;
+  margin-bottom: 0%;
+}
+
+input[type=submit] {
+  background-color: #755436;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 1%;
+}
+
+input[type=submit]:hover {
+  background-color: #837953;
+}
+
+p.style8{
+  font-size: larger;
+  margin-left: 5%;
+  font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
+  color: #333;
+  margin-top: -0.5%;
+}
+
+p.style9{
+  font-size: larger;
+  margin-left: 21.3%;
+  font-family: 'Arial', 'Helvetica', sans-serif, "Arial", sans-serif;
+  color: #333;
+  margin-top: -4.6%;
+  
+}
+
+
 
