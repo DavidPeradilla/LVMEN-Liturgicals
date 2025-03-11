@@ -40,4 +40,31 @@ input{
     border-radius: 6px;
     border: none;
     outline: none;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+button{
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffff;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: 0.5s;
+}
+
+button:hover {
+    background: #3876e0;
+}   
+
+p{
+    font-size: 14.5px;
+    text-align: center;
+    margin-bottom: 10px;
 }
