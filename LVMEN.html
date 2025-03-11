@@ -159,7 +159,7 @@
 
     
 <footer>
-  <div class="container2">
+  <div class="container">
       <div class="footer-left">
           <h3>Location</h3>
           <p>Blk 3 Lot 2 Mahogany<br>Drive Camella Seville<br>Habay 2 , Bacoor, Philippines</p>
@@ -172,25 +172,37 @@
               <li>Sunday: Closed</li>
           </ul>
           <div class="social">
-              <a href="https://www.facebook.com/LvmenLiturgicalVestments"><img src="Img/PikPng.com_facebook-circle-icon-png_5902093.png" alt="Facebook"></a>
-              <a href="#"><img src="Img/PikPng.com_twitter-png-logo_1011785.png" alt="Twitter"></a>
-              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/"><img src="Img/1-19361_watercolor-instagram-icon-png-instagram-logo-white-on.png" alt="Instagram"></a>
+              <a href="https://www.facebook.com/dankatsuanhofoodhaus"><img src="PikPng.com_facebook-circle-icon-png_5902093.png" alt="Facebook"></a>
+              <a href="#"><img src="PikPng.com_twitter-png-logo_1011785.png" alt="Twitter"></a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/"><img src="1-19361_watercolor-instagram-icon-png-instagram-logo-white-on.png" alt="Instagram"></a>
           </div>
       </div>
   </div>
+
   <div id="map" style="width:50%; height:200px;">
     
-    <script>
-      function myMap() {
-      var mapProp= {
-        center:new google.maps.LatLng(51.508742,-0.120850),
-        zoom:5,
-      };
-      var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+      <script>
+        function showCategory(category) {
+          // Hide all categories
+          var categories = document.querySelectorAll('.categories');
+          categories.forEach(function(cat) {
+              cat.classList.remove('active');
+          });
+
+          // Show selected category
+          var selectedCategory = document.getElementById(category);
+          selectedCategory.classList.add('active');
       }
-      </script>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="1000" height="350" style="border: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
+        function myMap() {
+        var mapProp= {
+          center:new google.maps.LatLng(51.508742,-0.120850),
+          zoom:5,
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        }
+        </script>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="1000" height="350" style="border: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
 </footer>
 
 
