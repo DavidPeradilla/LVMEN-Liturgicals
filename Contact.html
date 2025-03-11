@@ -3,6 +3,7 @@
     <head>
         <title> Contact </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
+        <link rel="stylesheet" href="contact.css">
     </head>
 <body>
 <!--NAVBAR-->
@@ -19,134 +20,182 @@
     </nav> 
   </header>
   <!--END-->
-<h1 class="h2" ALIGN="left" style="margin-left: 1%; padding-top: 100px;"> SEND US A MESSAGE!  </h1>
-
-<!---<p class="style2"> Customer Support </p>
-<p class="style2" style="font-size: large;"> E-mail: <a href=mailto:"jonashing20@gma  il.com"> contact@lvmen24.com</a></p>
-<p class="style2" style="font-size: large;"> Phone: +123-456-7890 </p>
-
-<p class="style2" style="font-size: large;"> Address: Blk 2 Lt 15, Annex 3 Shappel Homes Perpetual Village 8 Habay 1 Bacoor, Cavite </p>
-<p class="style2" style="font-size: large;"> Full name: Jonas Akio R. Peradilla </p>
-<img class="icons" src="email-removebg-preview.png" style="margin-left: 2.5%; margin-top: -24.8%;">
-<img class="icons" src="telephone-removebg-preview.png" style="margin-left: -2.5%; margin-top: -18.5%;">
-<img class="icons" src="location-removebg-preview.png" style="margin-left: -2.5%; margin-top: -12.6%;">-->
+<hr>
 
 
-<section id="contactForm" style="margin-top: 26%;">
-<div class="borderform"> 
 
- <form action="https://api.web3forms.com/submit" method="POST">
-  
-    <div class="maindiv1">
-     <div class="subdiv1 "> 
-      <input type="hidden" name="access_key" value="f02f5bab-d448-40b5-b03e-ede237383189">
-     <p class="style7" style="margin-bottom: 3%;"> Contact Form</p>
-     <label for="fname">Full Name:</label><br>
-     <input class="input1" type="text" id="fname" name="Full Name: " placeholder="Enter Fullname.." value=""><br>
-     </div>
-
-     <div class="subdiv2" style="margin-top: -1%;"> 
-     <label for="Email">Email:</label><br>
-     <input class="input1" type="text" id="Email" name="Email: " placeholder="Enter Email.." value=""><br>
-     </div>
+<section id="contactForm">
+    <div class="section-header">
+      <div class="container1">
+        <h2>Contact Us</h2>
+        <p>Feel free to reach out to us via our contact form or directly through email or phone. We're here to assist you with any questions, concerns, or feedback you may have, and our team will be delighted to assist you promptly any inquiries or feedback you may have!</p>
+      </div>
     </div>
-
-  <label for="subject" style="padding: 5px; margin-top: 1%; ">Subject:</label>
-        <select id="subject" name="subject" required>
-            <option value="Inquiry: New Inquiry from Contact Form">Inquiry</option>
-            <option value="Feedback: New Feedback from Contact Form">Feedback</option>
-        </select>
-
-  <div class="subdiv3" style="margin-top: -0.2%;"> 
-    <label for="Message">Message:</label><br> 
-    <input class="input2" type="text" id="Message" name="Message: " placeholder="Enter Message..." style="padding-bottom: 50%;"><br>
-
-    <input type="submit" value="Submit" style="margin-right: -30%; margin-top: 1%;">
-    <br> 
-   </div>
-   
-  </form> 
-  
-</div> 
-</section>
-
-<p class="style2" style="font-size: large;"> E-mail: <a href=mailto:"jonashing20@gma  il.com"> contact@lvmen24.com</a></p>
-<p class="style2" style="font-size: large;"> Phone: +123-456-7890 </p>
-
-<p class="style2" style="font-size: large;"> Address: Blk 2 Lt 15, Annex 3 Shappel Homes Perpetual Village 8 Habay 1 Bacoor, Cavite </p>
-<p class="style2" style="font-size: large;"> Full name: Jonas Akio R. Peradilla </p>
-<img class="icons" src="email-removebg-preview.png" style="margin-left: 2.5%; margin-top: -24.8%;">
-<img class="icons" src="telephone-removebg-preview.png" style="margin-left: -2.5%; margin-top: -18.5%;">
-<img class="icons" src="location-removebg-preview.png" style="margin-left: -2.5%; margin-top: -12.6%;">
-
-<script>
-  document.getElementById('contactForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const status = document.getElementById('status');
-
-      showModal('Sending...', 'Your message is being sent.');
-
-      try {
-          const response = await fetch(form.action, {
-              method: form.method,
-              body: new FormData(form),
-              headers: {
-                  'Accept': 'application/json'
-              }
-          });
-          const data = await response.json();
-          if (data.success) {
-              showModal('Thank you!', 'Thank you for your message!');
-              form.reset();
-          } else {
-              showModal('Error', 'Something went wrong. Please try again later.');
-          }
-      } catch (error) {
-          showModal('Error', 'There was a problem submitting your form. Please try again later.');
-      }
-  });
-
-  function showModal(title, message) {
-      hideModal();  // Ensure any existing modal is removed
-      const modal = document.createElement('div');
-      modal.classList.add('modal');
-      modal.innerHTML = `
-          <div class="modal-content">
-              <h2>${title}</h2>
-              <p>${message}</p>
+    
+    <div class="container1">
+      <div class="row">
+        
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            
+            <div class="contact-info-content">
+              <h4>Address</h4>
+              <p>Blk 3 Lot 2 Mahogany,<br/> Drive Camella Seville <br/>Habay 2 , Bacoor, Philippines</p>
+            </div>
           </div>
-      `;
-      document.body.appendChild(modal);
+          
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            
+            <div class="contact-info-content">
+              <h4>Phone</h4>
+              <p>+0123-456-7890</p>
+            </div>
+          </div>
+          
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            
+            <div class="contact-info-content">
+              <h4>E-mail</h4>
+             <p>contact@lvmen24.com</p>
+            </div>
+          </div>
+        </div>
+        
+          
+        <div class="contact-form">
 
-      // Automatically remove the modal after 3 seconds
-      setTimeout(function() {
-          hideModal();
-      }, 3000);
-  }
+          <form id="contactForm" action="https://api.web3forms.com/submit" method="POST" >
+            <input type="hidden" name="access_key" value="f650f1cb-4844-403c-b07a-674ae7eb247f">
+            <h2>Send Message</h2>
+            
+            <div class="input-box">
+              <label for="subject">Subject:</label>
+        <select id="subject" name="subject" required>
+            <option value="Inquiry: New Inquiry from Contact Form">Inquiries</option>
+            <option value="Feedback: New Feedback from Contact Form">Feedbacks</option>
+        </select></div>
 
-  function hideModal() {
-      const modal = document.querySelector('.modal');
-      if (modal) {
-          modal.remove();
-      }
-  }
-</script>
+            <div class="input-box">
+              <input type="text" id="name" name="Full Name: " placeholder="Full name" value="">
+            </div>
+            
+            <div class="input-box">
+              <input type="email" id="email" name="email: " placeholder="Email" value=" ">
+            </div>
+            
+            <div class="input-box">
+              <textarea type="text" id="message" name="Full Name: " placeholder="Type your Message..." value=" "></textarea>
+            </div>
+            
+            <div class="input-box">
+              <input type="submit" value="Send" name="">
 
-<iframe class="iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1931.812111122725!2d120.9476166875002!3d14.448806708293322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397d278b9685395%3A0xfc52e9347b419a92!2sShapell%20Homes%20Annex%20III%2C%20Bacoor%2C%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1715020807249!5m2!1sen!2sph" width="650" height="450" style="margin-bottom: 1%; margin-top: -3%; margin-left: 5%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-<hr class="hr2"> 
-<!--FOOTER-->
-  <div class="footer">
-  <p class="style2"> Customer Care </p>
-  <p class="style2"> Our Company </p>
-  <p class="style2"> Social Media </p>
-  </div>
-  <a href="Contact.html" target="_self"> <p class="style2"> Contact Us  </p>  </a>
-  <a href="FAQs.html" target="self" style="margin-bottom: -10%;"> <p class="style8"> FAQs </p> </a>
-  <a href="AboutUs.html" target="self" style="margin-bottom: -2%;"> <p class="style6"> About Us </p> </a>
-  <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank"> <img class="icons" src="Icon-Facebook-In-circle-PNG-removebg-preview.png"> </a> 
-  <p class="style9" style="margin-left: 39%;  font-size: small; font-weight: 300;"> LVMEN </p>
-</div>
+            </div>
+          </form>
+        </div>
+        
+      
+        
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+        <div class="footer-left">
+            <h3>Location</h3>
+            <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
+        </div>
+        <div class="footer-right">
+            <h3>Opening Hours</h3>
+            <ul>
+                <li>Monday - Friday: 10am - 10pm</li>
+                <li>Saturday: 11am - 11pm</li>
+                <li>Sunday: Closed</li>
+            </ul>
+            <div class="social">
+                <a href="https://www.facebook.com/LvmenLiturgicalVestments"><img src="Img/Icon-Facebook-In-circle-PNG-removebg-preview.png" alt="Facebook"></a>
+                <a href="#"><img src="1-19361_watercolor-instagram-icon-png-instagram-logo-white-on.png" alt="Twitter"></a>
+                <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/"><img src="Img/1-19361_watercolor-instagram-icon-png-instagram-logo-white-on.png" alt="Instagram"></a>
+            </div>
+        </div>
+    </div>
+    <div id="map" style="width:50%; height:200px;">
+      
+      <script>
+        function myMap() {
+        var mapProp= {
+          center:new google.maps.LatLng(51.508742,-0.120850),
+          zoom:5,
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const status = document.getElementById('status');
+
+        showModal('Sending...', 'Your message is being sent.');
+
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                showModal('Thank you!', 'Thank you for your message!');
+                form.reset();
+            } else {
+                showModal('Error', 'Something went wrong. Please try again later.');
+            }
+        } catch (error) {
+            showModal('Error', 'There was a problem submitting your form. Please try again later.');
+        }
+    });
+
+    function showModal(title, message) {
+        hideModal();  // Ensure any existing modal is removed
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>${title}</h2>
+                <p>${message}</p>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Automatically remove the modal after 3 seconds
+        setTimeout(function() {
+            hideModal();
+        }, 3000);
+    }
+
+    function hideModal() {
+        const modal = document.querySelector('.modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+        </script>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="1000" height="350" style="border: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+</footer>
+<script src="https://kit.fontawesome.com/c32adfdcda.js" crossorigin="anonymous"></script>
 
 </body>
 </html>
