@@ -6,92 +6,112 @@
         
     </head>
 <body>
-  <!--NAVIGATION BAR-->
-<p class="text1" style="margin-left: 15%;"> <a href="AboutUs.html" target="_self"> ABOUT US </a>  &nbsp; &nbsp; &nbsp; <a href="Contact.html" target="_self"> CONTACT </a>  &nbsp; &nbsp; &nbsp;  <a href="Catalog.html" target="_self"> CATALOG </a>
-  &nbsp; &nbsp; &nbsp; FAQs  </p>
-<a href="LVMEN.html"> <img class="logo" src="LVMEN Logo.jpg" style="margin-left: 1%;"></a>
-<hr class="class1">
+<!--NAVBAR-->
+<header> 
+  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;"></a>
+  <nav> 
+     <ul>
+      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
+      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+      <a href="Catalog.html"> <li> CATALOG </li> </a>
+      <a href="Contact.html"> <li> CONTACT US </li> </a>
+      <a href="FAQs.html"> <li> FAQs </li> </a>
+     </ul>
+  </nav> 
+</header>
 <!--END-->
 
+
 <!--SLIDESHOW-->
+<div class="padding"> 
 <div class="slideshow-container">
     <div class="mySlides fade"> 
       <div class="numbertext"> 1/3 </div>
-      <img src="LVMEN Banner Website.png" style="width: 100%;">
+      <img src="Img/LVMEN BANNER 2 (3).png" style="width: 100%;">
     </div>
-
+    
     <div class="mySlides fade"> 
         <div class="numbertext"> 2/3 </div>
-        <img src="LVMEN BANNER 2 (3).png" style="width: 100%;">
+        <img src="Img/LVMEN Banner Website.png" style="width: 100%;">
     </div>
 
       <div class="mySlides fade"> 
         <div class="numbertext"> 3/3 </div>
-        <img src="LVMEN Banner Website.png" style="width: 100%;">
+        <img src="Img/LVMEN Slideshow.png" style="width: 100%;">
       </div>
     
     <a class="prev" onclick="plusSlides(-1)" style="color: white;"><</a>
     <a class="next" onclick="plusSlides(1)">></a>
-    
+</div>
+<div style="text-align:center">
+  <br>
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+  <span class="dot"></span> 
+</div>
 </div>
 <!--END-->
 <br>
 
 
 <script>
-    let slideIndex = 1;
-    showSlides(slideIndex);
-    
-    function plusSlides(n) {
-      showSlides(slideIndex += n);
+  let slideIndex = 0;
+  showSlides();
+  
+  function showSlides() {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
     }
-    
-    function currentSlide(n) {
-      showSlides(slideIndex = n);
+    slideIndex++;
+    if (slideIndex > slides.length) {slideIndex = 1}    
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
     }
-    
-    function showSlides(n) {
-      let i;
-      let slides = document.getElementsByClassName("mySlides");
-      let dots = document.getElementsByClassName("dot");
-      if (n > slides.length) {slideIndex = 1}    
-      if (n < 1) {slideIndex = slides.length}
-      for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";  
-      }
-      for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
-      }
-      slides[slideIndex-1].style.display = "block";  
-      dots[slideIndex-1].className += " active";
-    }
+    slides[slideIndex-1].style.display = "block";  
+    dots[slideIndex-1].className += " active";
+    setTimeout(showSlides, 3000); // 
+  }
+  </script>
 
-    </script>
     <div class="card2"> 
-      <a href="Catalog.html" target="_self"><img class="b" src="CARD PRODUCTS.png" style="width: 22%; margin-left: 25%;">  </a>
-      <img class="b" src="CARD PRODUCTS.png" style="width: 22%; margin-left: 5%;"> 
+      <a href="Catalog.html" target="_self"><img class="b" src="Img/CARD PRODUCTS.png" style="width: 22%; margin-left: 25%;">  </a>
+      <a href="Collections.html" target="_self"> <img class="b" src="Img/POPE PIUS X PREMIUM.png" style="width: 22%; margin-left: 5%;"> </a> 
     </div>
+
+    <div class="backgroundcolor" > 
+  
+     <p class="header1" ALIGN="left"> 2 <br> </p>
+     <p class="headerstyle" ALIGN="left"> YEARS ON THE MARKET  </p>
+
+      
+    <p class="header2" ALIGN="left"> 39 </p>
+    <p class="headerstyle2" ALIGN="left"> PRODUCTS OFFERS  </p>
+    
+    </div>
+    
  <!--BEST SELLERS-->
 </br>
 </br>
-<hr class="hr2"> 
- <p class="headline" ALIGN="center"> BEST SELLERS </p> 
+ <p class="headline" ALIGN="center"> FEATURED PRODUCTS </p> 
 
 <div class="row"> 
   <div class="card" style="margin-top: 1%;"> 
-    <img src="S5- Surplice.jpg" style="width: 100%;"> 
+    <img src="Img/S5- Surplice.jpg" style="width: 100%;"> 
     <h3> S5 - Surplice </h3>
     <p class="price"> ₱5,500 </p>
    </div>
 
    <div class="card" style="margin-left: 0%;"> 
-    <img src="S6- Surplice.jpg" style="width: 100%;"> 
+    <img src="Img/S6- Surplice.jpg" style="width: 100%;"> 
     <h3> S6 - Surplice </h3>
     <p class="price"> ₱5,500 </p>
    </div>
 
    <div class="card" style="margin-left: 0%;"> 
-    <img src="S7- Surplice.jpg" style="width: 100%;"> 
+    <img src="Img/S7- Surplice.jpg" style="width: 100%;"> 
     <h3> S7 - Surplice </h3>
     <p class="price"> ₱5,500 </p>
    </div>
@@ -100,19 +120,19 @@
 
 <div class="row" style="margin-top: 2%;">
   <div class="card" style="margin-left: 7.5%;"> 
-    <img src="S5- LACE.jpg" style="width: 100%;"> 
+    <img src="Img/S5- LACE.jpg" style="width: 100%;"> 
     <h3> S5 - Lace </h3>
     <p class="price"> 22cm - ₱1,500 per yard  </p>
    </div> 
 
    <div class="card" style="margin-left: 0%;"> 
-    <img src="S6-LACE.jpg" style="width: 100%;"> 
+    <img src="Img/S6-LACE.jpg" style="width: 100%;"> 
     <h3>  S6 - Lace </h3>
     <p class="price"> 22cm - ₱1,500 per yard </p>
    </div>
 
    <div class="card" style="margin-left: 0%;"> 
-    <img src="S7-LACE.jpg" style="width: 100%;"> 
+    <img src="Img/S7-LACE.jpg" style="width: 100%;"> 
     <h3> S7 - Lace </h3>
     <p class="price"> 22cm - ₱1,500 per yard </p>
    </div> 
@@ -121,23 +141,58 @@
 <!--END-->
 </br>
 </br> 
-<hr class="hr2"> 
+
+
 <!--FOOTER-->
+<hr class="hr2"> 
   <div class="footer">
   <p class="style2"> Customer Care </p>
   <p class="style2"> Our Company </p>
   <p class="style2"> Social Media </p>
   </div>
   <a href="Contact.html" target="_self"> <p class="style2"> Contact Us  </p>  </a>
-  <a href="#" target="self" style="margin-bottom: -10%;"> <p class="style8"> FAQs </p> </a>
+  <a href="FAQs.html" target="self" style="margin-bottom: -10%;"> <p class="style8"> FAQs </p> </a>
   <a href="AboutUs.html" target="self" style="margin-bottom: -2%;"> <p class="style6"> About Us </p> </a>
-  <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank"> <img class="icons" src="Icon-Facebook-In-circle-PNG-removebg-preview.png"> </a> 
+  <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank"> <img class="icons" src="Img/Icon-Facebook-In-circle-PNG-removebg-preview.png"> </a> 
   <p class="style9" style="margin-left: 39%;  font-size: small; font-weight: 300;"> LVMEN </p>
 </div>
-
+<!--END-->
 
     
-
+<footer>
+  <div class="container2">
+      <div class="footer-left">
+          <h3>Location</h3>
+          <p>Blk 3 Lot 2 Mahogany<br>Drive Camella Seville<br>Habay 2 , Bacoor, Philippines</p>
+      </div>
+      <div class="footer-right">
+          <h3>Opening Hours</h3>
+          <ul>
+              <li>Monday - Friday: 10am - 10pm</li>
+              <li>Saturday: 11am - 11pm</li>
+              <li>Sunday: Closed</li>
+          </ul>
+          <div class="social">
+              <a href="https://www.facebook.com/LvmenLiturgicalVestments"><img src="Img/PikPng.com_facebook-circle-icon-png_5902093.png" alt="Facebook"></a>
+              <a href="#"><img src="Img/PikPng.com_twitter-png-logo_1011785.png" alt="Twitter"></a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/"><img src="Img/1-19361_watercolor-instagram-icon-png-instagram-logo-white-on.png" alt="Instagram"></a>
+          </div>
+      </div>
+  </div>
+  <div id="map" style="width:50%; height:200px;">
+    
+    <script>
+      function myMap() {
+      var mapProp= {
+        center:new google.maps.LatLng(51.508742,-0.120850),
+        zoom:5,
+      };
+      var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+      }
+      </script>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="1000" height="350" style="border: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</footer>
 
 
 </body>
