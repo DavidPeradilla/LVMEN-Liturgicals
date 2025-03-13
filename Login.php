@@ -11,17 +11,13 @@
  session_unset();
 
  function showError($error){
-  return !empty($error) ? "<p class'error-message'> $error</p>" : '';
+  return !empty($error) ? "<p class='error-message'> $error</p>" : '';
 
  }
 
  function isActiveForm($formName, $activeForm) {
    return $formName === $activeForm ? 'active' :  '';
  }
-
-
-
-
 
 
 ?>
@@ -53,7 +49,7 @@
         </div>
 
         <div class="box1">
-            <div class="form-box <?= isActiveForm('register', $activeForm); ?>"  " id="register-form">
+            <div class="form-box <?= isActiveForm('register', $activeForm); ?>" id="register-form">
                 <form action="login_register.php" method="post" >
                     <h2> Register </h2>
                     <?= showError($errors['register']); ?>
