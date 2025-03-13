@@ -3,73 +3,204 @@
     <head>
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        
+        <style>
+            body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+  .product-card {
+  width: 270px;
+  height: 400px;
+  margin: 8px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.product-image img {
+  width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  max-height: 270px; /* Ensure the image fits within the designated area */
+  object-fit: cover; /* Ensures the image covers the container without stretching */
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.product-image img:hover {
+  transform: scale(1.1);
+}
+
+.product-details {
+  padding-top: 15px;
+}
+
+.product-name {
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+
+.product-description {
+  margin: 0 0 10px;
+}
+
+.product-price {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 10px;
+}
+
+.menu-container {
+  margin-top: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 0px;
+}
+
+.order-btn {
+  background-color: #1a1919;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.order-btn:hover {
+  background-color: #45a049;
+}
+
+
+
+  
+        </style>
     </head>
 <body style>
 <!--NAVBAR-->
 <header> 
-   <a href="Img/LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;"></a>
-   <nav> 
-      <ul>
-       <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-       <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-       <a href="Catalog.html"> <li> CATALOG </li> </a>
-       <a href="Contact.html"> <li> CONTACT US </li> </a>
-       <a href="FAQs.html"> <li> FAQs </li> </a>
-      </ul>
-   </nav> 
+   <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+   <nav class="navbar"> 
+    <ul class="nav-links">
+     <a href="LVMEN2.html"> <li> HOMEPAGE </li> </a>  
+     <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+     <a href="Catalog.html"> <li> CATALOG </li> </a>
+     <a href="Contact.html"> <li> CONTACT US </li> </a>
+     <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+    </ul>
+ </nav> 
  </header>
  <!--END-->
 
-<div class="row" style="margin-left: 1%; margin-right: 1%; padding-top: 100px;"> 
-    <a href="Surplice.html">
-    <div class="card"> 
-      <img src="Img/S5- Surplice.jpg" style="width: 98%;"> 
-      <h3> Surplice </h3>
-     </div>
-    </a>
-  <a href="Lace.html">
-     <div class="card"> 
-      <img src="Img/S5- LACE.jpg" style="width: 65.5%;"> 
-      <h3> Lace </h3>
-     </div>
-  </a>
-  <a href="Monstrance.html">
-     <div class="card"> 
-      <img src="Img/Monstrance.jpg" style="width: 89%;"> 
-      <h3> Monstrance </h3>
-     </div>
-  </a>
-     <a href="Chalice.html"> 
-     <div class="card"> 
-        <img src="Img/CHALICE AND CIROBRIUM.jpg" style="width: 98%;"> 
-        <h3> Chalice and Ciborium  </h3>
-       </div>
-    </a> 
-</div>
 
-<div class="row" style="margin-left: 1%; margin-right: 25%; margin-top: 1%; margin-bottom: 2%;">
-    <a href="Albs.html"> 
-        <div class="card"> 
-           <img src="Img/S1 - ALBS.jpg" style="width: 95%;"> 
-           <h3> Albs </h3>
-          </div>
-       </a> 
+ <!--CATALOG-->
+ <div class="menu-container">
 
-       <a href="Chasuble.html"> 
-        <div class="card"> 
-           <img src="Img/S1-CHASUBLE.jpg" style="width: 90.5%; margin-top: 1%;"> 
-           <h3> Chasuble </h3>
-          </div>
-       </a> 
+    <div class="product-card">
+      <div class="product-image">
+        <img src="Img/S5- Surplice.jpg" alt="">
+      </div>
+      <div class="product-details">
+        <h2 class="product-name">Surplice</h2>
+        <p class="product-description"></p>
+        <p class="product-price"></p>
+        <a href="Surplice.html"><button class="order-btn">Try it now</button></a>
+      </div>
+    </div>
+  
+    <div class="product-card">
+      <div class="product-image">
+        <img src="Img/S5- LACE.jpg" alt="">
+      </div>
+      <div class="product-details">
+        <h2 class="product-name">Lace</h2>
+        <p class="product-description"></p>
+        <p class="product-price"></p>
+        <a href="Lace.html"><button class="order-btn">Try it now</button></a> 
+      </div>
+    </div>
 
-       <a href="Collections.html"> 
-         <div class="card"> 
-            <img src="Img/Pope Pius X Collections.jpg" style="width: 100%; margin-top: 1%;"> 
-            <h3> Pope's Collection </h3>
-           </div>
-        </a> 
-</div>
+    <div class="product-card">
+      <div class="product-image">
+        <img src="Img/Monstrance.jpg" alt="">
+      </div>
+      <div class="product-details">
+        <h2 class="product-name">Monstrance</h2>
+        <p class="product-description"></p>
+        <p class="product-price"></p>
+        <a href="Monstrance.html"><button class="order-btn">Try it now</button></a> 
+      </div>
+    </div>
+
+    <div class="product-card">
+        <div class="product-image">
+          <img src="Img/CHALICE AND CIROBRIUM.jpg" alt="">
+        </div>
+        <div class="product-details">
+          <h2 class="product-name">Chalice and Ciborium</h2>
+          <p class="product-description"></p>
+          <p class="product-price"></p>
+          <a href="Chalice.html"><button class="order-btn">Try it now</button></a> 
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <img src="Img/S1 - ALBS.jpg" alt="">
+        </div>
+        <div class="product-details">
+          <h2 class="product-name">Albs</h2>
+          <p class="product-description"></p>
+          <p class="product-price"></p>
+          <a href="Albs.html"><button class="order-btn">Try it now</button></a> 
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <img src="Img/S1-CHASUBLE.jpg" alt="">
+        </div>
+        <div class="product-details">
+          <h2 class="product-name">Chasuble</h2>
+          <p class="product-description"></p>
+          <p class="product-price"></p>
+          <a href="Chasuble.html"><button class="order-btn">Try it now</button></a> 
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <img src="Img/Pope Pius X Collections.jpg" alt="">
+        </div>
+        <div class="product-details">
+          <h2 class="product-name">Pope's Collection</h2>
+          <p class="product-description"></p>
+          <p class="product-price"></p>
+          <a href="Collections.html"><button class="order-btn" >Try it now</button></a> 
+        </div>
+      </div>
+  </div>
+
+
+
 
 <!--FOOTER-->
 <hr class="hr2"> 

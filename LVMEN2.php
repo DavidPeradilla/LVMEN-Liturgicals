@@ -7,17 +7,17 @@
 <body>
 <!--NAVBAR-->
 <header> 
-  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <a href="LVMEN2.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;"></a>
   <nav class="navbar"> 
-     <ul class="nav-links">
-      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-      <a href="Catalog.html"> <li> CATALOG </li> </a>
-      <a href="Contact.html"> <li> CONTACT US </li> </a>
-      <a href="FAQs.html"> <li> FAQs </li> </a>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-     </ul>
-  </nav> 
+    <ul class="nav-links">
+     <a href="LVMEN2.html"> <li> HOMEPAGE </li> </a>  
+     <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+     <a href="Catalog.html"> <li> CATALOG </li> </a>
+     <a href="Contact.html"> <li> CONTACT US </li> </a>
+     <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="login.php" class="login-btn"> <li> LOGOUT </li> </a>
+    </ul>
+ </nav> 
 </header>
 <!--END-->
 
@@ -145,7 +145,7 @@
 
 <!--FOOTER-->
 <footer>
-  <div class="container2">
+  <div class="container">
       <div class="footer-left">
           <h3>Location</h3>
           <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>

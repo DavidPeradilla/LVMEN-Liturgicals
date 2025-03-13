@@ -2,75 +2,195 @@
     <head>
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            }
+          .product-card {
+            width: 270px;
+            height: 440px;
+            margin: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+          }
+          
+          .product-card:hover {
+            transform: translateY(-5px);
+          }
+          
+          .product-image {
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            border-radius: 10px;
+          }
+          
+          .product-image img {
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            max-height: 270px; /* Ensure the image fits within the designated area */
+            object-fit: cover; /* Ensures the image covers the container without stretching */
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+          }
+          
+          .product-image img:hover {
+            transform: scale(1.1);
+          }
+          
+          .product-details {
+            padding-top: 15px;
+          }
+          
+          .product-name {
+            font-size: 22px;
+            margin: 0 0 10px;
+          }
+          
+          .product-description {
+            margin: 0 0 10px;
+          }
+          
+          .product-price {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 10px;
+          }
+          
+          .menu-container {
+            margin-top: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding: 0px;
+          }
+          
+          .order-btn {
+            background-color: #1a1919;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+          }
+          
+          .order-btn:hover {
+            background-color: #45a049;
+          }
+          
+              </style>
     </head>
 <body>
 <!--NAVBAR-->
 <header> 
-  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;"></a>
-  <nav> 
-     <ul>
-      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-      <a href="Catalog.html"> <li> CATALOG </li> </a>
-      <a href="Contact.html"> <li> CONTACT US </li> </a>
-      <a href="FAQs.html"> <li> FAQs </li> </a>
-     </ul>
-  </nav> 
+  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <nav class="navbar"> 
+    <ul class="nav-links">
+     <a href="LVMEN2.html"> <li> HOMEPAGE </li> </a>  
+     <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+     <a href="Catalog.html"> <li> CATALOG </li> </a>
+     <a href="Contact.html"> <li> CONTACT US </li> </a>
+     <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+    </ul>
+ </nav> 
 </header>
 <!--END-->
 
-<div class="row" style="padding-top: 100px;"> 
-    <div class="card"> 
-        <img src="Img/S1 - ALBS.jpg" style="width: 100%;"> 
-        <h3> S1 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S2-ALBS.jpg" style="width: 100%;"> 
-        <h3> S2 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-
-       <div class="card"> 
-        <img src="Img/S3-ALBS.jpg" style="width: 100%;"> 
-        <h3> S3 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S4-ALBS.jpg" style="width: 100%;"> 
-        <h3> S4 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-
+<div class="menu-container">
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S1 - ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S1 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
   </div>
-  <div class="row" style="margin-top: 1%; margin-left: 5%; margin-right: 5%; margin-bottom: 1%;">
-    <div class="card"> 
 
-        
-        <img src="Img/S5-ALBS.jpg" style="width: 100%;"> 
-        <h3> S5 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S6-ALBS.jpg" style="width: 100%;"> 
-        <h3> S6 - Albs </h3>
-        <p class="price">  ₱6,000 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S7-ALBS.jpg" style="width: 100%;"> 
-        <h3> S7 - Albs </h3>
-        <p class="price"> ₱6,000 </p>
-       </div>
-
-
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S2-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S2 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
   </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S3-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S3 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S4-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S4 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S5-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S5 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S6-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S6 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S7-ALBS.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S7 - Albs</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱ 6,000 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+</div>
 
   <!--FOOTER-->
   <hr class="hr2"> 

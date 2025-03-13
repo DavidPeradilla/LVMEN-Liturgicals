@@ -39,11 +39,11 @@
     position: relative;
   }
   
-  .container2 {
+  .container3 {
     padding: 0 16px;
   }
   
-  .container2::after, .row2::after {
+  .container3::after, .row2::after {
     content: "";
     clear: both;
     display: table;
@@ -206,23 +206,24 @@ margin-bottom: 30px ;
 <body>
 <!--NAVBAR-->
 <header> 
-  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;"></a>
-  <nav> 
-     <ul>
-      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-      <a href="Catalog.html"> <li> CATALOG </li> </a>
-      <a href="Contact.html"> <li> CONTACT US </li> </a>
-      <a href="FAQs.html"> <li> FAQs </li> </a>
-     </ul>
-  </nav> 
+  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <nav class="navbar"> 
+    <ul class="nav-links">
+     <a href="LVMEN2.html"> <li> HOMEPAGE </li> </a>  
+     <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+     <a href="Catalog.html"> <li> CATALOG </li> </a>
+     <a href="Contact.html"> <li> CONTACT US </li> </a>
+     <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+    </ul>
+ </nav> 
 </header>
 <!--END-->
 
 
 
 <div class="about-us"> 
-  <div class="container2"> 
+  <div class="container"> 
     <div class="row">
       <div class="flex">
         <h2>About Us</h2>
@@ -231,9 +232,9 @@ margin-bottom: 30px ;
         <p>LVMEN Liturgical started in July 2021. Our Advocacy is to offer the best to God in the form of beautiful vestments, lace, and other liturgicals products that we sell. Our products are hand-made that is made form Europe. LVMEN offers to deliver nationwide.</p>
         <p>LVMEN is affiliated with different organizations in order to help those in needs some of their profits goes to charity, monastries/convent, and donations. </p>
         <div class="social-links">
-          <a href=""><i class="fab fa-facebook-f"></i></a> 
+          <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><i class="fab fa-facebook-f"></i></a> 
           <a href=""><i class="fab fa-twitter"></i></a> 
-          <a href=""><i class="fab fa-instagram"></i></a>
+          <a href="https://www.instagram.com/sympaticou/" target="_blank" ><i class="fab fa-instagram"></i></a>
         </div>
         <a href="" i class="btn">Learn More</a>
       </div>
@@ -245,12 +246,12 @@ margin-bottom: 30px ;
   </div>
 
   
-  <h2 style="color: white;" align="center">Our Team</h2>
+  <h2 style="color: rgb(2, 1, 1);" align="center">Our Team</h2>
   <div class="row2">
     <div class="column">
       <div class="card3">
         <img src="Img/user.jpeg" alt="Jane" style="width:100%">
-        <div class="container2">
+        <div class="container3">
           <h2>Jonas Peradilla</h2>
           <p class="title">Owner</p>
           <p>LVMEN Owner.</p>
@@ -263,7 +264,7 @@ margin-bottom: 30px ;
     <div class="column">
       <div class="card3">
         <img src="Img/user.jpeg" alt="Mike" style="width:100%">
-        <div class="container2">
+        <div class="container3">
           <h2>Jonas Peradilla</h2>
           <p class="title">Assistant</p>
           <p>LVMEN Assistant.</p>
@@ -276,9 +277,9 @@ margin-bottom: 30px ;
     <div class="column">
       <div class="card3">
         <img src="Img/user.jpeg" alt="John" style="width:100%">
-        <div class="container2">
+        <div class="container3">
           <h2>Jonas Peradilla</h2>
-          <p class="title">Chef's</p>
+          <p class="title">Secretary</p>
           <p>LVMEN Secretary.</p>
           <p>contact@lvmen24.com</p>
           <p><button class="button">Contact</button></p>

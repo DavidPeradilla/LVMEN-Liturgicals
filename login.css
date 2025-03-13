@@ -1,94 +1,77 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", serif;
-}
-
-body{
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
 }
 
-.box1{
-    margin: 0 15px;
-
-}
-
-.form-box{
-    width: 100%;
-    max-width: 450px;
-    padding: 30px;
-    background: #ffff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-    display: none;
-}
-
-.form-box.active{
-    display: block;
-}
-
-h2{
-    font-size: 34px;
+/* Form Container */
+.form-container {
+    width: 350px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin-bottom: 20px;
 }
 
-input{
-    width: 100%;
-    padding: 12px;
-    background: #eee;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-    font-size: 16px;
+/* Form Title */
+h2 {
+    margin-bottom: 20px;
     color: #333;
-    margin-bottom: 20px;
 }
 
-button{
+/* Form Fields */
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    color: #555;
+}
+
+input {
     width: 100%;
-    padding: 12px;
-    background: black;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #0e0e0e;
+    border-radius: 5px;
     font-size: 16px;
-    color: #ffff;
-    font-weight: 500;
-    margin-bottom: 20px;
+}
+
+/* Submit Button */
+input[type="submit"] {
+    width: 100%;
+    background: #2e9de7;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
     transition: 0.5s;
 }
 
-button:hover {
-    background: #3876e0;
-}   
-
-p {
-    font-size: 14.5px;
-    text-align: center;
-    margin-bottom: 10px;
+input[type="submit"]:hover {
+    background: #218838;
 }
 
-p a{
-    color: #8bb1f4;
+/* Sign Up Link */
+p {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+a {
+    color: #007bff;
     text-decoration: none;
 }
 
-p a:hover{
+a:hover {
     text-decoration: underline;
-}
-
-.error message {
-    padding: 12px;
-    background:   black;
-    border-radius: 6px;
-    font-size: 16px;
-    color: red;
-    text-align: center;
-    margin-bottom: 20px;
 }

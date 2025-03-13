@@ -4,71 +4,196 @@
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
         <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial scale=1.0">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f2f2f2;
+        }
+      .product-card {
+        width: 270px;
+        height: 420px;
+        margin: 20px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+      
+      .product-card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .product-image {
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+      
+      .product-image img {
+        width: 100%;
+        height: auto; /* Maintain aspect ratio */
+        max-height: 270px; /* Ensure the image fits within the designated area */
+        object-fit: cover; /* Ensures the image covers the container without stretching */
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+      }
+      
+      .product-image img:hover {
+        transform: scale(1.1);
+      }
+      
+      .product-details {
+        padding-top: 15px;
+      }
+      
+      .product-name {
+        font-size: 22px;
+        margin: 0 0 10px;
+      }
+      
+      .product-description {
+        margin: 0 0 10px;
+      }
+      
+      .product-price {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 10px;
+      }
+      
+      .menu-container {
+        margin-top: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 0px;
+      }
+      
+      .order-btn {
+        background-color: #1a1919;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+      
+      .order-btn:hover {
+        background-color: #45a049;
+      }
+      
+          </style>
     </head>
 <body>
 <!--NAVBAR-->
 <header> 
-  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%; "></a>
-  <nav> 
-     <ul>
-      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-      <a href="Catalog.html"> <li> CATALOG </li> </a>
-      <a href="Contact.html"> <li> CONTACT US </li> </a>
-      <a href="FAQs.html"> <li> FAQs </li> </a>
-     </ul>
-  </nav> 
+  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%; " width="80px" height="70px" ></a>
+  <nav class="navbar"> 
+    <ul class="nav-links">
+     <a href="LVMEN2.html"> <li> HOMEPAGE </li> </a>  
+     <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
+     <a href="Catalog.html"> <li> CATALOG </li> </a>
+     <a href="Contact.html"> <li> CONTACT US </li> </a>
+     <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+    </ul>
+ </nav> 
 </header>
 <!--END-->
 
-<div class="row" style="padding-top: 100px;"> 
-    <div class="card"> 
-        <img src="Img/S1- SURPLICE.jpg" style="width: 100%;"> 
-        <h3> S1 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S2-SURPLICE.jpg" style="width: 100%;"> 
-        <h3> S2 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S3-SURPLICE.jpg" style="width: 90%;"> 
-        <h3> S3 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S4-SURPLICE.jpg" style="width: 84%;"> 
-        <h3> S4 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
+<div class="menu-container">
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S1- SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S1 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
   </div>
 
-  <div class="row" style="margin-top: 1%; margin-bottom: 1%;" > 
-    <div class="card"> 
-        <img src="Img/S5- Surplice.jpg" style="width: 84%;"> 
-        <h3> S5 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-
-       <div class="card"> 
-        <img src="Img/S6- Surplice.jpg" style="width: 84%;"> 
-        <h3> S6 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-    
-       <div class="card"> 
-        <img src="Img/S7- Surplice.jpg" style="width: 84%;"> 
-        <h3> S7 - Surplice </h3>
-        <p class="price"> ₱5,500 </p>
-       </div>
-
-
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S2-SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S2 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
   </div>
-  
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S3-SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S3 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S4-SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S4 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S5- SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S5 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S6- SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S6 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image">
+      <img src="Img/S7- SURPLICE.jpg" alt="">
+    </div>
+    <div class="product-details">
+      <h2 class="product-name">S7 - Surplice</h2>
+      <p class="product-description"></p>
+      <p class="product-price"> ₱5,500 </p>
+      <button class="order-btn">Add to cart</button>
+    </div>
+  </div>
+</div>
+
   <!--FOOTER-->
   <hr class="hr2"> 
 <footer>
