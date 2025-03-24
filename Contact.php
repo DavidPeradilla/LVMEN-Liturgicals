@@ -335,15 +335,15 @@ section {
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
 
-      <!-- Show profile link if logged in -->
+      
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+      
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
@@ -460,7 +460,7 @@ section {
     }
   });
 
-  // Check on load
+  
   window.addEventListener('DOMContentLoaded', () => {
     if (subjectSelect.value === "Feedback: New Feedback from Contact Form") {
       starRatingBox.style.display = 'flex';
@@ -521,7 +521,7 @@ section {
     });
 
     function showModal(title, message) {
-        hideModal();  // Ensure any existing modal is removed
+        hideModal();  
         const modal = document.createElement('div');
         modal.classList.add('modal');
         modal.innerHTML = `
@@ -532,7 +532,7 @@ section {
         `;
         document.body.appendChild(modal);
 
-        // Automatically remove the modal after 3 seconds
+        
         setTimeout(function() {
             hideModal();
         }, 3000);

@@ -12,22 +12,22 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Define the number of orders per page
+
 $orders_per_page = 10;
 
-// Get the current page number from the URL (default to 1 if not set)
+
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $orders_per_page;
 
-// Fetch total number of orders for pagination
+
 $total_orders_query = "SELECT COUNT(*) AS total_orders FROM orders";
 $total_orders_result = $conn->query($total_orders_query);
 $total_orders = $total_orders_result->fetch_assoc()['total_orders'];
 
-// Calculate total number of pages
+
 $total_pages = ceil($total_orders / $orders_per_page);
 
-// Fetch orders for the current page
+
 $orders_query = "SELECT * FROM orders ORDER BY id DESC LIMIT $offset, $orders_per_page";
 $orders_result = $conn->query($orders_query);
 
@@ -133,10 +133,10 @@ if (!$orders_result) {
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>

@@ -231,8 +231,9 @@ a {
 
         <h2>Login Form</h2>
         <form method="POST" action="login.php">
-            <label for="email">Gmail:</label>
-            <input type="text" name="email" id="email" required>
+            
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required style="text-transform: lowercase;">
 
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required>

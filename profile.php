@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you used this in your login/logout files
+session_name("user_session"); 
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -20,7 +20,7 @@ if (!isset($_SESSION['email'])) {
 
 if (isset($_SESSION['cancel_message'])) {
     $message = $_SESSION['cancel_message'];
-    unset($_SESSION['cancel_message']); // Clear the message after displaying it
+    unset($_SESSION['cancel_message']); 
 }
 
 $email = $_SESSION['email'];
@@ -232,15 +232,15 @@ $stmt->close();
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
 
-      <!-- Show profile link if logged in -->
+      
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+      
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
@@ -346,7 +346,7 @@ $stmt->close();
 
 
 <script>
-    // Modal functionality
+    
     function openModal(orderId) {
         document.getElementById("order_id").value = orderId;
         document.getElementById("cancelModal").style.display = "block";
@@ -362,28 +362,28 @@ $stmt->close();
         }
     }
 
-    // Open the cancellation reason modal
+    
 function openCancellationReasonModal(orderId) {
-    // Use AJAX to fetch the cancellation reason for the order ID
+    
     $.ajax({
         url: 'cancellation_reason.php',
         type: 'POST',
         data: { order_id: orderId },
         success: function(response) {
-            // Set the cancellation reason in the modal
+            
             $('#cancellationReasonText').text(response);
-            // Show the modal
+            
             document.getElementById("cancellationReasonModal").style.display = "block";
         }
     });
 }
 
-// Close the modal
+
 function closeCancellationReasonModal() {
     document.getElementById("cancellationReasonModal").style.display = "none";
 }
 
-// Close the modal if user clicks outside of it
+
 window.onclick = function(event) {
     if (event.target == document.getElementById("cancellationReasonModal")) {
         closeCancellationReasonModal();

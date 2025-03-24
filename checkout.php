@@ -281,7 +281,7 @@ $conn->close();
 
     function cancelOrder() {
         if (confirm("Are you sure you want to cancel the order?")) {
-            window.location.href = "user_products.php"; // Redirect back to products page
+            window.location.href = "user_products.php"; 
         }
     }
 

@@ -1,10 +1,10 @@
 <?php
-session_name("admin_session"); // Set session name to admin_session
+session_name("admin_session"); 
 session_start();
 
-// Check if the user is logged in as an admin
+
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    // Redirect to login page if not logged in as admin
+    
     header("Location: login.php");
     exit();
 }
@@ -14,27 +14,27 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle category deletion
+
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
 
-    // Check if the category is being used in products
+    
     $checkProducts = $conn->query("SELECT * FROM products WHERE category_id = '$delete_id'");
     if ($checkProducts->num_rows > 0) {
         die("<script>alert('Cannot delete category. It is assigned to products.'); window.location='add_category.php';</script>");
     }
 
-    // Delete category
+    
     $conn->query("DELETE FROM categories WHERE id = '$delete_id'");
     header("Location: add_category.php?deleted=1");
     exit();
 }
 
-// Handle adding new category
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $category_name = $_POST['category_name'];
 
-    // Check if category already exists
+    
     $stmt = $conn->prepare("SELECT * FROM categories WHERE category_name = ?");
     $stmt->bind_param("s", $category_name);
     $stmt->execute();
@@ -44,12 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("<script>alert('Category already exists.'); window.location='add_category.php';</script>");
     }
 
-    // Insert new category
+    
     $stmt = $conn->prepare("INSERT INTO categories (category_name) VALUES (?)");
     $stmt->bind_param("s", $category_name);
 
     if ($stmt->execute()) {
-        header("Location: add_category.php?success=1"); // Redirect after success
+        header("Location: add_category.php?success=1"); 
         exit();
     } else {
         echo "Error: " . $conn->error;
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
 }
 
-// Fetch all categories for display
+
 $categories = $conn->query("SELECT * FROM categories");
 
 $conn->close();
@@ -71,6 +71,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Admin - Manage Categories</title>
     <style>
         body {
@@ -184,10 +185,10 @@ $conn->close();
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -198,7 +199,7 @@ $conn->close();
     <?php if (isset($_GET['success'])) { echo "<p class='success'>✔ Category added successfully!</p>"; } ?>
     <?php if (isset($_GET['deleted'])) { echo "<p class='error'>✖ Category deleted successfully!</p>"; } ?>
 
-    <!-- Add Category Form -->
+    
     <form action="add_category.php" method="POST">
         <input type="text" name="category_name" placeholder="Category Name" required>
         <button type="submit">Add Category</button>

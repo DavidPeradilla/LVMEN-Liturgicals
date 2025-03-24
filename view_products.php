@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 
-// Handle product deletion
+
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
 
@@ -28,7 +28,7 @@ if (isset($_GET['delete'])) {
     header("Location: view_products.php?success=deleted");
     exit;
 }
-// Fetch products with category names
+
 $sql = "SELECT products.id, products.name, products.price, products.image, 
                products.category_id, products.description, categories.category_name 
         FROM products 
@@ -37,10 +37,10 @@ $sql = "SELECT products.id, products.name, products.price, products.image,
 
 $result = $conn->query($sql);
 
-// Fetch all categories for dropdown
+
 $categories = $conn->query("SELECT * FROM categories");
 
-// Store categories in an array
+
 $category_options = [];
 while ($cat = $categories->fetch_assoc()) {
     $category_options[$cat['id']] = $cat['category_name'];
@@ -78,9 +78,9 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - View Products</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -243,10 +243,10 @@ $conn->close();
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>

@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle deletion
+//  deletion
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM featured_products WHERE id = $id");
@@ -105,10 +105,10 @@ $totalProducts = $countRow['total'];
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -118,7 +118,7 @@ $totalProducts = $countRow['total'];
     <h2 class="text-3xl font-semibold text-gray-800 mb-4">Manage Featured Products</h2>
 
 
-<!-- Form to add featured product -->
+
 <form action="admin_featured.php" method="POST" class="bg-white p-6 rounded-lg shadow-md mb-6">
     <label for="product_id" class="block text-gray-700 text-lg font-semibold mb-2">Select a Product to Feature</label>
     <select name="product_id" id="product_id" required class="w-full p-3 border border-gray-300 rounded-md mb-4">
@@ -128,12 +128,12 @@ $totalProducts = $countRow['total'];
         <?php endwhile; ?>
     </select>
     
-    <!-- Display message if the limit is reached -->
+    
     <?php if ($totalProducts >= 6): ?>
         <p style="color: red; text-align: center; font-weight: bold;">You can only feature up to 6 products.</p>
     <?php endif; ?>
 
-    <!-- Disable button if the limit is reached -->
+    
     <button type="submit" name="add_featured" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700" <?php if ($totalProducts >= 6) echo 'disabled'; ?>>
         Add Featured Product
     </button>

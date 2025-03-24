@@ -21,13 +21,7 @@ $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue
                         AND YEAR(order_date) = '$year'";
 $monthly_sales = $conn->query($monthly_sales_query)->fetch_assoc()['total_revenue'] ?? 0;
 
-// Monthly canceled sales
-$monthly_canceled_query = "SELECT SUM(total_price) AS canceled_revenue 
-                           FROM orders 
-                           WHERE order_status = 'Canceled'
-                           AND MONTH(order_date) = '$month' 
-                           AND YEAR(order_date) = '$year'";
-$monthly_canceled = $conn->query($monthly_canceled_query)->fetch_assoc()['canceled_revenue'] ?? 0;
+
 
 // Overall total sales
 $total_sales_query = "SELECT SUM(total_price) AS total_revenue 
@@ -42,18 +36,6 @@ $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue
                        AND YEAR(order_date) = '$year'";
 $yearly_sales = $conn->query($yearly_sales_query)->fetch_assoc()['total_revenue'] ?? 0;
 
-// Total canceled revenue
-$canceled_sales_query = "SELECT SUM(total_price) AS canceled_revenue 
-                         FROM orders 
-                         WHERE order_status = 'Canceled'";
-$total_canceled = $conn->query($canceled_sales_query)->fetch_assoc()['canceled_revenue'] ?? 0;
-
-// Total products sold (all-time)
-$total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
-                         FROM order_items_backup 
-                         JOIN orders ON order_items_backup.order_id = orders.id
-                         WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
-$total_products_sold = $conn->query($total_products_query)->fetch_assoc()['total_products_sold'] ?? 0;
 
 // Check if user requested to export PDF
 if (isset($_GET['export_pdf'])) {
@@ -76,8 +58,6 @@ if (isset($_GET['export_pdf'])) {
     $pdf->Cell(100, 10, 'Monthly Sales', 1);
     $pdf->Cell(90, 10, number_format($monthly_sales, 2), 1, 1, 'R');
     
-    $pdf->Cell(100, 10, 'Monthly Canceled Sales', 1);
-    $pdf->Cell(90, 10, number_format($monthly_canceled, 2), 1, 1, 'R');
     
     $pdf->Cell(100, 10, 'Yearly Sales', 1);
     $pdf->Cell(90, 10, number_format($yearly_sales, 2), 1, 1, 'R');
@@ -85,11 +65,7 @@ if (isset($_GET['export_pdf'])) {
     $pdf->Cell(100, 10, 'Total Sales (All Time)', 1);
     $pdf->Cell(90, 10, number_format($total_sales, 2), 1, 1, 'R');
     
-    $pdf->Cell(100, 10, 'Total Products Sold (All Time)', 1);
-    $pdf->Cell(90, 10, number_format($total_products_sold), 1, 1, 'R');
-    
-    $pdf->Cell(100, 10, 'Total Canceled Orders (All Time)', 1);
-    $pdf->Cell(90, 10, number_format($total_canceled, 2), 1, 1, 'R');
+
 
     // Output the PDF
     $pdf->Output('D', 'Sales_Report_' . date("F", mktime(0, 0, 0, $month, 1)) . '_' . $year . '.pdf');
@@ -149,10 +125,7 @@ if (isset($_GET['export_pdf'])) {
                         <td class="py-3 px-6">Monthly Sales</td>
                         <td class="py-3 px-6"><?php echo number_format($monthly_sales, 2); ?></td>
                     </tr>
-                    <tr class="border-t">
-                        <td class="py-3 px-6">Monthly Canceled Sales</td>
-                        <td class="py-3 px-6"><?php echo number_format($monthly_canceled, 2); ?></td>
-                    </tr>
+                  
                     <tr class="border-t">
                         <td class="py-3 px-6">Yearly Sales</td>
                         <td class="py-3 px-6"><?php echo number_format($yearly_sales, 2); ?></td>
@@ -161,14 +134,8 @@ if (isset($_GET['export_pdf'])) {
                         <td class="py-3 px-6">Total Sales (All Time)</td>
                         <td class="py-3 px-6"><?php echo number_format($total_sales, 2); ?></td>
                     </tr>
-                    <tr class="border-t">
-                        <td class="py-3 px-6">Total Products Sold (All Time)</td>
-                        <td class="py-3 px-6"><?php echo number_format($total_products_sold); ?></td>
-                    </tr>
-                    <tr class="border-t">
-                        <td class="py-3 px-6">Total Canceled Orders (All Time)</td>
-                        <td class="py-3 px-6"><?php echo number_format($total_canceled, 2); ?></td>
-                    </tr>
+               
+             
                 </tbody>
             </table>
         </div>

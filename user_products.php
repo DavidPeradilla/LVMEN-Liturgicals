@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you're using a custom session name consistently
+session_name("user_session"); 
 session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
@@ -7,23 +7,23 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch categories for filter dropdown
+
 $categoryResult = $conn->query("SELECT * FROM categories"); 
 $categoryFilter = isset($_GET['category']) ? $_GET['category'] : '';
 $whereClause = $categoryFilter ? "WHERE products.category_id = '$categoryFilter'" : "";
 
-// Pagination setup
-$products_per_page = 15; // You can change this number
+
+$products_per_page = 15; 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $products_per_page;
 
-// Get total product count for pagination
+
 $count_sql = "SELECT COUNT(*) as total FROM products $whereClause";
 $count_result = $conn->query($count_sql);
 $total_products = $count_result->fetch_assoc()['total'];
 $total_pages = ceil($total_products / $products_per_page);
 
-// Update main product query with LIMIT
+
 $sql = "SELECT products.id, products.name, products.price, products.image, products.description, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
@@ -53,7 +53,7 @@ $conn->close();
             background:rgb(243, 239, 239);
         }
 
-    /* Main container layout */
+    
     .container {
         display: flex;
         gap: 25px;
@@ -62,14 +62,14 @@ $conn->close();
         padding: 20px;
     }
 
-    /* Sidebar-style filter container */
+    
     .filter-sidebar {
         width: 300px;
-        background: rgba(255, 255, 255, 0.7); /* Glassmorphism effect */
+        background: rgba(255, 255, 255, 0.7); 
         padding: 25px;
         border-radius: 15px;
         box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.15);
-        backdrop-filter: blur(10px); /* Soft blur effect */
+        backdrop-filter: blur(10px); 
         height: 50%;
     }
 
@@ -78,7 +78,7 @@ $conn->close();
         box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
     }
 
-    /* Sidebar title */
+    
     .filter-title {
         font-size: 22px;
         font-weight: bold;
@@ -90,12 +90,12 @@ $conn->close();
         letter-spacing: 1px;
     }
 
-    /* Filter Group */
+    
     .filter-group {
         margin-top: 15px;
     }
 
-    /* Label styling */
+    
     .filter-label {
         font-size: 16px;
         font-weight: 600;
@@ -104,7 +104,7 @@ $conn->close();
         margin-bottom: 8px;
     }
 
-    /* Custom Dropdown */
+    
     .filter-select {
         width: 100%;
         padding: 10px;
@@ -124,7 +124,7 @@ $conn->close();
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Main content area */
+    
     .content {
         flex: 1;
         background: #ffffff;
@@ -133,7 +133,7 @@ $conn->close();
         box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.1);
     }
 
-    /* Section title */
+    
     .section-title {
         font-size: 26px;
         font-weight: bold;
@@ -142,7 +142,7 @@ $conn->close();
         letter-spacing: 1px;
     }
 
-    /* Responsive Design */
+    
     @media (max-width: 1024px) {
         .container {
             flex-direction: column;
@@ -153,7 +153,7 @@ $conn->close();
         }
     }
 
-    /* Product Grid */
+    
     .product-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -161,7 +161,7 @@ $conn->close();
         justify-content: center;
     }
 
-    /* Product Card */
+    
     .product-card {
         background: white;
         border-radius: 10px;
@@ -180,7 +180,7 @@ $conn->close();
         height: 180px;
         object-fit: cover;
         border-radius: 8px;
-        cursor: pointer; /* Makes it clear that images are clickable */
+        cursor: pointer; 
     }
 
     .product-card h3 {
@@ -275,15 +275,15 @@ $conn->close();
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
 
-      <!-- Show profile link if logged in -->
+      
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+      
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
@@ -295,7 +295,7 @@ $conn->close();
 
 <br> <br> <br>
 <div class="container">
-    <!-- Sidebar-style Filter Panel -->
+    
     <div class="filter-sidebar">
         <h2 class="filter-title">Filter Products</h2>
         <form method="GET" action="">
@@ -360,6 +360,10 @@ $conn->close();
 
     </div>
 </div>
+<!-- END -->
+
+
+
 
 <!-- MODAL -->
 
@@ -401,7 +405,7 @@ function closeDescModal() {
 
     <script>
     function addToCart(event, productId, form) {
-        event.preventDefault(); // Prevent page reload
+        event.preventDefault(); 
 
         <?php if (!isset($_SESSION['email'])) { ?>
             alert("Please log in to add items to your cart.");
@@ -417,7 +421,7 @@ function closeDescModal() {
         })
         .then(response => response.text())
         .then(data => {
-            console.log("Server Response:", data); // Log response in Console
+            console.log("Server Response:", data); 
 
             let statusElement = document.getElementById('status-' + productId);
             if (data.trim() === "success") {

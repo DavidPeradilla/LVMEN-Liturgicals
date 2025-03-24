@@ -16,12 +16,12 @@ if ($conn->connect_error) {
 $selected_month = $_GET['month'] ?? date('m');
 $selected_year = $_GET['year'] ?? date('Y');
 
-// 🔁 PAGINATION VARIABLES FIRST
+
 $results_per_page = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start_from = ($page - 1) * $results_per_page;
 
-// 👇 QUERY WITH LIMIT AFTER
+
 $canceled_orders_query = "SELECT * FROM orders 
                           WHERE order_status = 'Canceled'
                           AND MONTH(order_date) = '$selected_month'
@@ -114,10 +114,10 @@ $total_pages = ceil($total_row['total'] / $results_per_page);
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>

@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you used this in your login/logout files
+session_name("user_session"); 
 session_start();
 
 
@@ -169,15 +169,15 @@ if (isset($conn) && $conn instanceof mysqli) {
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
 
-      <!-- Show profile link if logged in -->
+      
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+      
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>

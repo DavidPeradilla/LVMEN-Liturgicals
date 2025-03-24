@@ -89,7 +89,7 @@ $records_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $records_per_page;
 
-//  total completed orders
+
 $count_query = "SELECT COUNT(*) AS total 
                 FROM orders 
                 WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
@@ -99,7 +99,7 @@ $count_result = $conn->query($count_query);
 $total_records = $count_result->fetch_assoc()['total'] ?? 0;
 $total_pages = ceil($total_records / $records_per_page);
 
-// completed orders query with LIMIT
+
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
@@ -189,7 +189,7 @@ while ($row = $monthly_status_result->fetch_assoc()) {
 
 
 $all_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-$monthly_products_data = array_fill(0, 12, 0); // default all to 0
+$monthly_products_data = array_fill(0, 12, 0); 
 
 $query = "
     SELECT MONTH(o.order_date) AS month_num, SUM(oib.quantity) AS total_sold
@@ -202,16 +202,15 @@ $query = "
 
 $result = $conn->query($query);
 while ($row = $result->fetch_assoc()) {
-    $month_index = (int)$row['month_num'] - 1; // 0-based index
+    $month_index = (int)$row['month_num'] - 1; 
     $monthly_products_data[$month_index] = (int)$row['total_sold'];
 }
 
 $monthly_products_labels = $all_months;
 
-
-
-
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,7 +228,7 @@ $monthly_products_labels = $all_months;
 
 
 
-        /* Main Content Styling */
+        
         .main-content {
             margin-left: 78px;
             padding: 20px;
@@ -237,7 +236,7 @@ $monthly_products_labels = $all_months;
             height: 230vh;
         }
 
-        /* Card Styling */
+        
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -248,16 +247,16 @@ $monthly_products_labels = $all_months;
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="navbar">
+
+<div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -311,9 +310,9 @@ $monthly_products_labels = $all_months;
     </div>
 
     <!-- Charts -->
-    <div class="card mt-4" style="width: 1150px;">  <!-- Adjust width as needed -->
+    <div class="card mt-4" style="width: 1150px;">  
         <h5 class="font-bold"> Sales Chart</h5>
-        <canvas id="salesChart" width="1200" height="410"></canvas>  <!-- Set canvas width and height -->
+        <canvas id="salesChart" width="1200" height="410"></canvas>  
     </div>
 
 
@@ -362,7 +361,7 @@ $monthly_products_labels = $all_months;
 
 
     <script>
-    // Chart.js Configuration
+    
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('salesChart').getContext('2d');
         const salesChart = new Chart(ctx, {
@@ -390,7 +389,7 @@ $monthly_products_labels = $all_months;
             }
         });
 
-        // Monthly Orders Donut Chart
+        
         const ordersCtx = document.getElementById('ordersDonutChart').getContext('2d');
         const orderStatusCounts = <?php echo json_encode($order_status_counts); ?>;
         const totalOrders = orderStatusCounts.reduce((a, b) => a + b, 0);
@@ -402,10 +401,10 @@ $monthly_products_labels = $all_months;
                 datasets: [{
                     data: orderStatusCounts,
                     backgroundColor: [
-                        '#4CAF50',  // Delivered
-                        '#f39c12',  // Pending
-                        '#3498db',  // Processing
-                        '#e74c3c',  // Canceled
+                        '#4CAF50',  
+                        '#f39c12',  
+                        '#3498db',  
+                        '#e74c3c',  
                         
                     ]
                 }]
@@ -434,14 +433,13 @@ $monthly_products_labels = $all_months;
     });
 
 
-    // Monthly Products Sold Pie Chart
     document.addEventListener('DOMContentLoaded', function() {
-    // ... Existing code for other charts ...
+    
 
-    // Monthly Products Sold Bar Chart
+    
     const productsCtx = document.getElementById('productsPieChart').getContext('2d');
-    const productsLabels = <?php echo json_encode($monthly_products_labels); ?>; // e.g. ['Jan', 'Feb', 'Mar']
-    const productsData = <?php echo json_encode($monthly_products_data); ?>;     // e.g. [50, 75, 100]
+    const productsLabels = <?php echo json_encode($monthly_products_labels); ?>; 
+    const productsData = <?php echo json_encode($monthly_products_data); ?>;     
 
     const productsBarChart = new Chart(productsCtx, {
         type: 'bar',

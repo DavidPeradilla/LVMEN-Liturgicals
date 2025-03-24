@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you're using a custom session name consistently
+session_name("user_session"); 
 session_start();
 
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 }
 
 
-// Fetch featured products with full details
+
 $query = "
     SELECT p.id, p.name, p.price, p.image, p.description, c.category_name
     FROM featured_products fp
@@ -19,17 +19,15 @@ $query = "
 ";
 $result = $conn->query($query);
 
-// Fetch latest products (e.g., latest 4)
+
 $sql_latest = "SELECT * FROM products ORDER BY created_at DESC LIMIT 3";
 $result_latest = $conn->query($sql_latest);
 
 
-
-// Query to fetch active slideshow images
 $sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
 $result_slideshow = $conn->query($sql_slideshow);
 
-// Check if there are any slides
+
 if ($result_slideshow->num_rows > 0) {
     while ($slide = $result_slideshow->fetch_assoc()) {
         
@@ -66,7 +64,7 @@ if ($result_slideshow->num_rows > 0) {
 .slideshow-container {
     position: relative;
     width: 100%;
-    height: 600px; /* Set this to your desired banner height */
+    height: 600px; 
     overflow: hidden;
 }
 
@@ -82,7 +80,7 @@ if ($result_slideshow->num_rows > 0) {
 .slide-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* This makes sure the image fills the area and maintains aspect ratio */
+    object-fit: cover; 
 }
 
 
@@ -102,7 +100,7 @@ if ($result_slideshow->num_rows > 0) {
 }
 
 
-/* Optional fade animation */
+
 .fade {
     animation: fadeEffect 1s;
 }
@@ -125,8 +123,8 @@ if ($result_slideshow->num_rows > 0) {
     font-size: 18px;
     user-select: none;
     transition: 0.6s ease;
-    display: block; /* force always visible */
-    z-index: 1; /* ensure above images */
+    display: block; 
+    z-index: 1; 
 }
 
 .next {
@@ -156,19 +154,19 @@ body{
 .card {
     width: 350px;
     height: 560px;
-    border-radius: 16px; /* Rounded corners */
-    background: #fff; /* White background */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Soft shadow */
+    border-radius: 16px; 
+    background: #fff; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-align: center;
     transition: all 0.4s ease;
-    transform: translateY(30px); /* Start position */
-    opacity: 0; /* Start hidden */
-    animation: fadeInUp 0.8s forwards; /* Add animation */
-    padding: 20px; /* Inner padding */
+    transform: translateY(30px); 
+    opacity: 0; 
+    animation: fadeInUp 0.8s forwards; 
+    padding: 20px; 
     position: relative;
 }
 
@@ -233,7 +231,7 @@ body{
 
 .hero-background {
     width: 100%;
-    height: 650px; /* adjust as needed */
+    height: 650px; 
     background-size: cover;
     background-position: center;
     position: relative;
@@ -292,16 +290,14 @@ body{
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-
-      <!-- Show profile link if logged in -->
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+     
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
@@ -310,8 +306,6 @@ body{
   </nav>
 </header>
 <!-- END -->
-
-
 
 
 <section class="hero-section">
@@ -329,7 +323,7 @@ body{
         <div class="hero-overlay">
             <a href="user_products.php" class="hero-btn"></a>
         </div>
-    </div> <!-- end of hero-background -->
+    </div> 
 </section>
 
 
@@ -353,7 +347,7 @@ function showSlidesAuto() {
         slides[slideIndex - 1].style.display = "block";
     }
 
-    setTimeout(showSlidesAuto, 5000); // Change image every 5 seconds
+    setTimeout(showSlidesAuto, 5000); 
 }
 
 document.addEventListener("DOMContentLoaded", showSlidesAuto);
@@ -363,7 +357,7 @@ document.addEventListener("DOMContentLoaded", showSlidesAuto);
 
 <!--LATEST PRODUCTS-->
 
-</br></br></br></br>
+</br></br></br>
 
 <p class="headline" ALIGN="center"> LATEST PRODUCTS </p>
 <div class="row">
@@ -465,7 +459,7 @@ const handleCardVisibility = () => {
         const cardTop = card.getBoundingClientRect().top;
         const cardBottom = card.getBoundingClientRect().bottom;
 
-        // Check if the card is in the viewport
+        
         if (cardTop < triggerBottom && cardBottom > 0) {
             card.classList.add('visible');
         } else {
@@ -474,36 +468,36 @@ const handleCardVisibility = () => {
     });
 };
 
-// Run the visibility check on page load
+
 document.addEventListener('DOMContentLoaded', handleCardVisibility);
 
-// Run the visibility check on scroll
+
 window.addEventListener('scroll', handleCardVisibility);
 
- // Select both headline elements
-const headlines = document.querySelectorAll('.headline, .headline2');  // Selects both .headline and .headline2
+ 
+const headlines = document.querySelectorAll('.headline, .headline2');  
 
-// Function to handle fade-in effect when scrolling
+
 const toggleHeadlineVisibility = () => {
-    const triggerBottom = window.innerHeight * 0.9;  // Trigger when 90% of the viewport height is reached
+    const triggerBottom = window.innerHeight * 0.9;  
     
-    // Iterate through each headline and check its position
+    
     headlines.forEach(headline => {
-        const headlineTop = headline.getBoundingClientRect().top;  // Get the position of the headline element
+        const headlineTop = headline.getBoundingClientRect().top;  
         
-        // Check if the headline is in view
+        
         if (headlineTop < triggerBottom) {
-            headline.classList.add('visible');  // Add the 'visible' class to trigger fade-in
+            headline.classList.add('visible');  
         } else {
-            headline.classList.remove('visible');  // Remove the 'visible' class to fade it out
+            headline.classList.remove('visible');  
         }
     });
 };
 
-// Listen for the 'scroll' event to trigger the fade-in/fade-out effect
+
 window.addEventListener('scroll', toggleHeadlineVisibility);
 
-// Run the function once on page load to handle the initial visibility
+
 window.addEventListener('load', toggleHeadlineVisibility);
 
 

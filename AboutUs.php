@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you're using a custom session name consistently
+session_name("user_session"); 
 session_start();
 
 ?>
@@ -227,15 +227,15 @@ margin-bottom: 30px ;
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
 
-      <!-- Show profile link if logged in -->
+      
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      <!-- Show cart link -->
+      
       <li><a href="view_cart.php" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
       </a></li>
 
-      <!-- Hide login button only if user is logged in -->
+      
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
@@ -263,7 +263,7 @@ margin-bottom: 30px ;
           <a href=""><i class="fab fa-twitter"></i></a> 
           <a href="https://www.instagram.com/sympaticou/" target="_blank" ><i class="fab fa-instagram"></i></a>
         </div>
-        <!-- <a href="" i class="btn">Learn More</a> -->
+        
       </div>
       <div class="flex">
         <img src="Img/LVMEN About Us.png" >

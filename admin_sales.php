@@ -173,9 +173,6 @@ $best_selling_result = $conn->query($best_selling_query);
 ?>
 
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -185,7 +182,6 @@ $best_selling_result = $conn->query($best_selling_query);
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="sidebar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -302,7 +298,7 @@ $best_selling_result = $conn->query($best_selling_query);
 }
 
 .chart-container, .recent-orders {
-    width: 48%; /* Adjust the width to fit the two elements side by side */
+    width: 48%; 
 }
 
 .recent-orders {
@@ -328,10 +324,10 @@ $best_selling_result = $conn->query($best_selling_query);
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -365,7 +361,8 @@ $best_selling_result = $conn->query($best_selling_query);
         <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Filter</button>
     </form>
 
-<!-- Statistics Cards -->
+
+
 <div class="grid grid-cols-3 gap-4 mb-6">
 
     <div class="card">
@@ -391,15 +388,15 @@ $best_selling_result = $conn->query($best_selling_query);
    
     <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
 
-<!-- Sales Chart -->
+
 <div class="card mt-4 p-4" style="display: flex; width: 100%; max-width: 1100px; margin: auto; gap: 20px; align-items: flex-start;">
-    <!-- Left Side: Sales Chart -->
+    
     <div style="flex: 2;">
         <canvas id="salesChart" width="600" height="400"></canvas>
     </div>
 
-<!-- Right Side: Sales Summary Cards -->
-<div style="flex: 1; display: flex; flex-direction: column; gap: 0px; margin-top: 45px; max-width: 400px;"> <!-- Increased width and gap -->
+
+<div style="flex: 1; display: flex; flex-direction: column; gap: 0px; margin-top: 45px; max-width: 400px;"> 
 
 
     <div class="card p-4 text-green-700">
@@ -423,7 +420,7 @@ $best_selling_result = $conn->query($best_selling_query);
 
 </div>
 
-<!-- Below: Recent Orders + Best Selling Products Side by Side -->
+
 <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: stretch; margin-left: 30px;">
 
     <!-- Recent Orders -->
