@@ -1,26 +1,25 @@
 <?php
-include('db.php');  // Database connection
+include('db2.php');  // Database connection
 
 $success_message = "";  // Variable to store the success message
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect form data
-    $username = $_POST['username'];
     $Fname = $_POST['Fname'];
     $Lname = $_POST['Lname'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
 
     // Check if username or email already exists
-    $sql = "SELECT * FROM users WHERE username = '$username' OR email = '$email'";
+    $sql = "SELECT * FROM users WHERE email = email = '$email'";
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0) {
         $success_message = "<p style='color: red;'>Username or email already exists!</p>";
     } else {
         // Insert new user into the database
-        $sql = "INSERT INTO users (FirstName, LastName, username, email, password) 
-                VALUES ('$Fname', '$Lname', '$username', '$email', '$password')";
+        $sql = "INSERT INTO users (first_name, last_name,  email, password) 
+                VALUES ('$Fname', '$Lname', '$email', '$password')";
         
         if ($conn->query($sql) === TRUE) {
             $success_message = "<p style='color: green;'>Registration successful!</p>";
@@ -134,9 +133,6 @@ a:hover {
 
             <label for="Lname">Last Name:</label>
             <input type="text" name="Lname" id="Lname" required>
-
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" required>
 
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" required>

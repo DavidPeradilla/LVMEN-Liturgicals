@@ -1,6 +1,11 @@
 <?php
-include('db.php'); // Include the database connection
+include 'db2.php'; // Ensure this file sets $conn
+$conn = new mysqli("localhost", "root", "", "shopping_cart");
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 $sql = "SELECT COUNT(id) AS total_users FROM users";
 $result = $conn->query($sql);
@@ -8,12 +13,12 @@ $row = $result->fetch_assoc();
 $total_users = $row['total_users'];
 
 // Fetch latest users
-$sql_latest = "SELECT id, FirstName, LastName, username, email, password FROM users ORDER BY id DESC LIMIT 5";
+$sql_latest = "SELECT id, first_name, last_name,email, password FROM users ORDER BY id DESC LIMIT 5";
 $result_latest = $conn->query($sql_latest);
 
 
 // Fetch all users
-$sql = "SELECT id, FirstName, LastName, username, email, password FROM users";
+$sql = "SELECT id, first_name, last_name, email FROM users";
 $result = $conn->query($sql);
 
 
@@ -136,34 +141,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <h3>Quick Actions</h3>
+    <a href="upload.php">Manage Products</a>
     <a href="show_users2.php">Manage Users</a>
+    <a href="admin_orders.php">Manage Orders</a>
+    <a href="admin_sales.php">Check Sales</a>
     <a href="logout.php">Logout</a> 
     
 
 </div>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Password</th>
-    </tr>
-    
-    <?php while ($row = $result->fetch_assoc()): ?>
-    <tr>
-        <td><?= $row['id'] ?></td>
-        <td><?= $row['FirstName'] ?></td>
-        <td><?= $row['LastName'] ?></td>
-        <td><?= $row['username'] ?></td>
-        <td><?= $row['email'] ?></td>
-        <td> <? $row['password']?> </td>
-       
-    </tr>
-    <?php endwhile; ?>
-</table>
+
 
 
 

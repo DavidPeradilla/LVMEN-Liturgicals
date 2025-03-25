@@ -1,5 +1,5 @@
 <?php
-include('db.php'); // Include database connection
+include('db2.php'); // Include database connection
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        echo "<script>alert('User deleted successfully!'); window.location.href='edit_users.php';</script>";
+        echo "<script>alert('User deleted successfully!'); window.location.href='show_users2.php';</script>";
     } else {
         echo "<script>alert('Error deleting user!'); window.location.href='delete_users.php';</script>";
     }

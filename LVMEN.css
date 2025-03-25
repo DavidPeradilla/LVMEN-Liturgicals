@@ -332,21 +332,7 @@ p.style7{
   margin-left: 0%;
 }
 
-input[type=submit] {
-  background-color: #755436;
-  color: white;
-  padding: 20px 40px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  float: top; 
-  margin-bottom: 1%;
-  margin-left: 90%;
-}
 
-input[type=submit]:hover {
-  background-color: #837953;
-}
 
 p.style8{
   font-size: larger;

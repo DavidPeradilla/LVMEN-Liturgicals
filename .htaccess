@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# Redirect all requests for "html/" to "php/"
+RewriteRule ^html/(.*)$ php/$1 [L]
+
+# Allow access to CSS, JS, and image files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(css|js|uploads)/(.*)$ $1/$2 [L]

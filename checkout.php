@@ -1,0 +1,265 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "root", "", "shopping_cart");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if (!isset($_SESSION['email'])) {
+    die("You need to log in to checkout.");
+}
+
+$email = $_SESSION['email'];
+
+// Start transaction
+$conn->begin_transaction();
+
+try {
+    // Fetch cart items
+    $sql = "SELECT cart.product_id, products.name AS product_name, products.price, cart.quantity, (products.price * cart.quantity) AS total_price 
+            FROM cart 
+            JOIN products ON cart.product_id = products.id 
+            WHERE cart.email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $cart_items = [];
+    $total_order_price = 0;
+
+    while ($row = $result->fetch_assoc()) {
+        $cart_items[] = $row;
+        $total_order_price += $row['total_price'];
+    }
+    $stmt->close();
+
+    // If cart is empty, stop
+    if (count($cart_items) == 0) {
+        die("Your cart is empty. <a href='user_products.php'>Shop Now</a>");
+    }
+
+    // Create a new order
+    $order_status = "Pending";
+    $order_sql = "INSERT INTO orders (email, total_price, order_status) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($order_sql);
+    $stmt->bind_param("sds", $email, $total_order_price, $order_status);
+    $stmt->execute();
+    $order_id = $stmt->insert_id;
+    $stmt->close();
+
+    // Insert items into order_items
+    $insert_item_sql = "INSERT INTO order_items_backup (order_id, product_id, product_name, quantity, price) VALUES (?, ?, ?, ?, ?)";
+    foreach ($cart_items as $item) {
+        $stmt = $conn->prepare($insert_item_sql);
+        $stmt->bind_param("iisid", $order_id, $item['product_id'], $item['product_name'], $item['quantity'], $item['price']);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    // Clear cart
+    $clear_cart_sql = "DELETE FROM cart WHERE email = ?";
+    $stmt = $conn->prepare($clear_cart_sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->close();
+
+    // Commit transaction
+    $conn->commit();
+} catch (Exception $e) {
+    $conn->rollback();
+    die("Error processing order: " . $e->getMessage());
+}
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 60%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #fff;
+            border-radius: 5px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-upload img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .total-section {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            background: #ff5722;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .checkout-btn:hover {
+            background: #e64a19;
+        }
+
+        .disabled {
+            background: #ddd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Checkout</h2>
+
+    <form action="gcash_payment.php" method="POST" enctype="multipart/form-data">
+        <label>Email Address:</label>
+        <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" readonly>
+
+        <label>Recipient's Name:</label>
+        <input type="text" name="recipient_name" required>
+
+        <label>Street/Building Name:</label>
+        <input type="text" name="street" required>
+
+        <label>Unit/Floor (Optional):</label>
+        <input type="text" name="unit_floor" placeholder="Optional">
+
+        <label>Phone Number:</label>
+        <input type="text" name="phone_number" required>
+
+        <h3>Order Summary</h3>
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+            <?php foreach ($cart_items as $item) { ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($item['product_name']); ?></td>
+                    <td>₱<?php echo number_format($item['price'], 2); ?></td>
+                    <td><?php echo $item['quantity']; ?></td>
+                    <td>₱<?php echo number_format($item['total_price'], 2); ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+        
+        <h3>Payment Method</h3>
+        <input type="text" value="GCash" disabled>
+        <input type="hidden" name="payment_method" value="GCash">   
+
+        <label>GCash Number:</label>
+        <input type="text" name="gcash_number" required>
+
+        <label>GCash Reference Number:</label>
+        <input type="text" name="gcash_reference" required>
+
+        <label>Upload Payment Screenshot:</label>
+        <div class="file-upload">
+            <input type="file" name="payment_screenshot" accept="image/*" required onchange="previewImage(event)">
+            <img id="preview" alt="Payment Screenshot">
+        </div>
+
+        <div class="total-section">
+            Total Price: ₱<?php echo number_format($total_order_price, 2); ?>
+        </div>
+
+        <input type="hidden" name="total_price" value="<?php echo $total_order_price; ?>">
+        <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
+
+        <button type="submit" class="checkout-btn">Proceed to GCash Payment</button>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        const image = document.getElementById("preview");
+        image.src = URL.createObjectURL(event.target.files[0]);
+        image.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
+

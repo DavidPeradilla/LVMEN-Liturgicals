@@ -1,22 +1,35 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html> 
     <head>
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
         <link rel="stylesheet" type="text/css" href="navbar.css"> 
+        <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
+
     </head>
 <body>
 <!--NAVBAR-->
 <header> 
-  <a href="LVMEN.html"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
   <nav class="navbar"> 
      <ul class="nav-links">
-      <a href="LVMEN.html"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.html"> <li> ABOUT US  </li> </a>
-      <a href="Catalog.html"> <li> CATALOG </li> </a>
-      <a href="Contact.html"> <li> CONTACT US </li> </a>
-      <a href="FAQs.html"> <li> FAQs </li> </a>
+     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
+      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
+      <a href="user_products.php"> <li> CATALOG </li> </a>
+      <a href="Contact.php"> <li> CONTACT US </li> </a>
+      <a href="FAQs.php"> <li> FAQs </li> </a>
+      <a href="profile.php"> Profile </a>
+
+      <?php if (isset($_SESSION['email'])): ?>
+      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
+  <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+  <?php endif; ?>
      </ul>
   </nav> 
 </header>

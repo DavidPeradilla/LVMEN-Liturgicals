@@ -1,5 +1,5 @@
 <?php
-include('db.php'); // Include the database connection
+include('db2.php'); // Include the database connection
 
 $search = "";
 
@@ -9,7 +9,7 @@ if (isset($_GET['search'])) {
     $sql = "SELECT id, FirstName, LastName, username, email FROM users 
             WHERE id = '$search'";
 } else {
-    $sql = "SELECT id, FirstName, LastName, username, email FROM users"; // Fetch all users if no search query
+    $sql = "SELECT id, first_name, last_name, email FROM users";; // Fetch all users if no search query
 }
 
 $result = $conn->query($sql);
@@ -132,7 +132,6 @@ $result = $conn->query($sql);
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Username</th>
             <th>Email</th>
             <th>Actions</th>
         </tr>
@@ -140,13 +139,12 @@ $result = $conn->query($sql);
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
             <td><?= $row['id'] ?></td>
-            <td><?= $row['FirstName'] ?></td>
-            <td><?= $row['LastName'] ?></td>
-            <td><?= $row['username'] ?></td>
+            <td><?= $row['first_name'] ?></td>
+            <td><?= $row['last_name'] ?></td>
             <td><?= $row['email'] ?></td>
             <td>
                 <a class="btn1" href="edit_users.php?id=<?= $row['id'] ?>">Edit</a> 
-                <a class="btn1 delete-btn" href="delete_user.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                <a class="btn1 delete-btn" href="delete_users.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
             </td>
         </tr>
         <?php endwhile; ?>
