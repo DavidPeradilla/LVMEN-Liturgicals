@@ -34,6 +34,8 @@ $orders_result = $stmt->get_result();
     <meta charset="UTF-8">
     <title>My Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="LVMEN.css">
+    <link rel="stylesheet" type="text/css" href="navbar2.css">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -69,7 +71,7 @@ $orders_result = $stmt->get_result();
             text-align: left;
         }
         th {
-            background: #007AFF;
+            background:rgb(141, 138, 136);
             color: white;
             font-weight: 500;
         }
@@ -77,7 +79,7 @@ $orders_result = $stmt->get_result();
             border-bottom: 1px solid #ddd;
         }
         .track-btn {
-            background: #007AFF;
+            background:rgb(141, 138, 136);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -104,6 +106,32 @@ $orders_result = $stmt->get_result();
     </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<header> 
+<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <nav class="navbar"> 
+     <ul class="nav-links">
+     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
+      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
+      <a href="user_products.php"> <li> CATALOG </li> </a>
+      <a href="Contact.php"> <li> CONTACT US </li> </a>
+      <a href="FAQs.php"> <li> FAQs </li> </a>
+      <a href="profile.php"> Profile </a>
+
+
+      <?php if (isset($_SESSION['email'])): ?>
+      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
+      <?php else: ?>
+      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+      <?php endif; ?>
+      <a href="view_cart.php" class="cart-link">🛒</a>
+     </ul>
+  </nav> 
+</header>
+<!-- END -->
+<br><br><br>
+<br><br>
 
 <div class="container">
     <h2>My Profile</h2>
@@ -136,7 +164,8 @@ $orders_result = $stmt->get_result();
             <tr>
                 <td><?php echo $order['id']; ?></td>
                 <td>$<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo htmlspecialchars($order['order_status']); ?></td>
+                <td><?php echo !empty($order['order_status']) ? htmlspecialchars($order['order_status']) : 'Pending'; ?></td>
+
                 <td>
                     <form method="POST" action="order_tracking.php">
                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">

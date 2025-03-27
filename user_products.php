@@ -28,29 +28,115 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
-    <link rel="stylesheet" type="text/css" href="navbar.css"> 
+    <link rel="stylesheet" type="text/css" href="navbar2.css"> 
     <style>
         body {
             font-family: Arial, sans-serif;
-        }
-        
-        .container {
-            width: 90%;
-            margin: auto;
-            padding-top: 20px;
-            margin-top: 7%;
+            background:rgb(141, 138, 136);
         }
 
-        /* Filter Dropdown */
-        .filter-container {
-            margin-top: 20px;
-            text-align: center;
-        }
+    /* Main container layout */
+    .container {
+        display: flex;
+        gap: 25px;
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+
+    }
+
+    /* Sidebar-style filter container */
+    .filter-sidebar {
+        width: 300px;
+        background: rgba(255, 255, 255, 0.7); /* Glassmorphism effect */
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px); /* Soft blur effect */
+        height: 50%;
         
-        .filter-container select {
-            padding: 10px;
-            font-size: 16px;
+    }
+
+    .filter-sidebar:hover {
+        transform: translateY(-3px);
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Sidebar title */
+    .filter-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+
+    /* Filter Group */
+    .filter-group {
+        margin-top: 15px;
+    }
+
+    /* Label styling */
+    .filter-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #555;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    /* Custom Dropdown */
+    .filter-select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        background: #fff;
+        color: #333;    
+        cursor: pointer;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+
+    .filter-select:hover, .filter-select:focus {
+        background: #eef5ff;
+        border-color: #0056b3;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Main content area */
+    .content {
+        flex: 1;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.1);
+        
+    }
+
+    /* Section title */
+    .section-title {
+        font-size: 26px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
         }
+        .filter-sidebar {
+            width: 90%;
+        }
+    }
 
         /* Product Grid */
         .product-grid {
@@ -64,7 +150,7 @@ $conn->close();
         .product-card {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 5px 4px 8px 5px rgba(0, 0, 0, 0.1);
             padding: 15px;
             text-align: center;
             transition: transform 0.3s ease-in-out;
@@ -79,6 +165,7 @@ $conn->close();
             height: 180px;
             object-fit: cover;
             border-radius: 8px;
+            cursor: pointer; /* Makes it clear that images are clickable */
         }
 
         .product-card h3 {
@@ -122,12 +209,38 @@ $conn->close();
             background-color: #d84315;
         }
 
-        .cart-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
+        /* MODAL STYLING */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
         }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -144,69 +257,72 @@ $conn->close();
       <a href="FAQs.php"> <li> FAQs </li> </a>
       <a href="profile.php"> Profile </a>
 
-
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
       <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
       <?php endif; ?>
+<a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 
 </header>
 <!-- END -->
 
+<br> <br> <br>
 <div class="container">
+    <!-- Sidebar-style Filter Panel -->
+    <div class="filter-sidebar">
+        <h2 class="filter-title">Filter Products</h2>
+        <form method="GET" action="">
+            <label for="category" class="filter-label">Category:</label>
+            <select name="category" id="category" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                <?php while ($category = $categoryResult->fetch_assoc()) { ?>
+                    <option value="<?php echo $category['id']; ?>" <?php if ($categoryFilter == $category['id']) echo 'selected'; ?>>
+                        <?php echo $category['category_name']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </form>
+    </div>
 
-    <h2 style="text-align:center;">Available Products</h2>
+    <!-- Main Content -->
+    <div class="content">
+        <h2 class="section-title">Available Products</h2>
+        <div class="product-grid">
+            <?php while ($row = $result->fetch_assoc()) { ?>
+                <div class="product-card">
+                    <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>" onclick="openModal('<?php echo $row['image']; ?>')">
+                    <h3><?php echo $row['name']; ?></h3>
+                    <p class="price">₱<?php echo number_format($row['price'], 2); ?></p>
+                    <p>Available: <?php echo $row['quantity']; ?></p>
 
-    <!-- Filter Dropdown -->
-   <div class="filter-container">
-    <form method="GET" action="">
-        <label for="category">Filter by Category:</label>
-        <select name="category" id="category" onchange="this.form.submit()">
-            <option value="">All Categories</option>
-            <?php while ($category = $categoryResult->fetch_assoc()) { ?>
-                <option value="<?php echo $category['id']; ?>" <?php if ($categoryFilter == $category['id']) echo 'selected'; ?>>
-                    <?php echo $category['category_name']; ?>
-                </option>
-            <?php } ?>
-        </select>
-    </form>
-</div>
-
-    <!-- Product Grid -->
-    <div class="product-grid">
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <div class="product-card">
-                <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>">
-                <h3><?php echo $row['name']; ?></h3>
-                <p class="price">₱<?php echo number_format($row['price'], 2); ?></p>
-                <p>Available: <?php echo $row['quantity']; ?></p>
-
-                <form action="add_to_cart.php" method="POST">
+                   <form action="add_to_cart.php" method="POST">
                     <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                     <input type="number" name="quantity" value="1" min="1" max="<?php echo $row['quantity']; ?>" required>
                     <button type="submit">Add to Cart</button>
-                </form>
-            </div>
-        <?php } ?>
+                   </form>
+                </div>
+            <?php } ?>
+        </div>
     </div>
+</div>
 
-    <a href="view_cart.php" class="cart-link">🛒 View Cart</a>
-    <a href="LVMEN.php" class="cart-link">🏠 Back to Home</a>
-
+<!-- MODAL -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modalImage" class="modal-content">
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let messageBox = document.getElementById("message-box");
-        if (messageBox) {
-            messageBox.style.display = "block";
-            setTimeout(function() {
-                messageBox.style.display = "none";
-            }, 3000);
-        }
-    });
+    function openModal(imageSrc) {
+        document.getElementById('modalImage').src = imageSrc;
+        document.getElementById('imageModal').style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
 </script>
 
 </body>

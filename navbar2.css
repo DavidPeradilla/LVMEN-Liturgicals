@@ -1,0 +1,48 @@
+
+.login-btn {
+    text-decoration: none;
+    color: #fff;
+    background-color: #45a049;
+    padding: 8px 16px; /* Slightly smaller padding */
+    border-radius: 5px;
+    font-size: 16px; /* Reduced font size */
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #727272;
+    color: white;
+}
+
+.navbar {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 5px 20px; /* Reduced padding to make navbar thinner */
+    height: 5px; /* Set a fixed height */
+    background-color: #fff; /* Optional: Adjust background color */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center; /* Align links vertically */
+}
+
+.nav-links li {
+    margin-right: 10px; /* Reduced spacing */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #050505;
+    font-size: 16px; /* Reduced font size */
+    padding: 5px 8px; /* Smaller padding for thinner appearance */
+    transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Light hover effect */
+    border-radius: 5px;
+}

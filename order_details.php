@@ -8,7 +8,8 @@ if ($conn->connect_error) {
 
 $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 
-$sql = "SELECT orders.id, orders.recipient_name, orders.phone_number, orders.total_price,
+$sql = "SELECT orders.id, orders.recipient_name, orders.phone_number,
+            orders.street, orders.total_price,
                orders.gcash_number, orders.gcash_reference, orders.payment_screenshot,
                order_items_backup.product_name, order_items_backup.quantity
         FROM orders
@@ -37,6 +38,21 @@ $order = $result->fetch_assoc();
         tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f1f1f1; }
         img { width: 50px; border-radius: 5px; }
+        
+        /* Style for buttons */
+        .btn-container { text-align: center; margin-top: 20px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px; }
+        .btn-back { background: #6c757d; color: white; }
+        .btn-back:hover { background: #5a6268; }
+        .btn-print { background: #28a745; color: white; }
+        .btn-print:hover { background: #218838; }
+        
+        /* Hide print button when printing */
+        @media print {
+            .btn-container { display: none; }
+            body { background: white; }
+            .container { box-shadow: none; width: 100%; padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -44,17 +60,11 @@ $order = $result->fetch_assoc();
     <h2>Order Details (Order ID: <?php echo $order_id; ?>)</h2>
     
     <p><strong>Recipient:</strong> <?php echo htmlspecialchars($order['recipient_name']); ?></p>
+    <p><strong>Address:</strong> <?php echo htmlspecialchars($order['street']); ?></p>
     <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['phone_number']); ?></p>
     <p><strong>Total Price:</strong> ₱<?php echo number_format($order['total_price'], 2); ?></p>
     <p><strong>GCash Number:</strong> <?php echo htmlspecialchars($order['gcash_number']); ?></p>
     <p><strong>GCash Reference:</strong> <?php echo htmlspecialchars($order['gcash_reference']); ?></p>
-    
-    <p><strong>Payment Screenshot:</strong></p>
-    <?php if (!empty($order['payment_screenshot'])) { ?>
-        <a href="payment_screenshots/<?php echo htmlspecialchars($order['payment_screenshot']); ?>" target="_blank">
-            <img src="payment_screenshots/<?php echo htmlspecialchars($order['payment_screenshot']); ?>" alt="Screenshot">
-        </a>
-    <?php } else { echo "No Screenshot"; } ?>
 
     <h3>Ordered Products</h3>
     <table>
@@ -70,9 +80,13 @@ $order = $result->fetch_assoc();
             </tr>
         <?php } while ($order = $result->fetch_assoc()); ?>
     </table>
-    
-    <br>
-    <a href="admin_orders.php"><button class="btn btn-back">Back to Orders</button></a>
+
+    <!-- Print & Back Buttons -->
+    <div class="btn-container">
+        <a href="admin_orders.php"><button class="btn btn-back"><i class="fas fa-arrow-left"></i> Back to Orders</button></a>
+        <button class="btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+    </div>
 </div>
 </body>
 </html>
+

@@ -6,18 +6,20 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $quantity = $_POST['quantity'];
+    $id = intval($_POST['id']);
+    $name = $conn->real_escape_string($_POST['name']);
+    $price = floatval($_POST['price']);
+    $quantity = intval($_POST['quantity']);
+    $category_id = intval($_POST['category_id']); // Get category ID from dropdown
 
-    $stmt = $conn->prepare("UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?");
-    $stmt->bind_param("sdii", $name, $price, $quantity, $id);
+    $sql = "UPDATE products SET name = ?, price = ?, quantity = ?, category_id = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sdiii", $name, $price, $quantity, $category_id, $id);
 
     if ($stmt->execute()) {
-        echo "Product updated successfully!";
+        echo json_encode(["success" => true]);
     } else {
-        echo "Error updating product: " . $conn->error;
+        echo json_encode(["success" => false, "error" => $conn->error]);
     }
 
     $stmt->close();

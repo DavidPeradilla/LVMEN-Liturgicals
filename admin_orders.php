@@ -6,10 +6,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch orders with ordered products
-$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot
-        FROM orders 
-        ORDER BY id DESC";
+$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot FROM orders ORDER BY id DESC";
 $orders_result = $conn->query($sql);
 ?>
 
@@ -23,28 +20,82 @@ $orders_result = $conn->query($sql);
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 20px; }
         h2 { text-align: center; }
-        .container { width: 90%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        .container { width: auto; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #007bff; color: white; }
+        th { background-color:rgb(149, 152, 156); color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f1f1f1; }
         .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
         .btn-delete { background-color: red; color: white; }
         .btn-delete:hover { opacity: 0.8; }
         select { padding: 5px; border-radius: 5px; }
-        img { width: 50px; height: auto; border-radius: 5px; }
+        img { width: 50px; height: auto; border-radius: 5px; cursor: pointer; }
         .btn-view { background-color: #28a745; color: white; }
         .btn-view:hover { opacity: 0.8; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); }
+        .modal-content { margin: 10% auto; padding: 20px; background: white; border-radius: 10px; width: 50%; text-align: center; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: black; }
+        .modal img { width: 90%; max-width: 40%; border-radius: 10px; }
+
+        .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color:rgb(0, 123, 255);
+                padding: 15px;
+                color: white;
+                width: 101%;
+                margin-left: -2%;
+                padding-top: 2%;
+                margin-top: -2%;
+        }
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .logout {
+            background-color: red;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        .logout:hover {
+            background-color: darkred;
+        }
     </style>
 </head>
 <body>
+<div class="navbar">
+        <div class="logo">Admin Panel</div>
+        <div class="nav-links">
+            <a href="dashboard.php">Dashboard</a>
+            <a href="upload.php">Manage Products</a>
+            <a href="show_users2.php">Manage Users</a>
+            <a href="admin_orders.php">Manage Orders</a>
+            <a href="admin_sales.php">Check Sales</a>
+            <a href="logout.php" class="logout">Logout</a>
+        </div>
+    </div>
+
 <div class="container">
     <h2>Manage Orders</h2>
     <table>
         <tr>
             <th>Order ID</th>
-            <th>Email</th> <!-- New Email Column -->
+            <th>Email</th>
             <th>Recipient Name</th>
             <th>Phone Number</th>
             <th>Total Price</th>
@@ -58,7 +109,7 @@ $orders_result = $conn->query($sql);
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
                 <td><?php echo $order['id']; ?></td>
-                <td><?php echo htmlspecialchars($order['email']); ?></td> <!-- Display Email -->
+                <td><?php echo htmlspecialchars($order['email']); ?></td>
                 <td><?php echo htmlspecialchars($order['recipient_name']); ?></td>
                 <td><?php echo htmlspecialchars($order['phone_number']); ?></td>
                 <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
@@ -66,9 +117,7 @@ $orders_result = $conn->query($sql);
                 <td><?php echo htmlspecialchars($order['gcash_reference']); ?></td>
                 <td>
                     <?php if (!empty($order['payment_screenshot'])) { ?>
-                        <a href="payment_screenshots/<?php echo htmlspecialchars($order['payment_screenshot']); ?>" target="_blank">
-                        <img src="<?php echo htmlspecialchars($order['payment_screenshot']); ?>" width="200" alt="Payment Screenshot">
-                        </a>
+                        <img src="<?php echo htmlspecialchars($order['payment_screenshot']); ?>" onclick="openModal(this.src)">
                     <?php } else { echo "No Screenshot"; } ?>
                 </td>
                 <td>
@@ -97,5 +146,23 @@ $orders_result = $conn->query($sql);
         <?php } ?>  
     </table>
 </div>
+
+<!-- Modal -->
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="">
+    </div>
+</div>
+
+<script>
+    function openModal(src) {
+        document.getElementById("modalImage").src = src;
+        document.getElementById("imageModal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+    }
+</script>
 </body>
 </html>

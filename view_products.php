@@ -8,9 +8,9 @@ if ($conn->connect_error) {
 
 // Delete product if requested
 if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']); // Ensure ID is an integer to prevent SQL injection
+    $id = intval($_GET['delete']);
     if ($conn->query("DELETE FROM products WHERE id = $id") === TRUE) {
-        header("Location: view_products.php");
+        header("Location: view_products.php?deleted=1");
         exit();
     } else {
         echo "Error deleting product: " . $conn->error;
@@ -18,16 +18,21 @@ if (isset($_GET['delete'])) {
 }
 
 // Fetch products with category names
-$sql = "SELECT products.id, products.name, products.price, products.quantity, products.image, categories.category_name 
+$sql = "SELECT products.id, products.name, products.price, products.quantity, products.image, 
+               products.category_id, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
         ORDER BY products.id DESC";
 
 $result = $conn->query($sql);
 
-// Check if query execution was successful
-if (!$result) {
-    die("Error in SQL query: " . $conn->error);
+// Fetch all categories for dropdown
+$categories = $conn->query("SELECT * FROM categories");
+
+// Store categories in an array
+$category_options = [];
+while ($cat = $categories->fetch_assoc()) {
+    $category_options[$cat['id']] = $cat['category_name'];
 }
 
 $conn->close();
@@ -43,113 +48,251 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: #f4f4f4;
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
         }
+
         .container {
             width: 90%;
             max-width: 1000px;
-            margin: 20px auto;
+            margin: 30px auto;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
             text-align: center;
+        }
+
+        h2 {
             color: #333;
         }
+
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         th, td {
-            padding: 10px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
         th {
-            background: #ff5722;
+            background: #007bff;
             color: white;
         }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
         img {
             width: 50px;
             height: 50px;
             border-radius: 5px;
         }
+
         .action-btn {
-            padding: 5px 10px;
+            padding: 8px 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
         }
+
         .save-btn {
-            background: #4CAF50;
+            background: #28a745;
             color: white;
         }
+
         .delete-btn {
-            background: #ff4444;
+            background: #dc3545;
             color: white;
         }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        select {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
         .back-link {
             display: block;
-            text-align: center;
             margin-top: 20px;
             text-decoration: none;
-            color: #ff5722;
+            color: #007bff;
             font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            padding: 15px;
+            color: white;
+            width: 98%;
+            padding-top: 1%;
+            
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            background-color: red;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .logout:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Admin - View Products</h2>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
-            <?php while ($row = $result->fetch_assoc()) { ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td contenteditable="true" id="name_<?php echo $row['id']; ?>"><?php echo $row['name']; ?></td>
-                    <td contenteditable="true" id="price_<?php echo $row['id']; ?>"><?php echo $row['price']; ?></td>
-                    <td contenteditable="true" id="quantity_<?php echo $row['id']; ?>"><?php echo $row['quantity']; ?></td>
-                    <td><?php echo $row['category_name']; ?></td>
-                    <td><img src="<?php echo $row['image']; ?>" alt="Product"></td>
-                    <td>
-                        <button class="action-btn save-btn" onclick="saveProduct(<?php echo $row['id']; ?>)">Save</button>
-                        <a href="?delete=<?php echo $row['id']; ?>" class="action-btn delete-btn" onclick="return confirm('Are you sure?');">Delete</a>
-                    </td>
-                </tr>
-            <?php } ?>
-        </table>
-        <a href="upload.php" class="back-link">Back to Admin Dashboard</a>
-    </div>
 
-    <script>
-        function saveProduct(id) {
-            let name = document.getElementById('name_' + id).innerText;
-            let price = document.getElementById('price_' + id).innerText;
-            let quantity = document.getElementById('quantity_' + id).innerText;
-            
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "update_product.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert("Product updated successfully!");
-                }
-            };
-            xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&quantity=" + encodeURIComponent(quantity));
-        }
-    </script>
+<div class="navbar">
+    <div class="logo">Admin Panel</div>
+    <div class="nav-links">
+        <a href="dashboard.php">Dashboard</a>
+        <a href="upload.php">Manage Products</a>
+        <a href="show_users2.php">Manage Users</a>
+        <a href="admin_orders.php">Manage Orders</a>
+        <a href="admin_sales.php">Check Sales</a>
+        <a href="logout.php" class="logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Admin - View Products</h2>
+
+    <?php if (isset($_GET['deleted'])) { echo "<p class='success-msg'>✔ Product deleted successfully!</p>"; } ?>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price (₱)</th>
+            <th>Quantity</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+            <tr>
+                <td><?php echo $row['id']; ?></td>
+                <td contenteditable="true" id="name_<?php echo $row['id']; ?>"><?php echo $row['name']; ?></td>
+                <td contenteditable="true" id="price_<?php echo $row['id']; ?>"><?php echo $row['price']; ?></td>
+                <td contenteditable="true" id="quantity_<?php echo $row['id']; ?>"><?php echo $row['quantity']; ?></td>
+                
+                <td>
+                    <select id="category_<?php echo $row['id']; ?>">
+                        <?php foreach ($category_options as $cat_id => $cat_name) { ?>
+                            <option value="<?php echo $cat_id; ?>" <?php echo ($cat_id == $row['category_id']) ? 'selected' : ''; ?>>
+                                <?php echo $cat_name; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </td>
+
+                <td><img src="<?php echo $row['image']; ?>" alt="Product"></td>
+                <td>
+                    <button class="action-btn save-btn" onclick="saveProduct(<?php echo $row['id']; ?>)">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <a href="?delete=<?php echo $row['id']; ?>" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
+
+    <a href="upload.php" class="back-link">Back to Admin Dashboard</a>
+</div>
+
+<div class="toast" id="toast">✔ Product updated successfully!</div>
+
+<script>
+    function saveProduct(id) {
+        let name = document.getElementById('name_' + id).innerText;
+        let price = document.getElementById('price_' + id).innerText;
+        let quantity = document.getElementById('quantity_' + id).innerText;
+        let category = document.getElementById('category_' + id).value;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "update_product.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                showToast();
+            }
+        };
+        xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&quantity=" + encodeURIComponent(quantity) + "&category_id=" + encodeURIComponent(category));
+    }
+
+    function showToast() {
+        let toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 2000);
+    }
+</script>
+
 </body>
 </html>

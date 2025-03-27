@@ -112,10 +112,66 @@ $result = $conn->query($sql);
         a.show-all-btn:hover {
             background: #0056b3;
         }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            padding: 15px;
+            color: white;   
+            margin-top: -1.9%;
+            margin-left: -1%;
+            padding-top: 3%;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            background-color: red;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .logout:hover {
+            background-color: darkred;
+        }
+
         
     </style>
 </head>
 <body>
+
+<div class="navbar">
+    <div class="logo">Admin Panel</div>
+    <div class="nav-links">
+        <a href="dashboard.php">Dashboard</a>
+        <a href="upload.php">Manage Products</a>
+        <a href="show_users2.php">Manage Users</a>
+        <a href="admin_orders.php">Manage Orders</a>
+        <a href="admin_sales.php">Check Sales</a>
+        <a href="logout.php" class="logout">Logout</a>
+    </div>
+</div>
 
     <h2>Manage Users</h2>
 

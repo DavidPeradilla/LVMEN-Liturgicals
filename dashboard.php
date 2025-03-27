@@ -68,7 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Optional CSS -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,16 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: #007bff;
             color: white;
         }
-        a {
-            text-decoration: none;
-            color: white;
-            background: #dc3545;
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-        a:hover {
-            background: #c82333;
-        }
+        
 
         .btn1{
             text-decoration: none;
@@ -126,10 +116,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 8px 15px;
             border-radius: 5px;
         }
+
+            .navbar {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #007bff;
+                padding: 15px;
+                color: white;   
+                margin-top: -1.9%;
+                margin-left: -1%;
+                padding-top: 3%;
+            }
+
+            .navbar .logo {
+                font-size: 24px;
+                font-weight: bold;
+            }
+
+            .navbar .nav-links {
+                display: flex;
+                gap: 20px;
+            }
+
+            .navbar a {
+                color: white;
+                text-decoration: none;
+                font-size: 16px;
+            }
+
+            .navbar a:hover {
+                text-decoration: underline;
+            }
+
+            .logout {
+                background-color: red;
+                padding: 8px 12px;
+                border-radius: 5px;
+            }
+
+            .logout:hover {
+                background-color: darkred;
+            }
+
     </style>
 </head>
 <body>
-<h2>Admin Panel - Manage Users</h2>
+
+<div class="navbar">
+    <div class="logo">Admin Panel</div>
+    <div class="nav-links">
+        <a href="dashboard.php">Dashboard</a>
+        <a href="upload.php">Manage Products</a>
+        <a href="show_users2.php">Manage Users</a>
+        <a href="admin_orders.php">Manage Orders</a>
+        <a href="admin_sales.php">Check Sales</a>
+        <a href="logout.php" class="logout">Logout</a>
+    </div>
+</div>
+
+    <br><br>
     <div class="container">
     <h2>Admin Dashboard</h2>
     <div class="stats">
@@ -140,13 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
     </div>
 
-    <h3>Quick Actions</h3>
-    <a href="upload.php">Manage Products</a>
-    <a href="show_users2.php">Manage Users</a>
-    <a href="admin_orders.php">Manage Orders</a>
-    <a href="admin_sales.php">Check Sales</a>
-    <a href="logout.php">Logout</a> 
-    
+   
 
 </div>
 

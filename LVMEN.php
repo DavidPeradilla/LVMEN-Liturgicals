@@ -8,7 +8,7 @@ session_start();
     <head>
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar.css"> 
+        <link rel="stylesheet" type="text/css" href="navbar2.css"> 
         <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
 
     </head>
@@ -30,6 +30,7 @@ session_start();
   <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
   <?php endif; ?>
+  <a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 
 </header>

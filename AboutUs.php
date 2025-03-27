@@ -8,7 +8,7 @@ session_start();
     <head>
         <title> About Us </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar.css"> 
+        <link rel="stylesheet" type="text/css" href="navbar2.css"> 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <style>
             body {
@@ -228,6 +228,7 @@ margin-bottom: 30px ;
   <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
   <?php endif; ?>
+  <a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 
 </header>

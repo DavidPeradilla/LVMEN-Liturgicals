@@ -47,9 +47,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Track Your Order</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="LVMEN.css">
+    <link rel="stylesheet" type="text/css" href="navbar2.css">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;
@@ -78,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-align: left;
         }
         th {
-            background: #007aff;
+            background:rgb(141, 138, 136);
             color: white;
             border-radius: 10px 10px 0 0;
         }
@@ -102,6 +104,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<header> 
+<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: -88%;" width="80px" height="70px"></a>
+  <nav class="navbar"> 
+     <ul class="nav-links">
+     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
+      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
+      <a href="user_products.php"> <li> CATALOG </li> </a>
+      <a href="Contact.php"> <li> CONTACT US </li> </a>
+      <a href="FAQs.php"> <li> FAQs </li> </a>
+      <a href="profile.php"> Profile </a>
+
+
+      <?php if (isset($_SESSION['email'])): ?>
+      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
+      <?php else: ?>
+      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+      <?php endif; ?>
+      <a href="view_cart.php" class="cart-link">🛒</a>
+     </ul>
+  </nav> 
+</header>
+<!-- END -->
+
+<br><br><br><br>
 
 <div class="container">
     <h2>Track Your Order</h2>
