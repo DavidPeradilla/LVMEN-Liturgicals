@@ -297,11 +297,12 @@ $conn->close();
                     <p class="price">₱<?php echo number_format($row['price'], 2); ?></p>
                     <p>Available: <?php echo $row['quantity']; ?></p>
 
-                   <form action="add_to_cart.php" method="POST">
-                    <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                    <input type="number" name="quantity" value="1" min="1" max="<?php echo $row['quantity']; ?>" required>
-                    <button type="submit">Add to Cart</button>
+                    <form onsubmit="addToCart(event, <?php echo $row['id']; ?>, this)">
+                  <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                  <input type="number" name="quantity" value="1" min="1" max="<?php echo $row['quantity']; ?>" required>
+                  <button type="submit">Add to Cart</button>
                    </form>
+                   <span id="status-<?php echo $row['id']; ?>" class="status-message"></span>
                 </div>
             <?php } ?>
         </div>
@@ -324,6 +325,31 @@ $conn->close();
         document.getElementById('imageModal').style.display = "none";
     }
 </script>
+
+<script>
+function addToCart(event, productId, form) {
+    event.preventDefault(); // Prevent form from redirecting
+
+    let formData = new FormData(form);
+
+    fetch("add_to_cart.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        let statusElement = document.getElementById('status-' + productId);
+        statusElement.innerText = "Added to cart!";
+        statusElement.style.color = "green";
+
+        setTimeout(() => {
+            statusElement.innerText = "";
+        }, 2000);
+    })
+    .catch(error => console.error("Error:", error));
+}
+</script>
+
 
 </body>
 </html>

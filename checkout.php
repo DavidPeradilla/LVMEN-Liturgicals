@@ -12,68 +12,40 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Start transaction
-$conn->begin_transaction();
+// Fetch cart items
+$sql = "SELECT cart.product_id, products.name AS product_name, products.price, cart.quantity, (products.price * cart.quantity) AS total_price 
+        FROM cart 
+        JOIN products ON cart.product_id = products.id 
+        WHERE cart.email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-try {
-    // Fetch cart items
-    $sql = "SELECT cart.product_id, products.name AS product_name, products.price, cart.quantity, (products.price * cart.quantity) AS total_price 
-            FROM cart 
-            JOIN products ON cart.product_id = products.id 
-            WHERE cart.email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$cart_items = [];
+$total_order_price = 0;
 
-    $cart_items = [];
-    $total_order_price = 0;
-
-    while ($row = $result->fetch_assoc()) {
-        $cart_items[] = $row;
-        $total_order_price += $row['total_price'];
-    }
-    $stmt->close();
-
-    // If cart is empty, stop
-    if (count($cart_items) == 0) {
-        die("Your cart is empty. <a href='user_products.php'>Shop Now</a>");
-    }
-
-    // Create a new order
-    $order_status = "Pending";
-    $order_sql = "INSERT INTO orders (email, total_price, order_status) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($order_sql);
-    $stmt->bind_param("sds", $email, $total_order_price, $order_status);
-    $stmt->execute();
-    $order_id = $stmt->insert_id;
-    $stmt->close();
-
-    // Insert items into order_items
-    $insert_item_sql = "INSERT INTO order_items_backup (order_id, product_id, product_name, quantity, price) VALUES (?, ?, ?, ?, ?)";
-    foreach ($cart_items as $item) {
-        $stmt = $conn->prepare($insert_item_sql);
-        $stmt->bind_param("iisid", $order_id, $item['product_id'], $item['product_name'], $item['quantity'], $item['price']);
-        $stmt->execute();
-        $stmt->close();
-    }
-
-    // Clear cart
-    $clear_cart_sql = "DELETE FROM cart WHERE email = ?";
-    $stmt = $conn->prepare($clear_cart_sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->close();
-
-    // Commit transaction
-    $conn->commit();
-} catch (Exception $e) {
-    $conn->rollback();
-    die("Error processing order: " . $e->getMessage());
+while ($row = $result->fetch_assoc()) {
+    $cart_items[] = $row;
+    $total_order_price += $row['total_price'];
 }
+$stmt->close();
+
+// If cart is empty, stop
+if (count($cart_items) == 0) {
+    die("Your cart is empty. <a href='user_products.php'>Shop Now</a>");
+}
+
+// Store cart details in session for later order processing
+$_SESSION['checkout'] = [
+    'email' => $email,
+    'cart_items' => $cart_items,
+    'total_price' => $total_order_price
+];
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -184,6 +156,16 @@ $conn->close();
             background: #ddd;
             cursor: not-allowed;
         }
+
+        .cancel-btn {
+        background: #bbb;
+        margin-top: 10px;
+    }
+
+    .cancel-btn:hover {
+        background: #999;
+    }
+
     </style>
 </head>
 <body>
@@ -248,7 +230,8 @@ $conn->close();
         <input type="hidden" name="total_price" value="<?php echo $total_order_price; ?>">
         <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
 
-        <button type="submit" class="checkout-btn">Proceed to GCash Payment</button>
+        <button type="submit" class="checkout-btn">Confirm Payment</button>
+        <button type="button" class="checkout-btn cancel-btn" onclick="cancelOrder()">Cancel</button>
     </form>
 </div>
 
@@ -257,6 +240,22 @@ $conn->close();
         const image = document.getElementById("preview");
         image.src = URL.createObjectURL(event.target.files[0]);
         image.style.display = "block";
+    }
+</script>
+
+<button type="button" class="checkout-btn cancel-btn" onclick="cancelOrder()">Cancel</button>
+
+<script>
+    function previewImage(event) {
+        const image = document.getElementById("preview");
+        image.src = URL.createObjectURL(event.target.files[0]);
+        image.style.display = "block";
+    }
+
+    function cancelOrder() {
+        if (confirm("Are you sure you want to cancel the order?")) {
+            window.location.href = "user_products.php"; // Redirect back to products page
+        }
     }
 </script>
 

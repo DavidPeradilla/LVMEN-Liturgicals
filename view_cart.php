@@ -165,7 +165,7 @@ $cartEmpty = ($result->num_rows === 0);
     <h2>Your Shopping Cart</h2>
 
     <?php if ($cartEmpty): ?>
-        <p>Your cart is empty.</p>
+        <p ALIGN = "center">Your cart is empty.</p>
     <?php else: ?>
         <?php while ($row = $result->fetch_assoc()) { ?>
             <div class="cart-item" data-id="<?php echo $row['id']; ?>">

@@ -6,8 +6,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot FROM orders ORDER BY id DESC";
+$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot FROM orders WHERE order_status != 'Completed' ORDER BY id DESC";
 $orders_result = $conn->query($sql);
+$total_sales = file_get_contents("get_sales.php");
+
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +31,8 @@ $orders_result = $conn->query($sql);
         .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
         .btn-delete { background-color: red; color: white; }
         .btn-delete:hover { opacity: 0.8; }
+        .btn-complete { background-color: green; color: white; }
+        .btn-complete:hover { opacity: 0.8; }
         select { padding: 5px; border-radius: 5px; }
         img { width: 50px; height: auto; border-radius: 5px; cursor: pointer; }
         .btn-view { background-color: #28a745; color: white; }
@@ -104,7 +108,7 @@ $orders_result = $conn->query($sql);
             <th>Payment Screenshot</th>
             <th>Ordered Products</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Actions</th>
         </tr>
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
@@ -125,23 +129,28 @@ $orders_result = $conn->query($sql);
                         <button class="btn btn-view">View Items</button>
                     </a>
                 </td>
+                <td><?php echo $order['order_status']; ?></td>
                 <td>
-                    <form action="update_order.php" method="POST">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <select name="order_status" onchange="this.form.submit()">
-                            <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
-                            <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
-                            <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
-                            <option value="Delivered" <?php if ($order['order_status'] == "Delivered") echo "selected"; ?>>Delivered</option>
-                        </select>
-                    </form>
-                </td>
-                <td>
-                    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this order?');">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" class="btn btn-delete">Delete</button>
-                    </form>
-                </td>
+                <form action="update_order.php" method="POST">
+    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+    <select name="order_status" onchange="this.form.submit()">
+        <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
+        <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
+        <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
+        <option value="Delivered" <?php if ($order['order_status'] == "Delivered") echo "selected"; ?>>Delivered</option>
+    </select>
+</form>
+
+
+<form action="update_order.php" method="POST">
+    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+    <button type="submit" name="mark_completed" class="btn btn-complete">Mark as Completed</button>
+</form>
+    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
+        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
+    </form>
+</td>
             </tr>
         <?php } ?>  
     </table>
