@@ -168,6 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
         <a href="dashboard.php">Dashboard</a>
+        <a href="content_manager.php">Content Manager</a>
         <a href="upload.php">Manage Products</a>
         <a href="show_users2.php">Manage Users</a>
         <a href="admin_orders.php">Manage Orders</a>

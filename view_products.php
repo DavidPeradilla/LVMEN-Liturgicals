@@ -3,7 +3,7 @@ $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 // Check database connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die(json_encode(["success" => false, "error" => "Connection failed: " . $conn->connect_error]));
 }
 
 // Delete product if requested
@@ -19,7 +19,7 @@ if (isset($_GET['delete'])) {
 
 // Fetch products with category names
 $sql = "SELECT products.id, products.name, products.price, products.quantity, products.image, 
-               products.category_id, categories.category_name 
+               products.category_id, products.description, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
         ORDER BY products.id DESC";
@@ -201,7 +201,7 @@ $conn->close();
         .logout:hover {
             background-color: darkred;
         }
-    </style>
+</style>
 </head>
 <body>
 
@@ -220,12 +220,11 @@ $conn->close();
 <div class="container">
     <h2>Admin - View Products</h2>
 
-    <?php if (isset($_GET['deleted'])) { echo "<p class='success-msg'>✔ Product deleted successfully!</p>"; } ?>
-
     <table>
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Description</th>
             <th>Price (₱)</th>
             <th>Quantity</th>
             <th>Category</th>
@@ -236,9 +235,10 @@ $conn->close();
             <tr>
                 <td><?php echo $row['id']; ?></td>
                 <td contenteditable="true" id="name_<?php echo $row['id']; ?>"><?php echo $row['name']; ?></td>
+               <td><textarea id="description_<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['description']); ?></textarea></td>
                 <td contenteditable="true" id="price_<?php echo $row['id']; ?>"><?php echo $row['price']; ?></td>
                 <td contenteditable="true" id="quantity_<?php echo $row['id']; ?>"><?php echo $row['quantity']; ?></td>
-                
+
                 <td>
                     <select id="category_<?php echo $row['id']; ?>">
                         <?php foreach ($category_options as $cat_id => $cat_name) { ?>
@@ -248,7 +248,6 @@ $conn->close();
                         <?php } ?>
                     </select>
                 </td>
-
                 <td><img src="<?php echo $row['image']; ?>" alt="Product"></td>
                 <td>
                     <button class="action-btn save-btn" onclick="saveProduct(<?php echo $row['id']; ?>)">
@@ -261,37 +260,49 @@ $conn->close();
             </tr>
         <?php } ?>
     </table>
-
-    <a href="upload.php" class="back-link">Back to Admin Dashboard</a>
 </div>
 
 <div class="toast" id="toast">✔ Product updated successfully!</div>
 
 <script>
-    function saveProduct(id) {
-        let name = document.getElementById('name_' + id).innerText;
-        let price = document.getElementById('price_' + id).innerText;
-        let quantity = document.getElementById('quantity_' + id).innerText;
-        let category = document.getElementById('category_' + id).value;
+ function saveProduct(id) {
+    let name = document.getElementById('name_' + id).innerText.trim();
+    let price = document.getElementById('price_' + id).innerText.trim();
+    let quantity = document.getElementById('quantity_' + id).innerText.trim();
+    let category = document.getElementById('category_' + id).value;
+    let description = document.getElementById('description_' + id).value.trim();  // Using .value to get textarea value
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "update_product.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                showToast();
+    // Log the description to ensure it's being fetched correctly
+    console.log("Description:", description); // Add this line to check
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "update_product.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                showToast("✔ Product updated successfully!");
+            } else {
+                showToast("❌ Error updating product.");
             }
-        };
-        xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&quantity=" + encodeURIComponent(quantity) + "&category_id=" + encodeURIComponent(category));
-    }
+        }
+    };
+    xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&quantity=" + encodeURIComponent(quantity) + "&category_id=" + encodeURIComponent(category) + "&description=" + encodeURIComponent(description));
+}
 
-    function showToast() {
-        let toast = document.getElementById("toast");
-        toast.style.display = "block";
-        setTimeout(() => {
-            toast.style.display = "none";
-        }, 2000);
-    }
+
+
+
+function showToast(message) {
+    let toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.style.display = "block";
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 2000);
+}
+
 </script>
 
 </body>

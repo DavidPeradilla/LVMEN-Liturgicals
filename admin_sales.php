@@ -6,23 +6,29 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch total sales revenue
-$total_sales_query = "SELECT SUM(total_price) AS total_revenue FROM orders WHERE order_status = 'Completed'";
+// Fetch total revenue from Delivered orders
+$total_sales_query = "SELECT SUM(total_price) AS total_revenue FROM orders WHERE order_status = 'Delivered'";
 $total_sales_result = $conn->query($total_sales_query);
 $total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch total product sales
-$total_products_query = "SELECT SUM(quantity) AS total_products_sold 
+// Fetch total product sales from Delivered orders
+$total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
                          FROM order_items_backup 
                          JOIN orders ON order_items_backup.order_id = orders.id
-                         WHERE orders.order_status = 'Completed'";
+                         WHERE orders.order_status = 'Delivered'";
 $total_products_result = $conn->query($total_products_query);
 $total_products_sold = $total_products_result->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Fetch completed orders
-$completed_orders_query = "SELECT * FROM orders WHERE order_status = 'Completed' ORDER BY id DESC";
+// Fetch Delivered orders
+$completed_orders_query = "SELECT * FROM orders WHERE order_status = 'Delivered' ORDER BY id DESC";
 $completed_orders_result = $conn->query($completed_orders_query);
+
+if (!$completed_orders_result) {
+    die("Error fetching completed orders: " . $conn->error);
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -108,10 +114,11 @@ $completed_orders_result = $conn->query($completed_orders_query);
     <div class="container">
         <h2>Sales Statistics</h2>
         <div class="stats">
-            <div class="stat-box">
-                <i class="fas fa-money-bill-wave"></i> <br>
-                <strong>Total Sales Revenue:</strong> ₱<?php echo number_format($total_sales, 2); ?>
-            </div>
+        <div class="stat-box">
+              <i class="fas fa-money-bill-wave"></i> <br>
+             <strong>Total Sales Revenue:</strong> <span id="totalRevenue">₱<?php echo number_format($total_sales, 2); ?></span>
+        </div>
+
             <div class="stat-box">
                 <i class="fas fa-box"></i> <br>
                 <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
@@ -142,3 +149,4 @@ $completed_orders_result = $conn->query($completed_orders_query);
     </div>
 </body>
 </html>
+

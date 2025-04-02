@@ -6,10 +6,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot FROM orders WHERE order_status != 'Completed' ORDER BY id DESC";
+$sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot 
+        FROM orders 
+        WHERE order_status IN ('Pending', 'Processing', 'Shipped', 'Canceled')
+        ORDER BY id DESC";
+
 $orders_result = $conn->query($sql);
 $total_sales = file_get_contents("get_sales.php");
-
 ?>
 
 <!DOCTYPE html>
@@ -30,69 +33,64 @@ $total_sales = file_get_contents("get_sales.php");
         tr:hover { background-color: #f1f1f1; }
         .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
         .btn-delete { background-color: red; color: white; }
-        .btn-delete:hover { opacity: 0.8; }
         .btn-complete { background-color: green; color: white; }
-        .btn-complete:hover { opacity: 0.8; }
+        .btn:hover { opacity: 0.8; }
         select { padding: 5px; border-radius: 5px; }
-        img { width: 50px; height: auto; border-radius: 5px; cursor: pointer; }
-        .btn-view { background-color: #28a745; color: white; }
-        .btn-view:hover { opacity: 0.8; }
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); }
-        .modal-content { margin: 10% auto; padding: 20px; background: white; border-radius: 10px; width: 50%; text-align: center; }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: black; }
-        .modal img { width: 90%; max-width: 40%; border-radius: 10px; }
+        img { width: 50px; height: auto; border-radius: 5px; cursor: pointer; transition: transform 0.2s; }
+        img:hover { transform: scale(1.5); }
 
         .navbar {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background-color:rgb(0, 123, 255);
+                    padding: 15px;
+                    color: white;
+                    width: 101%;
+                    margin-left: -2%;
+                    padding-top: 2%;
+                    margin-top: -2%;
+            }
+            .navbar .logo {
+                font-size: 24px;
+                font-weight: bold;
+            }
+            .navbar .nav-links {
                 display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background-color:rgb(0, 123, 255);
-                padding: 15px;
+                gap: 20px;
+            }
+            .navbar a {
                 color: white;
-                width: 101%;
-                margin-left: -2%;
-                padding-top: 2%;
-                margin-top: -2%;
-        }
-        .navbar .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .navbar .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-        .logout {
-            background-color: red;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-        .logout:hover {
-            background-color: darkred;
-        }
+                text-decoration: none;
+                font-size: 16px;
+            }
+            .navbar a:hover {
+                text-decoration: underline;
+            }
+            .logout {
+                background-color: red;
+                padding: 8px 12px;
+                border-radius: 5px;
+            }
+            .logout:hover {
+                background-color: darkred;
+            }
+ 
     </style>
 </head>
 <body>
+
 <div class="navbar">
-        <div class="logo">Admin Panel</div>
-        <div class="nav-links">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="upload.php">Manage Products</a>
-            <a href="show_users2.php">Manage Users</a>
-            <a href="admin_orders.php">Manage Orders</a>
-            <a href="admin_sales.php">Check Sales</a>
-            <a href="logout.php" class="logout">Logout</a>
+            <div class="logo">Admin Panel</div>
+            <div class="nav-links">
+                <a href="dashboard.php">Dashboard</a>
+                <a href="upload.php">Manage Products</a>
+                <a href="show_users2.php">Manage Users</a>
+                <a href="admin_orders.php">Manage Orders</a>
+                <a href="admin_sales.php">Check Sales</a>
+                <a href="logout.php" class="logout">Logout</a>
+            </div>
         </div>
-    </div>
 
 <div class="container">
     <h2>Manage Orders</h2>
@@ -126,42 +124,33 @@ $total_sales = file_get_contents("get_sales.php");
                 </td>
                 <td>
                     <a href="order_details.php?order_id=<?php echo $order['id']; ?>">
-                        <button class="btn btn-view">View Items</button>
+                        <button class="btn">View Items</button>
                     </a>
                 </td>
                 <td><?php echo $order['order_status']; ?></td>
                 <td>
-                <form action="update_order.php" method="POST">
-    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-    <select name="order_status" onchange="this.form.submit()">
-        <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
-        <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
-        <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
-        <option value="Delivered" <?php if ($order['order_status'] == "Delivered") echo "selected"; ?>>Delivered</option>
-    </select>
-</form>
-
-
-<form action="update_order.php" method="POST">
-    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-    <button type="submit" name="mark_completed" class="btn btn-complete">Mark as Completed</button>
-</form>
-    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
-        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
-    </form>
-</td>
+                    <form action="update_order.php" method="POST">
+                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                        <select name="order_status" onchange="this.form.submit()">
+                            <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
+                            <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
+                            <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
+                            <option value="Canceled" <?php if ($order['order_status'] == "Canceled") echo "selected"; ?>>Canceled</option>
+                        </select>
+                    </form>
+                    <form action="update_order.php" method="POST">
+                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                        <button type="submit" name="mark_delivered" class="btn btn-complete">Mark as Delivered</button>
+                    </form>
+                    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
+                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
+                    </form>
+                </td>
             </tr>
-        <?php } ?>  
+        <?php } ?>
     </table>
-</div>
 
-<!-- Modal -->
-<div id="imageModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img id="modalImage" src="">
-    </div>
 </div>
 
 <script>

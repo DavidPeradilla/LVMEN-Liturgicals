@@ -12,8 +12,7 @@ session_start();
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <style>
             body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
+              font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   
   html {
@@ -87,7 +86,6 @@ session_start();
   *{
 margin:0px; padding:0px;
 box-sizing: border-box;
-font-family: "Roboto", sans-serif;
 }
 
 .about-us{

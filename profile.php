@@ -20,12 +20,14 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $user_result = $stmt->get_result();
 $user = $user_result->fetch_assoc();
+$stmt->close();
 
 // Fetch order history
 $stmt = $conn->prepare("SELECT id, total_price, order_status FROM orders WHERE email = ? ORDER BY id DESC");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $orders_result = $stmt->get_result();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -71,15 +73,15 @@ $orders_result = $stmt->get_result();
             text-align: left;
         }
         th {
-            background:rgb(141, 138, 136);
+            background: rgb(141, 138, 136);
             color: white;
             font-weight: 500;
         }
         td {
             border-bottom: 1px solid #ddd;
         }
-        .track-btn {
-            background:rgb(141, 138, 136);
+        .track-btn, .cancel-btn {
+            background: rgb(141, 138, 136);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -88,7 +90,7 @@ $orders_result = $stmt->get_result();
             transition: 0.3s;
             font-size: 14px;
         }
-        .track-btn:hover {
+        .track-btn:hover, .cancel-btn:hover {
             background: #005ecb;
         }
         .logout-link {
@@ -107,7 +109,7 @@ $orders_result = $stmt->get_result();
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!--NAVBAR-->
 <header> 
 <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
   <nav class="navbar"> 
@@ -119,17 +121,16 @@ $orders_result = $stmt->get_result();
       <a href="FAQs.php"> <li> FAQs </li> </a>
       <a href="profile.php"> Profile </a>
 
-
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-      <?php else: ?>
+  <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-      <?php endif; ?>
-      <a href="view_cart.php" class="cart-link">🛒</a>
+  <?php endif; ?>
+  <a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 
 </header>
-<!-- END -->
+<!--END-->
 <br><br><br>
 <br><br>
 
@@ -153,33 +154,42 @@ $orders_result = $stmt->get_result();
 
     <h2>My Order History</h2>
     
+    <?php if ($orders_result->num_rows > 0) { ?>
     <table>
         <tr>
             <th>Order ID</th>
             <th>Total Price</th>
             <th>Status</th>
             <th>Track Order</th>
+            <th>Action</th>
         </tr>
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
                 <td><?php echo $order['id']; ?></td>
                 <td>$<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo !empty($order['order_status']) ? htmlspecialchars($order['order_status']) : 'Pending'; ?></td>
-
+                <td><?php echo isset($order['order_status']) && $order['order_status'] !== '' ? htmlspecialchars($order['order_status']) : 'Pending'; ?></td>
                 <td>
                     <form method="POST" action="order_tracking.php">
                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
                         <button type="submit" class="track-btn">Track</button>
                     </form>
                 </td>
+                <td>
+                    <?php if ($order['order_status'] == 'Pending') { ?>
+                        <form method="POST" action="cancel_order.php">
+                            <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                            <button type="submit" class="cancel-btn">Cancel</button>
+                        </form>
+                    <?php } ?>
+                </td>
             </tr>
         <?php } ?>
     </table>
-
-   
+    <?php } else { ?>
+        <p style="text-align: center; font-weight: bold; color: #777;">No orders found.</p>
+    <?php } ?>
 </div>
 
+<?php $conn->close(); ?>
 </body>
 </html>
-
-<?php $conn->close(); ?>

@@ -1,5 +1,28 @@
 <?php
-session_start();
+// Database connection
+$conn = new mysqli("localhost", "root", "", "shopping_cart");
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to fetch active slideshow images
+$sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
+$result_slideshow = $conn->query($sql_slideshow);
+
+// Check if there are any slides
+if ($result_slideshow->num_rows > 0) {
+    while ($slide = $result_slideshow->fetch_assoc()) {
+        // Display each image
+        echo '<div class="mySlides fade">';
+        echo '<div class="numbertext">1/' . $result_slideshow->num_rows . '</div>';
+        echo '<img src="' . htmlspecialchars($slide['image_path']) . '" style="width: 100%;">';
+        echo '</div>';
+    }
+} else {
+    echo "No images found in the slideshow.";
+}
 
 ?>
 
@@ -11,6 +34,68 @@ session_start();
         <link rel="stylesheet" type="text/css" href="navbar2.css"> 
         <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
 
+
+        <style>
+    /* Slideshow container */
+    .slideshow-container {
+        position: relative;
+        max-width: 100%;
+        margin: auto;
+        overflow: hidden;
+    }
+
+    /* Hide all images by default */
+    .mySlides2 {
+        display: none;
+    }
+
+    /* Image styling */
+    .slide-image {
+        width: 100%; /* Make the images fill the container */
+        height: auto; /* Maintain aspect ratio */
+        object-fit: cover; /* Ensures images cover the entire container without distorting */
+    }
+
+    /* Dots for slide indicators */
+    .dot {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.6s ease;
+    }
+
+    /* Style for active dot */
+    .active {
+        background-color: #717171;
+    }
+
+    /* Previous and next buttons */
+    .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        padding: 16px;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.3s;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+    }
+
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+
+    .prev:hover, .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+</style>
     </head>
 <body>
 <!--NAVBAR-->
@@ -21,7 +106,7 @@ session_start();
      <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
       <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
       <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
+      <a href="Contact.php"> <li> CONTACT US </li> </a> 
       <a href="FAQs.php"> <li> FAQs </li> </a>
       <a href="profile.php"> Profile </a>
 
@@ -37,59 +122,94 @@ session_start();
 <!--END-->
 
 
-<!--SLIDESHOW-->
-<div class="padding"> 
+<!-- SLIDESHOW -->
 <div class="slideshow-container">
-    <div class="mySlides fade"> 
-      <div class="numbertext"> 1/3 </div>
-      <img src="Img/LVMEN BANNER 2 (3).png" style="width: 100%;">
-    </div>
+    <?php
+    // Fetch active slideshow images
+    $sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
+    $result_slideshow = $conn->query($sql_slideshow);
     
-    <div class="mySlides fade"> 
-        <div class="numbertext"> 2/3 </div>
-        <img src="Img/LVMEN Banner Website.png" style="width: 100%;">
-    </div>
-
-      <div class="mySlides fade"> 
-        <div class="numbertext"> 3/3 </div>
-        <img src="Img/LVMEN Slideshow.png" style="width: 100%;">
-      </div>
+    if ($result_slideshow->num_rows > 0) {
+        $counter = 1;
+        while ($slide = $result_slideshow->fetch_assoc()) {
+            echo '<div class="mySlides fade">';
+            echo '<div class="numbertext">' . $counter . '/' . $result_slideshow->num_rows . '</div>';
+            echo '<img src="' . htmlspecialchars($slide['image_path']) . '" class="slide-image">';
+            echo '</div>';
+            $counter++;
+        }
+    } else {
+        echo "No slideshow images found.";
+    }
+    ?>
     
-    <a class="prev" onclick="plusSlides(-1)" style="color: white;"><</a>
-    <a class="next" onclick="plusSlides(1)">></a>
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
 </div>
+
 <div style="text-align:center">
-  <br>
-  <span class="dot"></span> 
-  <span class="dot"></span> 
-  <span class="dot"></span> 
+    <?php
+    // Display dots for each active slide
+    for ($i = 1; $i <= $result_slideshow->num_rows; $i++) {
+        echo '<span class="dot"></span>';
+    }
+    ?>
 </div>
-</div>
-<!--END-->
-<br>
 
+<!-- END -->
 
 <script>
-  let slideIndex = 0;
-  showSlides();
-  
-  function showSlides() {
-    let i;
+    let slideIndex = 0;
     let slides = document.getElementsByClassName("mySlides");
     let dots = document.getElementsByClassName("dot");
-    for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";  
+
+    // Initialize the slideshow to start at the first slide
+    showSlides();
+
+    function showSlides() {
+        let i;
+        
+        // Hide all slides
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";  
+        }
+
+        slideIndex++;
+        
+        // If we've reached the end, reset to the first slide
+        if (slideIndex > slides.length) {
+            slideIndex = 1;
+        }
+
+        // Reset dot styling
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+
+        // Display the current slide and highlight the corresponding dot
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+
+        // Change the slide every 3 seconds
+        setTimeout(showSlides, 3000);
     }
-    slideIndex++;
-    if (slideIndex > slides.length) {slideIndex = 1}    
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
+
+    function plusSlides(n) {
+        slideIndex += n;
+
+        // If we've reached the end, reset to the first slide
+        if (slideIndex > slides.length) {
+            slideIndex = 1;
+        }
+
+        if (slideIndex < 1) {
+            slideIndex = slides.length;
+        }
+
+        showSlides();
     }
-    slides[slideIndex-1].style.display = "block";  
-    dots[slideIndex-1].className += " active";
-    setTimeout(showSlides, 3000); // 
-  }
-  </script>
+</script>
+
 
     <div class="card2"> 
       <a href="Catalog.html" target="_self"><img class="b" src="Img/CARD PRODUCTS.png" style="width: 22%; margin-left: 25%;">  </a>

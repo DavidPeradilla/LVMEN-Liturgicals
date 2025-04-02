@@ -6,25 +6,36 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if user is logged in
+$cartEmpty = true; // Assume cart is empty initially
+
 if (!isset($_SESSION['email'])) {
-    die("You need to log in to view your cart.");
+    echo "Please log in to view your cart.";
+    exit;
 }
 
+// Get the user's email
 $email = $_SESSION['email'];
 
-// Fetch cart items with product details
-$sql = "SELECT cart.id, products.name, products.price, cart.quantity, products.image 
+// Fetch cart items for the logged-in user
+$sql = "SELECT cart.id, cart.quantity, products.name, products.price, products.image 
         FROM cart 
         JOIN products ON cart.product_id = products.id 
         WHERE cart.email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
 
-// Check if there are any products in the cart
-$cartEmpty = ($result->num_rows === 0);
+$stmt = $conn->prepare($sql);
+if ($stmt) {
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $cartEmpty = ($result->num_rows === 0);
+    $stmt->close();
+} else {
+    die("Query failed: " . $conn->error);
+}
+
+if (isset($conn) && $conn instanceof mysqli) {
+    $conn->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +48,7 @@ $cartEmpty = ($result->num_rows === 0);
     <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
     <link rel="stylesheet" type="text/css" href="navbar2.css"> 
     <style>
-        body {
+       body {
             font-family: Arial, sans-serif;
             background-color: #f8f8f8;
             margin: 0;
@@ -139,7 +150,7 @@ $cartEmpty = ($result->num_rows === 0);
 <body>
 
 <header> 
-    <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+    <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" width="80px" height="70px"></a>
     <nav class="navbar"> 
         <ul class="nav-links">
             <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
@@ -159,13 +170,11 @@ $cartEmpty = ($result->num_rows === 0);
     </nav> 
 </header>
 
-<br><br><br><br><br><br>
-
 <div class="container">
     <h2>Your Shopping Cart</h2>
 
     <?php if ($cartEmpty): ?>
-        <p ALIGN = "center">Your cart is empty.</p>
+        <p align="center">Your cart is empty.</p>
     <?php else: ?>
         <?php while ($row = $result->fetch_assoc()) { ?>
             <div class="cart-item" data-id="<?php echo $row['id']; ?>">
@@ -241,4 +250,3 @@ $cartEmpty = ($result->num_rows === 0);
 
 </body>
 </html>
-<?php $conn->close(); ?>

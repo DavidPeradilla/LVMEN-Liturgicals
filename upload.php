@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
     $category_id = $_POST['category'];
+    $description = $_POST['description'];
     $imagePath = "";
 
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
@@ -32,9 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("File upload failed. Error Code: " . $_FILES["image"]["error"]);
     }
 
-    $sql = "INSERT INTO products (name, price, quantity, image, category_id) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO products (name, price, quantity, image, category_id, description) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sdisi", $name, $price, $quantity, $imagePath, $category_id);
+    $stmt->bind_param("sdisis", $name, $price, $quantity, $imagePath, $category_id, $description);
     
     if ($stmt->execute()) {
         header("Location: upload.php?success=1");
@@ -187,30 +188,27 @@ $conn->close();
 
 <div class="container">
     <h2>Upload Product</h2>
-
     <?php if (isset($_GET['success'])) { echo "<p style='color: green;'>✔ Product uploaded successfully!</p>"; } ?>
-
     <form action="upload.php" method="POST" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Product Name" required>
         <input type="number" name="price" placeholder="Price" required>
         <input type="number" name="quantity" placeholder="Quantity" required>
-
         <select name="category" required>
             <option value="">Select Category</option>
             <?php while ($category = $categoryResult->fetch_assoc()) { ?>
                 <option value="<?php echo $category['id']; ?>"><?php echo $category['category_name']; ?></option>
             <?php } ?>
         </select>
-
+        <textarea name="description" placeholder="Enter product description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
         <input type="file" name="image" accept="image/*" required>
         <button type="submit">Upload Product</button>
     </form>
-
+    
     <div class="links">
         <p><a href="add_category.php"> Add Category</a></p>
         <p><a href="view_products.php"> View Products</a></p>
     </div>
 </div>
-
+</div>
 </body>
 </html>
