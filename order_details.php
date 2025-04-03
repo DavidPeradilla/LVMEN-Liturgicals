@@ -8,18 +8,23 @@ if ($conn->connect_error) {
 
 $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 
-$sql = "SELECT orders.id, orders.recipient_name, orders.phone_number,
-            orders.street, orders.total_price,
-               orders.gcash_number, orders.gcash_reference, orders.payment_screenshot,
-               order_items_backup.product_name, order_items_backup.quantity
-        FROM orders
-        LEFT JOIN order_items_backup ON orders.id = order_items_backup.order_id
-        WHERE orders.id = ?";
+$sql = "SELECT 
+            o.id, o.recipient_name, o.phone_number, 
+            o.street, o.total_price, 
+            o.gcash_number, o.gcash_reference, o.payment_screenshot, 
+            u.first_name, u.last_name, u.address, u.contact_number,
+            oi.product_name, oi.quantity
+        FROM orders o
+        LEFT JOIN order_items_backup oi ON o.id = oi.order_id
+        LEFT JOIN users u ON o.recipient_name = CONCAT(u.first_name, ' ', u.last_name) 
+        WHERE o.id = ?";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $order_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $order = $result->fetch_assoc();
+$stmt->close();
 ?>
 
     <!DOCTYPE html>
@@ -60,7 +65,7 @@ $order = $result->fetch_assoc();
         <h2>Order Details (Order ID: <?php echo $order_id; ?>)</h2>
         
         <p><strong>Recipient:</strong> <?php echo htmlspecialchars($order['recipient_name']); ?></p>
-        <p><strong>Address:</strong> <?php echo htmlspecialchars($order['street']); ?></p>
+        <p><strong>Address:</strong> <?php echo htmlspecialchars($order['address']); ?></p>
         <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['phone_number']); ?></p>
         <p><strong>Total Price:</strong> ₱<?php echo number_format($order['total_price'], 2); ?></p>
         <p><strong>GCash Number:</strong> <?php echo htmlspecialchars($order['gcash_number']); ?></p>

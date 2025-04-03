@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Database connection
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
@@ -98,7 +99,7 @@ if ($result_slideshow->num_rows > 0) {
 </style>
     </head>
 <body>
-<!--NAVBAR-->
+<!-- NAVBAR -->
 <header> 
 <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
   <nav class="navbar"> 
@@ -106,20 +107,20 @@ if ($result_slideshow->num_rows > 0) {
      <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
       <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
       <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a> 
+      <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
       <a href="profile.php"> Profile </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-  <?php else: ?>
+      <?php else: ?>
       <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-  <?php endif; ?>
-  <a href="view_cart.php" class="cart-link">🛒</a>
+      <?php endif; ?>
+<a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 
 </header>
-<!--END-->
+<!-- END -->
 
 
 <!-- SLIDESHOW -->
@@ -278,29 +279,30 @@ if ($result_slideshow->num_rows > 0) {
 </br> 
 
 
-<!--FOOTER-->
-<footer>
-  <div class="container2">
-      <div class="footer-left">
-          <h3>Location</h3>
-          <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
-      </div>
-      <div class="footer-right">
-          <h3>Opening Hours</h3>
-          <ul>
-              <li>Monday - Friday: 10am - 10pm</li>
-              <li>Saturday: 11am - 11pm</li>
-              <li>Sunday: Closed</li>
-          </ul>
-          <div class="social">
-              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
+ <!--FOOTER-->
+ <hr class="hr2"> 
+ <footer>
+   <div class="container">
+       <div class="footer-left">
+           <h3>Location</h3>
+           <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
+       </div>
+       <div class="footer-right">
+           <h3>Opening Hours</h3>
+           <ul>
+               <li>Monday - Friday: 10am - 10pm</li>
+               <li>Saturday: 11am - 11pm</li>
+               <li>Sunday: Closed</li>
+           </ul>
+           <div class="social">
+            <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
               <a href="#"><img src="Img/twitter.png" target="_blank" alt="Twitter"></a>
               <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank" ><img src="Img/instagram.png" alt="Instagram"></a>
-          </div>
-      </div>
-  </div>
-</footer>
-<!--END-->
+           </div>
+       </div>
+   </div>
+ </footer>
+ <!--END-->
 
 
 </body>

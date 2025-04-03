@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id'])) {
     if (isset($_POST['order_status'])) {
         // Updating status from dropdown
         $order_status = $_POST['order_status'];
-        $valid_statuses = ["Pending", "Processing", "Shipped", "Delivered"];
+        $valid_statuses = ["Pending", "Processing", "Shipped", "Delivered","Canceled"];
 
         if (!in_array($order_status, $valid_statuses)) {
             $_SESSION['message'] = "Invalid order status.";

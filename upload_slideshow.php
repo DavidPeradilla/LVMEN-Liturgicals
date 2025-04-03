@@ -9,7 +9,7 @@ if (isset($_POST['submit_image'])) {
         // Check if the file already exists
         if (!file_exists($target_file)) {
             // Check file size (optional)
-            if ($_FILES["slideshow_image"]["size"] < 5000000) { // Max 5MB
+            if ($_FILES["slideshow_image"]["size"] < 50000000) { // Max 5MB
                 // Move the uploaded file to the correct directory
                 if (move_uploaded_file($_FILES["slideshow_image"]["tmp_name"], $target_file)) {
                     // Store the image path in the database

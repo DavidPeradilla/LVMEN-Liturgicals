@@ -6,16 +6,37 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['checkout'])) {
-    $email = $_SESSION['checkout']['email'];
-    $cart_items = $_SESSION['checkout']['cart_items'];
-    $total_price = $_SESSION['checkout']['total_price'];
+if (!isset($_SESSION['email'])) {
+    die("You need to log in to checkout.");
+}
 
-    $recipient_name = $_POST['recipient_name'];
-    $phone_number = $_POST['phone_number'];
-    $street = $_POST['street'];
-    $unit_floor = $_POST['unit_floor'];
-    $gcash_number = $_POST['gcash_number'];
+$email = $_SESSION['email'];
+
+// Fetch user details
+$user_sql = "SELECT first_name, last_name, address, contact_number FROM users WHERE email = ?";
+$stmt = $conn->prepare($user_sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user = $user_result->fetch_assoc();
+$stmt->close();
+
+
+if (!$user) {
+    die("User details not found.");
+}
+
+// Fetch cart items from session
+if (!isset($_SESSION['checkout'])) {
+    die("Your cart is empty. <a href='user_products.php'>Shop Now</a>");
+}
+
+$cart_items = $_SESSION['checkout']['cart_items'];
+$total_price = $_SESSION['checkout']['total_price'];
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $gcash_number = $_POST['gcash_number']; // Get the GCash number from the form
     $gcash_reference = $_POST['gcash_reference'];
 
     // ✅ Validate payment details
@@ -48,13 +69,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['checkout'])) {
     try {
         // ✅ Create the order after payment confirmation
         $order_status = "Pending";
-        $order_sql = "INSERT INTO orders (email, total_price, order_status, recipient_name, phone_number, street, unit_floor, gcash_number, gcash_reference, payment_screenshot) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($order_sql);
-        $stmt->bind_param("sdssssssss", $email, $total_price, $order_status, $recipient_name, $phone_number, $street, $unit_floor, $gcash_number, $gcash_reference, $screenshot_path);
-        $stmt->execute();
-        $order_id = $stmt->insert_id;
-        $stmt->close();
+        $order_sql = "INSERT INTO orders (email, total_price, order_status, recipient_name, phone_number, address, gcash_number, gcash_reference, payment_screenshot) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($order_sql);
+$full_name = $user['first_name'] . ' ' . $user['last_name'];
+// Adjust the bind_param to match the number of parameters and their types
+$stmt->bind_param("sdsssssss", $email, $total_price, $order_status, $full_name, $user['contact_number'], $user['address'], $gcash_number, $gcash_reference, $screenshot_path);
+
+$stmt->execute();
+$order_id = $stmt->insert_id;
+$stmt->close();
+
 
         // ✅ Insert order items
         $insert_item_sql = "INSERT INTO order_items_backup (order_id, product_id, product_name, quantity, price) VALUES (?, ?, ?, ?, ?)";
@@ -75,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['checkout'])) {
         // ✅ Commit transaction
         $conn->commit();
 
-        // ✅ Clear session data
+        // Clear checkout session after order
         unset($_SESSION['checkout']);
 
         echo "Payment successful! Your order has been placed. <a href='user_orders.php'>View Orders</a>";

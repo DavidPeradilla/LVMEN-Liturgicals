@@ -85,9 +85,9 @@ body {
 body::after {
   content: "";
   position: absolute;
-  top: 78px;
+  top: -20px;
   left: 0;
-  height: 151.2%;
+  height: 150.2%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.8);
 }
@@ -109,7 +109,7 @@ section {
 }
 
 .section-header {
-  margin-bottom: 151px;
+  margin-bottom: 65px;
   text-align: center;
   
 }
@@ -457,7 +457,7 @@ section {
         }
     }
         </script>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="1000" height="350" style="border: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="750" height="290" style="border: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 </footer>
 <script src="https://kit.fontawesome.com/c32adfdcda.js" crossorigin="anonymous"></script>

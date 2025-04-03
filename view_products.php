@@ -45,6 +45,8 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - View Products</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -160,47 +162,7 @@ $conn->close();
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #007bff;
-            padding: 15px;
-            color: white;
-            width: 98%;
-            padding-top: 1%;
-            
-        }
 
-        .navbar .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .navbar .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        .logout {
-            background-color: red;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-
-        .logout:hover {
-            background-color: darkred;
-        }
 </style>
 </head>
 <body>
@@ -208,12 +170,13 @@ $conn->close();
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="upload.php">Manage Products</a>
-        <a href="show_users2.php">Manage Users</a>
-        <a href="admin_orders.php">Manage Orders</a>
-        <a href="admin_sales.php">Check Sales</a>
-        <a href="logout.php" class="logout">Logout</a>
+        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
+        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 

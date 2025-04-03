@@ -20,6 +20,8 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Manage Users</title>
     <style>
         body {
@@ -113,49 +115,6 @@ $result = $conn->query($sql);
             background: #0056b3;
         }
 
-        .navbar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #007bff;
-            padding: 15px;
-            color: white;   
-            margin-top: -1.9%;
-            margin-left: -1%;
-            padding-top: 3%;
-        }
-
-        .navbar .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .navbar .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        .logout {
-            background-color: red;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-
-        .logout:hover {
-            background-color: darkred;
-        }
-
         
     </style>
 </head>
@@ -164,12 +123,13 @@ $result = $conn->query($sql);
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="upload.php">Manage Products</a>
-        <a href="show_users2.php">Manage Users</a>
-        <a href="admin_orders.php">Manage Orders</a>
-        <a href="admin_sales.php">Check Sales</a>
-        <a href="logout.php" class="logout">Logout</a>
+        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
+        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 
@@ -199,7 +159,7 @@ $result = $conn->query($sql);
             <td><?= $row['last_name'] ?></td>
             <td><?= $row['email'] ?></td>
             <td>
-                <a class="btn1" href="edit_users.php?id=<?= $row['id'] ?>">Edit</a> 
+                
                 <a class="btn1 delete-btn" href="delete_users.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
             </td>
         </tr>

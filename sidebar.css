@@ -1,0 +1,103 @@
+/* Style for the sidebar */
+.navbar {
+    width: 75px; /* Only space for the icon initially */
+    height: 100vh;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Logo styles */
+.navbar .logo {
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    background-color: #444;
+    display: none; /* Hide the logo initially */
+}
+
+/* Navigation links container */
+.navbar .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure links stretch to full width */
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* Styles for each navigation link */
+.navbar .nav-links a {
+    color: #fff;
+    padding: 20px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center; /* Center the icon */
+    align-items: center;
+    font-size: 20px;
+    width: 100%; /* Ensure link fills the entire width */
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+/* Icon styling */
+.navbar .nav-links a i {
+    font-size: 24px; /* Adjust icon size */
+}
+
+/* Text will be hidden by default */
+.navbar .nav-links a span {
+    display: none;
+}
+
+/* Hover effect on links */
+.navbar .nav-links a:hover {
+    background-color: #555;
+}
+
+/* Style for the logout button */
+.navbar .logout {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Logout button hover effect */
+.navbar .logout:hover {
+    background-color: #c0392b;
+}
+
+/* Make the sidebar expand to show text when hovered */
+.navbar:hover {
+    width: 250px; /* Expand to show full navigation */
+}
+
+/* Show the logo and text when the sidebar is expanded */
+.navbar:hover .logo {
+    display: block;
+}
+
+.navbar:hover .nav-links a {
+    padding: 15px 20px; /* Increase padding to make space for text */
+    text-align: left; /* Align text to the left when expanded */
+}
+
+/* Show the text when the sidebar is expanded */
+.navbar:hover .nav-links a span {
+    display: inline-block;
+    margin-left: 10px; /* Space between icon and text */
+}
+
+/* Ensure the logout button is aligned at the bottom */
+.navbar .nav-links a.logout {
+    margin-top: auto; /* Push the logout to the bottom */
+}
+
+/* Prevent background from exceeding the width */
+.navbar .nav-links a.logout {
+    width: 100%; /* Ensure logout button fills the width */
+}

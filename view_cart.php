@@ -150,7 +150,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 <body>
 
 <header> 
-    <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" width="80px" height="70px"></a>
+    <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
     <nav class="navbar"> 
         <ul class="nav-links">
             <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
@@ -169,6 +169,8 @@ if (isset($conn) && $conn instanceof mysqli) {
         </ul>
     </nav> 
 </header>
+
+<br> <br> <br> <br> <br> <br>
 
 <div class="container">
     <h2>Your Shopping Cart</h2>

@@ -12,6 +12,15 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
+// Fetch user details
+$user_sql = "SELECT first_name, last_name, address, contact_number FROM users WHERE email = ?";
+$stmt = $conn->prepare($user_sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user = $user_result->fetch_assoc();
+$stmt->close();
+
 // Fetch cart items
 $sql = "SELECT cart.product_id, products.name AS product_name, products.price, cart.quantity, (products.price * cart.quantity) AS total_price 
         FROM cart 
@@ -36,7 +45,6 @@ if (count($cart_items) == 0) {
     die("Your cart is empty. <a href='user_products.php'>Shop Now</a>");
 }
 
-// Store cart details in session for later order processing
 $_SESSION['checkout'] = [
     'email' => $email,
     'cart_items' => $cart_items,
@@ -45,7 +53,6 @@ $_SESSION['checkout'] = [
 
 $conn->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,24 +83,22 @@ $conn->close();
             color: #333;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
         label {
             font-weight: bold;
             margin-top: 10px;
+            display: block;
         }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="file"] {
+        input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+
+        input[readonly] {
+            background-color: #f3f3f3;
         }
 
         table {
@@ -152,20 +157,14 @@ $conn->close();
             background: #e64a19;
         }
 
-        .disabled {
-            background: #ddd;
-            cursor: not-allowed;
+        .cancel-btn {
+            background: #bbb;
+            margin-top: 10px;
         }
 
-        .cancel-btn {
-        background: #bbb;
-        margin-top: 10px;
-    }
-
-    .cancel-btn:hover {
-        background: #999;
-    }
-
+        .cancel-btn:hover {
+            background: #999;
+        }
     </style>
 </head>
 <body>
@@ -178,16 +177,13 @@ $conn->close();
         <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" readonly>
 
         <label>Recipient's Name:</label>
-        <input type="text" name="recipient_name" required>
+        <input type="text" name="recipient_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly>
 
-        <label>Street/Building Name:</label>
-        <input type="text" name="street" required>
-
-        <label>Unit/Floor (Optional):</label>
-        <input type="text" name="unit_floor" placeholder="Optional">
+        <label>Shipping Address:</label>
+        <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly>
 
         <label>Phone Number:</label>
-        <input type="text" name="phone_number" required>
+        <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly>
 
         <h3>Order Summary</h3>
         <table>
@@ -209,10 +205,10 @@ $conn->close();
         
         <h3>Payment Method</h3>
         <input type="text" value="GCash" disabled>
-        <input type="hidden" name="payment_method" value="GCash">   
+        <input type="hidden" name="payment_method" value="GCash">
 
         <label>GCash Number:</label>
-        <input type="text" name="gcash_number" required>
+        <input type="text" name="gcash_number" required> 
 
         <label>GCash Reference Number:</label>
         <input type="text" name="gcash_reference" required>
@@ -228,22 +224,11 @@ $conn->close();
         </div>
 
         <input type="hidden" name="total_price" value="<?php echo $total_order_price; ?>">
-        <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
 
         <button type="submit" class="checkout-btn">Confirm Payment</button>
         <button type="button" class="checkout-btn cancel-btn" onclick="cancelOrder()">Cancel</button>
     </form>
 </div>
-
-<script>
-    function previewImage(event) {
-        const image = document.getElementById("preview");
-        image.src = URL.createObjectURL(event.target.files[0]);
-        image.style.display = "block";
-    }
-</script>
-
-<button type="button" class="checkout-btn cancel-btn" onclick="cancelOrder()">Cancel</button>
 
 <script>
     function previewImage(event) {
@@ -261,4 +246,3 @@ $conn->close();
 
 </body>
 </html>
-

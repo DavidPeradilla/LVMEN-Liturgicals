@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
     // Delete the image from the database
     $sql = "DELETE FROM slideshow_images WHERE id = $id";
     if ($conn->query($sql) === TRUE) {
-        header("Location: admin_dashboard.php"); // Redirect back to dashboard
+        header("Location: content_manager.php"); // Redirect back to dashboard
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }

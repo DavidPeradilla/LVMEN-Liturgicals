@@ -15,7 +15,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Fetch user details
-$stmt = $conn->prepare("SELECT first_name, last_name, email FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, email, address, contact_number FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $user_result = $stmt->get_result();
@@ -110,64 +110,46 @@ $stmt->close();
 <body>
 
 <!--NAVBAR-->
-<header> 
-<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
-  <nav class="navbar"> 
-     <ul class="nav-links">
-     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-      <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
-      <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
-
-      <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-  <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-  <?php endif; ?>
-  <a href="view_cart.php" class="cart-link">🛒</a>
-     </ul>
-  </nav> 
+<header>
+    <a href="LVMEN.php"><img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <a href="LVMEN.php"><li>HOMEPAGE</li></a>
+            <a href="AboutUs.php"><li>ABOUT US</li></a>
+            <a href="user_products.php"><li>CATALOG</li></a>
+            <a href="Contact.php"><li>CONTACT US</li></a>
+            <a href="FAQs.php"><li>FAQs</li></a>
+            <a href="profile.php">Profile</a>
+            <?php if (isset($_SESSION['email'])): ?>
+                <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
+            <?php else: ?>
+                <a href="login.php" class="login-btn"><li>LOGIN</li></a>
+            <?php endif; ?>
+            <a href="view_cart.php" class="cart-link">🛒</a>
+        </ul>
+    </nav>
 </header>
-<!--END-->
-<br><br><br>
-<br><br>
 
 <div class="container">
     <h2>My Profile</h2>
-    
     <table>
-        <tr>
-            <th>First Name</th>
-            <td><?php echo htmlspecialchars($user['first_name']); ?></td>
-        </tr>
-        <tr>
-            <th>Last Name</th>
-            <td><?php echo htmlspecialchars($user['last_name']); ?></td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td><?php echo htmlspecialchars($user['email']); ?></td>
-        </tr>
+        <tr><th>First Name</th><td><?php echo htmlspecialchars($user['first_name']); ?></td></tr>
+        <tr><th>Last Name</th><td><?php echo htmlspecialchars($user['last_name']); ?></td></tr>
+        <tr><th>Email</th><td><?php echo htmlspecialchars($user['email']); ?></td></tr>
+        <tr><th>Address</th><td><?php echo htmlspecialchars($user['address']); ?></td></tr>
+        <tr><th>Contact Number</th><td><?php echo htmlspecialchars($user['contact_number']); ?></td></tr>
     </table>
+    <a href="edit_profile.php" class="edit-profile-btn">Edit Profile</a>
 
     <h2>My Order History</h2>
-    
     <?php if ($orders_result->num_rows > 0) { ?>
     <table>
-        <tr>
-            <th>Order ID</th>
-            <th>Total Price</th>
-            <th>Status</th>
-            <th>Track Order</th>
-            <th>Action</th>
-        </tr>
+        <tr><th>Order ID</th><th>Total Price</th><th>Status</th><th>Track</th><th>Action</th></tr>
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
                 <td><?php echo $order['id']; ?></td>
                 <td>$<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo isset($order['order_status']) && $order['order_status'] !== '' ? htmlspecialchars($order['order_status']) : 'Pending'; ?></td>
+                <td><?php echo htmlspecialchars($order['order_status']) ?: 'Pending'; ?></td>
                 <td>
                     <form method="POST" action="order_tracking.php">
                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
@@ -186,10 +168,11 @@ $stmt->close();
         <?php } ?>
     </table>
     <?php } else { ?>
-        <p style="text-align: center; font-weight: bold; color: #777;">No orders found.</p>
+        <p>No orders found.</p>
     <?php } ?>
 </div>
 
 <?php $conn->close(); ?>
 </body>
 </html>
+

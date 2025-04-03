@@ -18,16 +18,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
         $target_dir = "uploads/";
-        
-        // Generate a unique filename
-        $imageFileType = pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION);
-        $newFileName = uniqid("img_", true) . "." . $imageFileType;
-        $target_file = $target_dir . $newFileName;
+        $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        $allowed_types = ["jpg", "jpeg", "png", "gif"];
 
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            $imagePath = $target_file;
+        if (in_array($imageFileType, $allowed_types)) {
+            $newFileName = uniqid("img_", true) . "." . $imageFileType;
+            $target_file = $target_dir . $newFileName;
+
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                $imagePath = $target_file;
+            } else {
+                die("Error uploading file.");
+            }
         } else {
-            die("Error uploading file.");
+            die("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
         }
     } else {
         die("File upload failed. Error Code: " . $_FILES["image"]["error"]);
@@ -56,6 +60,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Product - Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,48 +72,109 @@ $conn->close();
             margin: 0;
         }
 
-        .navbar {
-            width: 98%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #007bff;
-            padding: 15px;
-            color: white;
-            padding-top: 3%;
-            margin-top: -1.55%;
-        
-        }
+        /* Style for the sidebar */
+.navbar {
+    width: 75px; /* Only space for the icon initially */
+    height: 100vh;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
 
-        .navbar .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+/* Logo styles */
+.navbar .logo {
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    background-color: #444;
+    display: none; /* Hide the logo initially */
+}
 
-        .navbar .nav-links {
-            display: flex;
-            gap: 20px;
-        }
+/* Navigation links container */
+.navbar .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure links stretch to full width */
+    justify-content: flex-start;
+    width: 100%;
+}
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
+/* Styles for each navigation link */
+.navbar .nav-links a {
+    color: #fff;
+    padding: 20px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center; /* Center the icon */
+    align-items: center;
+    font-size: 20px;
+    width: 100%; /* Ensure link fills the entire width */
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
 
-        .navbar a:hover {
-            text-decoration: underline;
-        }
+/* Icon styling */
+.navbar .nav-links a i {
+    font-size: 24px; /* Adjust icon size */
+}
 
-        .logout {
-            background-color: red;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
+/* Text will be hidden by default */
+.navbar .nav-links a span {
+    display: none;
+}
 
-        .logout:hover {
-            background-color: darkred;
-        }
+/* Hover effect on links */
+.navbar .nav-links a:hover {
+    background-color: #555;
+}
+
+/* Style for the logout button */
+.navbar .logout {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Logout button hover effect */
+.navbar .logout:hover {
+    background-color: #c0392b;
+}
+
+/* Make the sidebar expand to show text when hovered */
+.navbar:hover {
+    width: 250px; /* Expand to show full navigation */
+}
+
+/* Show the logo and text when the sidebar is expanded */
+.navbar:hover .logo {
+    display: block;
+}
+
+.navbar:hover .nav-links a {
+    padding: 15px 20px; /* Increase padding to make space for text */
+    text-align: left; /* Align text to the left when expanded */
+}
+
+/* Show the text when the sidebar is expanded */
+.navbar:hover .nav-links a span {
+    display: inline-block;
+    margin-left: 10px; /* Space between icon and text */
+}
+
+/* Ensure the logout button is aligned at the bottom */
+.navbar .nav-links a.logout {
+    margin-top: auto; /* Push the logout to the bottom */
+}
+
+/* Prevent background from exceeding the width */
+.navbar .nav-links a.logout {
+    width: 100%; /* Ensure logout button fills the width */
+}
 
         .container {
             background: white;
@@ -177,12 +243,13 @@ $conn->close();
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="upload.php">Manage Products</a>
-        <a href="show_users2.php">Manage Users</a>
-        <a href="admin_orders.php">Manage Orders</a>
-        <a href="admin_sales.php">Check Sales</a>
-        <a href="logout.php" class="logout">Logout</a>
+        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
+        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 
@@ -199,11 +266,11 @@ $conn->close();
                 <option value="<?php echo $category['id']; ?>"><?php echo $category['category_name']; ?></option>
             <?php } ?>
         </select>
-        <textarea name="description" placeholder="Enter product description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+        <textarea name="description" placeholder="Enter product description" required></textarea>
         <input type="file" name="image" accept="image/*" required>
         <button type="submit">Upload Product</button>
     </form>
-    
+        
     <div class="links">
         <p><a href="add_category.php"> Add Category</a></p>
         <p><a href="view_products.php"> View Products</a></p>

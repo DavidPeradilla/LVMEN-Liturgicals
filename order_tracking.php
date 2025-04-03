@@ -151,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tr>
             <tr>
                 <th>Total Price</th>
-                <td>$<?php echo number_format($order['total_price'], 2); ?></td>
+                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -170,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <tr>
                     <td><?php echo htmlspecialchars($item['name']); ?></td>
                     <td><?php echo $item['quantity']; ?></td>
-                    <td>$<?php echo number_format($item['price'], 2); ?></td>
+                    <td>₱<?php echo number_format($item['price'], 2); ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
