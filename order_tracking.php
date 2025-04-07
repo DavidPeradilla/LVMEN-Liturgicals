@@ -8,16 +8,18 @@ if ($conn->connect_error) {
 
 // Initialize variables
 $order = null;
+$order_items = [];
 $error_message = "";
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $order_id = $_POST['order_id'];
+    $order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
 
     // Fetch order details and order items
     $stmt = $conn->prepare("
     SELECT o.id, o.recipient_name, o.email, o.total_price, o.order_status, 
-           oi.product_id, oi.quantity, oi.price, p.name
+           o.courier_name, o.tracking_link,
+           oi.product_id, oi.quantity, oi.price, p.name 
     FROM orders o
     LEFT JOIN order_items_backup oi ON o.id = oi.order_id
     LEFT JOIN products p ON oi.product_id = p.id
@@ -34,10 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         while ($row = $result->fetch_assoc()) {
             $order_items[] = $row;
         }
-        $order = $order_items[0];  // Fetch the first row as general order details
 
-        // Store order details in session
-        $_SESSION['order'] = $order;
+        // Store order details and items in session
+        $_SESSION['order'] = $order_items[0]; // The first row contains order-level details
         $_SESSION['order_items'] = $order_items;
     } else {
         $error_message = "Order not found. Please check your Order ID.";
@@ -51,9 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Retrieve order data from session if available
 $order = isset($_SESSION['order']) ? $_SESSION['order'] : null;
 $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
-?>  
-
-
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -151,40 +150,27 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
     <?php if ($order): ?>
         <h3>Order Details</h3>
         <table>
+            <tr><th>Order ID</th><td><?php echo $order['id']; ?></td></tr>
+            <tr><th>Recipient Name</th><td><?php echo htmlspecialchars($order['recipient_name']); ?></td></tr>
+            <tr><th>Email</th><td><?php echo htmlspecialchars($order['email']); ?></td></tr>
+            <tr><th>Total Price</th><td>₱<?php echo number_format($order['total_price'], 2); ?></td></tr>
+            <tr><th>Status</th><td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td></tr>
+            <tr><th>Courier</th><td><?php echo htmlspecialchars($order['courier_name'] ?? 'Not Assigned'); ?></td></tr>
             <tr>
-                <th>Order ID</th>
-                <td><?php echo $order['id']; ?></td>
-            </tr>
-            <tr>
-                <th>Recipient Name</th>
-                <td><?php echo htmlspecialchars($order['recipient_name']); ?></td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td><?php echo htmlspecialchars($order['email']); ?></td>
-            </tr>
-            <tr>
-                <th>Total Price</th>
-                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td>
-            </tr>
-
-            <tr>
-                <th>Courier</th>
-                <td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td>
+                <th>Tracking Link</th>
+                <td>
+                    <?php if (!empty($order['tracking_link'])): ?>
+                        <a href="<?php echo htmlspecialchars($order['tracking_link']); ?>" target="_blank">Track Package</a>
+                    <?php else: ?>
+                        Not Available
+                    <?php endif; ?>
+                </td>
             </tr>
         </table>
 
         <h3>Products Ordered</h3>
         <table>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
+            <tr><th>Product Name</th><th>Quantity</th><th>Price</th></tr>
             <?php foreach ($order_items as $item): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($item['name']); ?></td>
@@ -194,7 +180,7 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
             <?php endforeach; ?>
         </table>
     <?php elseif ($error_message): ?>
-        <p style="color: red;"> <?php echo $error_message; ?> </p>
+        <p style="color: red;"><?php echo $error_message; ?></p>
     <?php endif; ?>
 
     <a href="profile.php" class="back-link">Back to Profile</a>
