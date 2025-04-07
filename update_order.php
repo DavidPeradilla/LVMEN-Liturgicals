@@ -6,16 +6,26 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Debugging: Log POST data
-error_log(print_r($_POST, true));
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id'])) {
-    $order_id = intval($_POST['order_id']); // Ensure integer
+    $order_id = intval($_POST['order_id']);
 
-    if (isset($_POST['order_status'])) {
-        // Updating status from dropdown
+    if (isset($_POST['mark_delivered'])) {
+        // ✅ Mark as Delivered
+        $sql = "UPDATE orders SET order_status = 'Delivered' WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $order_id);
+
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Order #$order_id marked as Delivered.";
+        } else {
+            $_SESSION['message'] = "Error marking order as Delivered: " . $stmt->error;
+        }
+
+        $stmt->close();
+    } elseif (isset($_POST['order_status'])) {
+        // ✅ Dropdown status update
         $order_status = $_POST['order_status'];
-        $valid_statuses = ["Pending", "Processing", "Shipped", "Delivered","Canceled"];
+        $valid_statuses = ["Pending", "Processing", "Shipped", "Delivered", "Canceled"];
 
         if (!in_array($order_status, $valid_statuses)) {
             $_SESSION['message'] = "Invalid order status.";
@@ -34,25 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id'])) {
         }
 
         $stmt->close();
-    } elseif (isset($_POST['mark_delivered'])) {
-        // Marking order as Delivered
-        $sql = "UPDATE orders SET order_status = 'Delivered' WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $order_id);
-
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Order #$order_id marked as Delivered.";
-        } else {
-            $_SESSION['message'] = "Error marking order as Delivered: " . $stmt->error;
-        }
-
-        $stmt->close();
     }
-
-    $conn->close();
 }
 
-// Redirect back to admin_orders.php
+$conn->close();
 header("Location: admin_orders.php");
 exit();
-?>

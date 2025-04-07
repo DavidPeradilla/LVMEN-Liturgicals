@@ -33,6 +33,7 @@ $stmt->close();
         <meta charset="UTF-8">
         <title>Order Details</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="sidebar.css">
         <style>
             body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 20px; }
             h2 { text-align: center; }
@@ -61,6 +62,21 @@ $stmt->close();
         </style>
     </head>
     <body>
+
+    <div class="navbar">
+    <div class="logo">Admin Panel</div>
+    <div class="nav-links">
+        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
+        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+</div>
+
+
     <div class="container">
         <h2>Order Details (Order ID: <?php echo $order_id; ?>)</h2>
         
@@ -88,7 +104,6 @@ $stmt->close();
 
         <!-- Print & Back Buttons -->
         <div class="btn-container">
-            <a href="admin_orders.php"><button class="btn btn-back"><i class="fas fa-arrow-left"></i> Back to Orders</button></a>
             <button class="btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
         </div>
     </div>

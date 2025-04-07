@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     LEFT JOIN order_items_backup oi ON o.id = oi.order_id
     LEFT JOIN products p ON oi.product_id = p.id
     WHERE o.id = ?
-");
+    ");
 
     $stmt->bind_param("i", $order_id);
     $stmt->execute();
@@ -35,11 +35,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $order_items[] = $row;
         }
         $order = $order_items[0];  // Fetch the first row as general order details
+
+        // Store order details in session
+        $_SESSION['order'] = $order;
+        $_SESSION['order_items'] = $order_items;
     } else {
         $error_message = "Order not found. Please check your Order ID.";
     }
+
+    // Redirect to the same page to avoid form resubmission
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
-?>
+
+// Retrieve order data from session if available
+$order = isset($_SESSION['order']) ? $_SESSION['order'] : null;
+$order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
+?>  
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -155,6 +169,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tr>
             <tr>
                 <th>Status</th>
+                <td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td>
+            </tr>
+
+            <tr>
+                <th>Courier</th>
                 <td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td>
             </tr>
         </table>

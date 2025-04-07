@@ -8,6 +8,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch featured products
+$sql = "SELECT * FROM featured_products";
+$result = $conn->query($sql);
+
+
 // Query to fetch active slideshow images
 $sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
 $result_slideshow = $conn->query($sql_slideshow);
@@ -24,6 +29,8 @@ if ($result_slideshow->num_rows > 0) {
 } else {
     echo "No images found in the slideshow.";
 }
+
+
 
 ?>
 
@@ -212,10 +219,6 @@ if ($result_slideshow->num_rows > 0) {
 </script>
 
 
-    <div class="card2"> 
-      <a href="Catalog.html" target="_self"><img class="b" src="Img/CARD PRODUCTS.png" style="width: 22%; margin-left: 25%;">  </a>
-      <a href="Collections.html" target="_self"> <img class="b" src="Img/POPE PIUS X PREMIUM.png" style="width: 22%; margin-left: 5%;"> </a> 
-    </div>
 
     <div class="backgroundcolor" > 
   
@@ -233,48 +236,19 @@ if ($result_slideshow->num_rows > 0) {
 </br>
  <p class="headline" ALIGN="center"> FEATURED PRODUCTS </p> 
 
-<div class="row"> 
-  <div class="card" style="margin-top: 1%;"> 
-    <img src="Img/S5- Surplice.jpg" style="width: 100%;"> 
-    <h3> S5 - Surplice </h3>
-    <p class="price"> ₱5,500 </p>
-   </div>
-
-   <div class="card" style="margin-left: 0%;"> 
-    <img src="Img/S6- Surplice.jpg" style="width: 100%;"> 
-    <h3> S6 - Surplice </h3>
-    <p class="price"> ₱5,500 </p>
-   </div>
-
-   <div class="card" style="margin-left: 0%;"> 
-    <img src="Img/S7- Surplice.jpg" style="width: 100%;"> 
-    <h3> S7 - Surplice </h3>
-    <p class="price"> ₱5,500 </p>
-   </div>
-
+ <div class="row">
+    <?php while ($row = $result->fetch_assoc()): ?>
+        <div class="card" style="margin: 1%;">
+            <img src="<?= htmlspecialchars($row['image_path']); ?>" style="width: 100%;">
+            <h3> <?= htmlspecialchars($row['name']); ?> </h3>
+            <p class="price"> <?= htmlspecialchars($row['price']); ?> </p>
+        </div>
+    <?php endwhile; ?>
 </div>
 
-<div class="row" style="margin-top: 2%;">
-  <div class="card" style="margin-left: 7.5%;"> 
-    <img src="Img/S5- LACE.jpg" style="width: 100%;"> 
-    <h3> S5 - Lace </h3>
-    <p class="price"> 22cm - ₱1,500 per yard  </p>
-   </div> 
-
-   <div class="card" style="margin-left: 0%;"> 
-    <img src="Img/S6-LACE.jpg" style="width: 100%;"> 
-    <h3>  S6 - Lace </h3>
-    <p class="price"> 22cm - ₱1,500 per yard </p>
-   </div>
-
-   <div class="card" style="margin-left: 0%;"> 
-    <img src="Img/S7-LACE.jpg" style="width: 100%;"> 
-    <h3> S7 - Lace </h3>
-    <p class="price"> 22cm - ₱1,500 per yard </p>
-   </div> 
-
-</div>
+<?php $conn->close(); ?>
 <!--END-->
+
 </br>
 </br> 
 

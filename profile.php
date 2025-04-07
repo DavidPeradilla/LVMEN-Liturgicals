@@ -93,6 +93,20 @@ $stmt->close();
         .track-btn:hover, .cancel-btn:hover {
             background: #005ecb;
         }
+        .edit-profile-btn {
+            background: #005ecb;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 10px;
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .edit-profile-btn:hover {
+            background: #003c8a;
+        }
         .logout-link {
             display: block;
             text-align: center;
@@ -104,6 +118,51 @@ $stmt->close();
         }
         .logout-link:hover {
             text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal button {
+            background-color: #005ecb;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -148,7 +207,7 @@ $stmt->close();
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
                 <td><?php echo $order['id']; ?></td>
-                <td>$<?php echo number_format($order['total_price'], 2); ?></td>
+                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
                 <td><?php echo htmlspecialchars($order['order_status']) ?: 'Pending'; ?></td>
                 <td>
                     <form method="POST" action="order_tracking.php">
@@ -158,10 +217,7 @@ $stmt->close();
                 </td>
                 <td>
                     <?php if ($order['order_status'] == 'Pending') { ?>
-                        <form method="POST" action="cancel_order.php">
-                            <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                            <button type="submit" class="cancel-btn">Cancel</button>
-                        </form>
+                        <button class="cancel-btn" onclick="openModal(<?php echo $order['id']; ?>)">Cancel</button>
                     <?php } ?>
                 </td>
             </tr>
@@ -172,7 +228,39 @@ $stmt->close();
     <?php } ?>
 </div>
 
+<!-- Modal -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Enter your cancellation reason</h3>
+        <form id="cancelForm" method="POST" action="cancel_order.php">
+            <input type="hidden" id="order_id" name="order_id" value="">
+            <textarea name="reason" required placeholder="Enter your reason for cancellation" rows="4" style="width: 100%;"></textarea>
+            <br><br>
+            <button type="submit">Submit Cancellation</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Modal functionality
+    function openModal(orderId) {
+        document.getElementById("order_id").value = orderId;
+        document.getElementById("cancelModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("cancelModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("cancelModal")) {
+            closeModal();
+        }
+    }
+</script>
+
 <?php $conn->close(); ?>
+
 </body>
 </html>
-

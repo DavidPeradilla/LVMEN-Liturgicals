@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Admin Login Check
     if ($email === "admin@gmail.com" && $password === "admin123") {
         $_SESSION['admin_logged_in'] = true;
-        header("Location: dashboard.php");
+        header("Location: admin_sales.php");
         exit();
     }
 

@@ -123,12 +123,12 @@ $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
-        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -205,16 +205,7 @@ $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
 </div>
 
-<br><br>
-    <div class="container">
-    <h2>Admin Dashboard</h2>
-    <div class="stats">
-        <div class="stat-box">
-            <h3>Total Users</h3>
-            <p><?= $total_users ?></p>
-        </div>
 
-    </div>
 
 </body>
 </html>

@@ -8,8 +8,11 @@ if ($conn->connect_error) {
 
 $sql = "SELECT id, email, recipient_name, phone_number, total_price, order_status, gcash_number, gcash_reference, payment_screenshot
         FROM orders 
-        WHERE order_status IN ('Pending', 'Processing', 'Shipped', 'Canceled')
+        WHERE is_removed = 0 AND order_status != 'Delivered'
         ORDER BY id DESC";
+
+
+
 
 $orders_result = $conn->query($sql);
 $total_sales = file_get_contents("get_sales.php");
@@ -39,7 +42,7 @@ h2 {
 
 /* Container Styling */
 .container {
-    width: 100%;
+    width: 93%;
     margin-left: 5%;
     background: white;
     padding: 20px;
@@ -49,7 +52,7 @@ h2 {
 
 /* Table Styling */
 table {
-    width: 100%;
+    width: 10%;
     border-collapse: collapse;
     margin-top: 20px;
 }
@@ -58,7 +61,7 @@ table {
 th, td {
     border: 1px solid #ddd;
     padding: 10px;  
-    text-align: center;
+    text-align: center
 }
 
 th {
@@ -117,7 +120,40 @@ img:hover {
     transform: scale(1.5);
 }
 
-
+.modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+        padding-top: 60px;
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
        
  
     </style>
@@ -127,12 +163,12 @@ img:hover {
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
-        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -172,7 +208,12 @@ img:hover {
                         <button class="btn">View Items</button>
                     </a>
                 </td>
-                <td><?php echo $order['order_status']; ?></td>
+                <td>
+    <?php echo $order['order_status']; ?>
+    <?php if ($order['order_status'] == 'Canceled' && !empty($order['cancellation_reason'])) { ?>
+        <button class="btn" onclick="openCancellationReasonModal('<?php echo htmlspecialchars($order['cancellation_reason']); ?>')">View Cancellation Reason</button>
+    <?php } ?>
+</td>
                 <td>
                     <form action="update_order.php" method="POST">
                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
@@ -186,7 +227,7 @@ img:hover {
                     <br>
                     <form action="update_order.php" method="POST">
                         <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" name="mark_delivered" class="btn btn-complete">Mark as Delivered</button>
+                        <button type="submit" name="mark_delivered" class="btn btn-complete">Delivered</button>
                     </form>
                     <br>
                     <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
@@ -198,6 +239,16 @@ img:hover {
         <?php } ?>
     </table>
 
+    <!-- Modal for Cancellation Reason -->
+<div id="cancellationReasonModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeCancellationReasonModal()">&times;</span>
+        <h3>Cancellation Reason</h3>
+        <p id="cancellationReasonText"></p>
+    </div>
+</div>
+
+
 </div>
 
 <script>
@@ -208,6 +259,17 @@ img:hover {
     function closeModal() {
         document.getElementById("imageModal").style.display = "none";
     }
+
+    function openCancellationReasonModal(reason) {
+        document.getElementById("cancellationReasonText").innerText = reason;
+        document.getElementById("cancellationReasonModal").style.display = "block";
+    }
+
+    function closeCancellationReasonModal() {
+        document.getElementById("cancellationReasonModal").style.display = "none";
+    }
 </script>
+
+
 </body>
 </html>

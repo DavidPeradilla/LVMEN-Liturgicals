@@ -10,50 +10,64 @@ if ($conn->connect_error) {
 $selected_month = $_GET['month'] ?? date('m');
 $selected_year = $_GET['year'] ?? date('Y');
 
-// Fetch Overall Total Sales (All Time)
-$total_sales_query = "SELECT SUM(total_price) AS total_revenue FROM orders WHERE order_status = 'Delivered'";
+// Fetch Overall Total Sales (All Time) including 'Delivered' and 'Removed' statuses
+$total_sales_query = "SELECT SUM(total_price) AS total_revenue 
+                      FROM orders 
+                      WHERE order_status = 'Delivered' OR order_status = 'Removed'";
+// Make sure to include both statuses in the query
 $total_sales_result = $conn->query($total_sales_query);
 $total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Overall Total Products Sold (All Time)
+// Fetch Overall Total Products Sold (All Time) including 'Delivered' and 'Removed' statuses
 $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
                          FROM order_items_backup 
                          JOIN orders ON order_items_backup.order_id = orders.id
-                         WHERE orders.order_status = 'Delivered'";
+                         WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
+// Include both statuses for the total products sold
 $total_products_result = $conn->query($total_products_query);
 $total_products_sold = $total_products_result->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Fetch Monthly Sales
+// Fetch Monthly Sales including 'Delivered' and 'Removed' statuses
 $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                         FROM orders 
-                        WHERE order_status = 'Delivered' 
+                        WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                         AND MONTH(order_date) = '$selected_month' 
                         AND YEAR(order_date) = '$selected_year'";
+// Ensure the query includes the 'Removed' status for monthly sales
 $monthly_sales_result = $conn->query($monthly_sales_query);
 $monthly_sales = $monthly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Yearly Sales
+// Fetch Yearly Sales including 'Delivered' and 'Removed' statuses
 $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                        FROM orders 
-                       WHERE order_status = 'Delivered' 
+                       WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                        AND YEAR(order_date) = '$selected_year'";
+// Ensure the query includes the 'Removed' status for yearly sales
 $yearly_sales_result = $conn->query($yearly_sales_query);
 $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Completed Orders with Monthly and Yearly Filter
+// Fetch Completed Orders with Monthly and Yearly Filter (including 'Delivered' and 'Removed' statuses)
 $completed_orders_query = "SELECT * FROM orders 
-                           WHERE order_status = 'Delivered' 
+                           WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
                            AND YEAR(order_date) = '$selected_year' 
                            ORDER BY id DESC";
-
+// Fetch orders marked as either 'Delivered' or 'Removed' for monthly/yearly stats
 $completed_orders_result = $conn->query($completed_orders_query);
 
 if (!$completed_orders_result) {
     die("Error fetching completed orders: " . $conn->error);
 }
 
+// Fetch Total Canceled Orders Revenue (Only Canceled status)
+$canceled_orders_query = "SELECT SUM(total_price) AS canceled_revenue 
+                          FROM orders 
+                          WHERE order_status = 'Canceled'";
+$canceled_orders_result = $conn->query($canceled_orders_query);
+$total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_revenue'] ?? 0;
+
 ?>
+
 
 
 
@@ -77,15 +91,7 @@ if (!$completed_orders_result) {
             flex-direction: column;
             align-items: center;
         }*/
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            margin-top: 20px;
-    
-        }
+
         h2, h3 {
             text-align: center;
             color: #333;
@@ -153,6 +159,7 @@ if (!$completed_orders_result) {
             background: white;
             box-shadow: 0px 0px 10px gray;
             border-radius: 5px;
+            margin-left: 11.5%;
         }
         .stats {
             display: flex;
@@ -166,6 +173,16 @@ if (!$completed_orders_result) {
             border-radius: 5px;
             width: 30%;
         }
+
+        .btn2{
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    
+}
+
     </style>
 </head>
 <body>
@@ -173,12 +190,12 @@ if (!$completed_orders_result) {
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-        <a href="content_manager.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
-        <a href="admin_sales.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -201,7 +218,7 @@ if (!$completed_orders_result) {
 
         <label for="year">Select Year:</label>
         <select name="year">
-            <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
+            <?php for ($y = date('Y'); $y >= 2020; $y--): ?>
                 <option value="<?php echo $y; ?>" <?php if ($y == $selected_year) echo 'selected'; ?>><?php echo $y; ?></option>
             <?php endfor; ?>
         </select>
@@ -230,15 +247,21 @@ if (!$completed_orders_result) {
     </div>
 
     <div class="stats">
-        <div class="stat-box">
-            <i class="fas fa-money-bill-wave"></i> <br>
-            <strong>Total Sales Revenue:</strong> ₱<?php echo number_format($total_sales, 2); ?>
-        </div>
-        <div class="stat-box">
-            <i class="fas fa-box"></i> <br>
-            <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
-        </div>
+    <div class="stat-box">
+        <i class="fas fa-money-bill-wave"></i> <br>
+        <strong>Total Sales Revenue:</strong> ₱<?php echo number_format($total_sales, 2); ?>
     </div>
+    <div class="stat-box">
+        <i class="fas fa-box"></i> <br>
+        <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
+    </div>
+    <div class="stat-box" style="background: #dc3545;">
+        <i class="fas fa-ban"></i> <br>
+        <strong>Total Canceled Orders:</strong> ₱<?php echo number_format($total_canceled_revenue, 2); ?>
+    </div>
+</div>
+
+
 
     <h3>Completed Orders</h3>
     <table border="1" width="100%">
@@ -246,7 +269,7 @@ if (!$completed_orders_result) {
             <th>Order ID</th>
             <th>Email</th>
             <th>Recipient Name</th>
-            <th>Phone Number</th>
+            <th>Ordered Products</th>
             <th>Total Price</th>
             <th>Order Date</th>
         </tr>
@@ -255,13 +278,16 @@ if (!$completed_orders_result) {
                 <td><?php echo $order['id']; ?></td>
                 <td><?php echo htmlspecialchars($order['email']); ?></td>
                 <td><?php echo htmlspecialchars($order['recipient_name']); ?></td>
-                <td><?php echo htmlspecialchars($order['phone_number']); ?></td>
+                <td>
+                    <a href="order_details.php?order_id=<?php echo $order['id']; ?>">
+                        <button class="btn2">View Items</button>
+                    </a>
+                </td>
                 <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
                 <td><?php echo $order['order_date']; ?></td>
             </tr>
         <?php endwhile; ?>
     </table>
-    <a href="dashboard.php" class="btn">Back to Dashboard</a>
 </div>
 
 </div>

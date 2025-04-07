@@ -1,29 +1,27 @@
 <?php
-session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if order_id is received from form
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id'])) {
-    $order_id = $_POST['order_id'];
+// Capture the order ID and cancellation reason from the form
+$order_id = $_POST['order_id'];
+$cancellation_reason = $_POST['reason'];  // Assuming 'reason' is the name of the textarea input field
 
-    // Update order status to 'Canceled'
-    $stmt = $conn->prepare("UPDATE orders SET order_status = 'Canceled' WHERE id = ?");
-    $stmt->bind_param("i", $order_id);
-    
-    if ($stmt->execute()) {
-        // Redirect back to profile page after successful cancellation
-        header("Location: profile.php");
-        exit();
-    } else {
-        echo "Error updating order status.";
-    }
+// Prepare the update query to update order status and store cancellation reason
+$cancel_query = "UPDATE orders SET order_status = 'Canceled', cancellation_reason = ? WHERE id = ?";
+$stmt = $conn->prepare($cancel_query);
+$stmt->bind_param("si", $cancellation_reason, $order_id);  // 'si' = string, integer
 
-    $stmt->close();
+// Execute the query
+if ($stmt->execute()) {
+    echo "Order canceled successfully.";
+} else {
+    echo "Error canceling order.";
 }
 
+// Close the statement and connection
+$stmt->close();
 $conn->close();
 ?>
