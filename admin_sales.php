@@ -66,6 +66,15 @@ $canceled_orders_query = "SELECT SUM(total_price) AS canceled_revenue
 $canceled_orders_result = $conn->query($canceled_orders_query);
 $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_revenue'] ?? 0;
 
+// Fetch Monthly Canceled Orders (Only 'Canceled' status for selected month/year)
+$monthly_canceled_query = "SELECT SUM(total_price) AS monthly_canceled_revenue 
+                           FROM orders 
+                           WHERE order_status = 'Canceled'
+                           AND MONTH(order_date) = '$selected_month' 
+                           AND YEAR(order_date) = '$selected_year'";
+$monthly_canceled_result = $conn->query($monthly_canceled_query);
+$monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_canceled_revenue'] ?? 0;
+
 ?>
 
 
@@ -183,6 +192,23 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
     
 }
 
+.btn-download {
+    background: #17a2b8;
+    color: white;
+    padding: 6px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background 0.3s ease;
+}
+
+.btn-download:hover {
+    background: #138496;
+}
+
+
     </style>
 </head>
 <body>
@@ -190,7 +216,7 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
@@ -202,8 +228,10 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
 
 <br><br>
 
-<div class="container">
-    <h2>Sales Statistics</h2>
+<div class="container">  
+    <h2>Sales Statistics </h2>
+    
+
 
     <!-- Filter Form -->
     <form method="GET" class="filter-form">
@@ -223,7 +251,19 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
             <?php endfor; ?>
         </select>
         <button type="submit">Filter</button>
+        
     </form>
+
+    <form method="POST" action="export_sales.php" style="display: inline-block; margin-left: 80%;">
+    <input type="hidden" name="month" value="<?php echo $selected_month; ?>">
+    <input type="hidden" name="year" value="<?php echo $selected_year; ?>">
+    <button type="submit" class="btn-download">
+        <i class="fas fa-download"></i> Download Sales Data
+    </button>
+</form>
+
+
+
 
     <!-- Sales Stats -->
     <div class="stats">
@@ -247,9 +287,10 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
     </div>
 
     <div class="stats">
-    <div class="stat-box">
-        <i class="fas fa-money-bill-wave"></i> <br>
-        <strong>Total Sales Revenue:</strong> ₱<?php echo number_format($total_sales, 2); ?>
+    <div class="stat-box" style="background: #ffc107;">
+    <i class="fas fa-calendar-times"></i> <br>
+    <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Canceled:</strong>
+    ₱<?php echo number_format($monthly_canceled_revenue, 2); ?>
     </div>
     <div class="stat-box">
         <i class="fas fa-box"></i> <br>
@@ -288,9 +329,16 @@ $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_reven
             </tr>
         <?php endwhile; ?>
     </table>
-</div>
+
+
+
+
+
 
 </div>
+
+
+
 
 
     

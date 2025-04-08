@@ -123,7 +123,7 @@ $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
@@ -132,7 +132,6 @@ $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
         <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
-
 <div class="container">
     <h2>Sales Statistics</h2>
 

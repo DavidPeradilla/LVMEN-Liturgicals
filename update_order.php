@@ -33,9 +33,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id'])) {
             exit();
         }
 
-        $sql = "UPDATE orders SET order_status = ? WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("si", $order_status, $order_id);
+        if ($order_status == "Canceled") {
+            $cancellation_reason = isset($_POST['cancellation_reason']) ? trim($_POST['cancellation_reason']) : "";
+            $sql = "UPDATE orders SET order_status = ?, cancellation_reason = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssi", $order_status, $cancellation_reason, $order_id);
+        } else {
+            // Clear any old reason if not canceled
+            $sql = "UPDATE orders SET order_status = ?, cancellation_reason = NULL WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("si", $order_status, $order_id);
+        }
 
         if ($stmt->execute()) {
             $_SESSION['message'] = "Order #$order_id updated to '$order_status'.";

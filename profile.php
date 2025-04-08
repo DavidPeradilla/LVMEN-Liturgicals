@@ -23,7 +23,7 @@ $user = $user_result->fetch_assoc();
 $stmt->close();
 
 // Fetch order history
-$stmt = $conn->prepare("SELECT id, total_price, order_status FROM orders WHERE email = ? ORDER BY id DESC");
+$stmt = $conn->prepare("SELECT id, total_price, order_status, cancellation_reason FROM orders WHERE email = ? ORDER BY id DESC");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $orders_result = $stmt->get_result();
@@ -36,6 +36,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <title>My Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
     <link rel="stylesheet" type="text/css" href="navbar2.css">
     <style>
@@ -105,7 +106,7 @@ $stmt->close();
             text-align: center;
         }
         .edit-profile-btn:hover {
-            background: #003c8a;
+            background:rgb(95, 96, 96);
         }
         .logout-link {
             display: block;
@@ -203,25 +204,36 @@ $stmt->close();
     <h2>My Order History</h2>
     <?php if ($orders_result->num_rows > 0) { ?>
     <table>
-        <tr><th>Order ID</th><th>Total Price</th><th>Status</th><th>Track</th><th>Action</th></tr>
-        <?php while ($order = $orders_result->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo $order['id']; ?></td>
-                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo htmlspecialchars($order['order_status']) ?: 'Pending'; ?></td>
-                <td>
-                    <form method="POST" action="order_tracking.php">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" class="track-btn">Track</button>
-                    </form>
-                </td>
-                <td>
-                    <?php if ($order['order_status'] == 'Pending') { ?>
-                        <button class="cancel-btn" onclick="openModal(<?php echo $order['id']; ?>)">Cancel</button>
-                    <?php } ?>
-                </td>
-            </tr>
-        <?php } ?>
+    <tr><th>Order ID</th><th>Total Price</th><th>Status</th><th>Reason</th><th>Track</th><th>Action</th></tr>
+    <?php while ($order = $orders_result->fetch_assoc()) { ?>
+    <tr>
+        <td><?php echo $order['id']; ?></td>
+        <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
+        <td><?php echo htmlspecialchars($order['order_status']) ?: 'Pending'; ?></td>
+        <td>
+    <?php
+        if ($order['order_status'] == 'Canceled') {
+            echo '<button class="cancel-reason-btn" onclick="openCancellationReasonModal(' . $order['id'] . ')">View Reason</button>';
+        } else {
+            echo '-';
+        }
+    ?>
+</td>
+
+
+        <td>
+            <form method="POST" action="order_tracking.php">
+                <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                <button type="submit" class="track-btn">Track</button>
+            </form>
+        </td>
+        <td>
+            <?php if ($order['order_status'] == 'Pending') { ?>
+                <button class="cancel-btn" onclick="openModal(<?php echo $order['id']; ?>)">Cancel</button>
+            <?php } ?>
+        </td>
+    </tr>
+<?php } ?>
     </table>
     <?php } else { ?>
         <p>No orders found.</p>
@@ -242,6 +254,17 @@ $stmt->close();
     </div>
 </div>
 
+<!-- Modal for Cancellation Reason -->
+<div id="cancellationReasonModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCancellationReasonModal()">&times;</span>
+        <h3>Cancellation Reason</h3>
+        <p id="cancellationReasonText"></p>
+    </div>
+</div>
+
+
+
 <script>
     // Modal functionality
     function openModal(orderId) {
@@ -258,6 +281,38 @@ $stmt->close();
             closeModal();
         }
     }
+
+    // Open the cancellation reason modal
+function openCancellationReasonModal(orderId) {
+    // Use AJAX to fetch the cancellation reason for the order ID
+    $.ajax({
+        url: 'cancellation_reason.php',
+        type: 'POST',
+        data: { order_id: orderId },
+        success: function(response) {
+            // Set the cancellation reason in the modal
+            $('#cancellationReasonText').text(response);
+            // Show the modal
+            document.getElementById("cancellationReasonModal").style.display = "block";
+        }
+    });
+}
+
+// Close the modal
+function closeCancellationReasonModal() {
+    document.getElementById("cancellationReasonModal").style.display = "none";
+}
+
+// Close the modal if user clicks outside of it
+window.onclick = function(event) {
+    if (event.target == document.getElementById("cancellationReasonModal")) {
+        closeCancellationReasonModal();
+    }
+}
+
+
+
+    
 </script>
 
 <?php $conn->close(); ?>
