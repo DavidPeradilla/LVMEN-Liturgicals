@@ -137,6 +137,22 @@ a:hover {
     text-decoration: underline;
 }
 
+.highlight-box {
+    background-color: #fff3cd;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ffeeba;
+    font-size: 14px;
+    margin-top: 10px;
+}
+.highlight-box a {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+}
+.highlight-box a:hover {
+    text-decoration: underline;
+}
 
     </style>
 </head>
@@ -151,7 +167,7 @@ a:hover {
             <a href="user_products.php"><li>CATALOG</li></a>
             <a href="Contact.php"><li>CONTACT US</li></a>
             <a href="FAQs.php"><li>FAQs</li></a>
-            <a href="profile.php">Profile</a>
+            <a href="profile.php">PROFILE</a>
             <?php if (isset($_SESSION['email'])): ?>
                 <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
             <?php else: ?>
@@ -176,7 +192,7 @@ a:hover {
             </div>
         </form>
         
-        <p>Don't have an account? <a href="register.php">Sign up here</a></p>
+        <p class="highlight-box">Don't have an account? <a href="register.php">Sign up here</a></p>
     </div>
 
 </body>

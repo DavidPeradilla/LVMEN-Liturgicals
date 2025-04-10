@@ -9,6 +9,7 @@ session_start();
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css">
         <link rel="stylesheet" type="text/css" href="navbar2.css"> 
+        <link rel="stylesheet" type="text/css" href="footer.css"> 
         
     </head>
 <body style>
@@ -23,7 +24,7 @@ session_start();
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
@@ -101,30 +102,29 @@ session_start();
     }
     </script>
 
-<!--FOOTER-->
-<hr class="hr2"> 
-<footer>
-  <div class="container">
-      <div class="footer-left">
-          <h3>Location</h3>
-          <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
-      </div>
-      <div class="footer-right">
-          <h3>Opening Hours</h3>
-          <ul>
-              <li>Monday - Friday: 10am - 10pm</li>
-              <li>Saturday: 11am - 11pm</li>
-              <li>Sunday: Closed</li>
-          </ul>
-          <div class="social">
-            <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
-              <a href="#"><img src="Img/twitter.png" target="_blank" alt="Twitter"></a>
-              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank" ><img src="Img/instagram.png" alt="Instagram"></a>
-          </div>
-      </div>
-  </div>
+ <!--FOOTER-->
+ <footer>
+   <div class="container">
+    <div class="get-in-touch">
+              <h4>Get in Touch</h4>
+              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
+                <img src="Img/facebook.png" alt="Facebook">
+              </a>
+              <a href="#" target="_blank">
+                <img src="Img/twitter.png" alt="Twitter">
+              </a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
+                <img src="Img/instagram.png" alt="Instagram">
+              </a>
+           </div>
+   </div>
+   
+   <div class="footer-bottom">
+       <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
+       <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
+   </div>
 </footer>
-<!--END-->
+ <!--END--> 
 
 
 

@@ -40,6 +40,7 @@ if ($result_slideshow->num_rows > 0) {
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
         <link rel="stylesheet" type="text/css" href="navbar2.css"> 
+        <link rel="stylesheet" type="text/css" href="footer.css"> 
         <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
 
 
@@ -103,6 +104,51 @@ if ($result_slideshow->num_rows > 0) {
     .prev:hover, .next:hover {
         background-color: rgba(0, 0, 0, 0.8);
     }
+
+    .card {
+    width: 350px;
+    height: 480px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card img {
+    height: 350px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    padding: 0 10px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.card .price {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+
 </style>
     </head>
 <body>
@@ -116,7 +162,7 @@ if ($result_slideshow->num_rows > 0) {
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
@@ -253,30 +299,29 @@ if ($result_slideshow->num_rows > 0) {
 </br> 
 
 
- <!--FOOTER-->
- <hr class="hr2"> 
- <footer>
+<!--FOOTER-->
+<footer>
    <div class="container">
-       <div class="footer-left">
-           <h3>Location</h3>
-           <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
-       </div>
-       <div class="footer-right">
-           <h3>Opening Hours</h3>
-           <ul>
-               <li>Monday - Friday: 10am - 10pm</li>
-               <li>Saturday: 11am - 11pm</li>
-               <li>Sunday: Closed</li>
-           </ul>
-           <div class="social">
-            <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
-              <a href="#"><img src="Img/twitter.png" target="_blank" alt="Twitter"></a>
-              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank" ><img src="Img/instagram.png" alt="Instagram"></a>
+    <div class="get-in-touch">
+              <h4>Get in Touch</h4>
+              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
+                <img src="Img/facebook.png" alt="Facebook">
+              </a>
+              <a href="#" target="_blank">
+                <img src="Img/twitter.png" alt="Twitter">
+              </a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
+                <img src="Img/instagram.png" alt="Instagram">
+              </a>
            </div>
-       </div>
    </div>
- </footer>
- <!--END-->
+   
+   <div class="footer-bottom">
+       <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
+       <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
+   </div>
+</footer>
+ <!--END--> 
 
 
 </body>

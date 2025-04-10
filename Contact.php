@@ -1,6 +1,27 @@
 <?php
 session_start();
+$conn = new mysqli("localhost", "root", "", "shopping_cart");
 
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if user is logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$email = $_SESSION['email'];
+
+// Fetch user details
+$user_sql = "SELECT first_name, last_name, address, contact_number FROM users WHERE email = ?";
+$stmt = $conn->prepare($user_sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user = $user_result->fetch_assoc();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -259,6 +280,40 @@ section {
   }
 }
 
+#star-rating {
+  display: none; /* hidden initially */
+  justify-content: start;
+  gap: 5px;
+}
+
+
+#star-rating input[type="radio"] {
+  display: none;
+}
+
+#star-rating label {
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+/* When a star is selected */
+#star-rating input[type="radio"]:checked + label,
+#star-rating input[type="radio"]:checked + label ~ label {
+  color: #f5b301;
+}
+
+
+/* Hover effect */
+#star-rating label:hover,
+#star-rating label:hover ~ label {
+  color: #f5b301;
+}
+
+
+
+
 
         </style>
     </head>
@@ -274,7 +329,7 @@ section {
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
@@ -308,7 +363,7 @@ section {
             
             <div class="contact-info-content">
               <h4>Address</h4>
-              <p>Blk 3 Lot 2 Mahogany,<br/> Drive Camella Seville <br/>Habay 2 , Bacoor, Philippines</p>
+              <p>Region IV-A Calabarzon, <br/> Bacoor Cavite City <br/></p>
             </div>
           </div>
           
@@ -319,7 +374,7 @@ section {
             
             <div class="contact-info-content">
               <h4>Phone</h4>
-              <p>+0945-601-3602</p>
+              <p>+123-456-7890</p>
             </div>
           </div>
           
@@ -345,25 +400,32 @@ section {
             <div class="input-box">
               <label for="subject">Subject:</label>
         <select id="subject" name="subject" required>
-            <option value="Inquiry: New Inquiry from Contact Form">Inquiries</option>
             <option value="Feedback: New Feedback from Contact Form">Feedbacks</option>
+            <option value="Inquiry: New Inquiries from Contact Form">Inquiry</option>
         </select></div>
 
             <div class="input-box">
-              <input type="text" id="name" name="Full Name: " placeholder="Full name" value="">
+            <input type="text" name="recipient_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly>
             </div>
             
             <div class="input-box">
-              <input type="email" id="email" name="email: " placeholder="Email" value=" ">
+            <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" readonly>
             </div>
             
             <div class="input-box">
               <textarea type="text" id="message" name="Full Name: " placeholder="Type your Message..." value=" "></textarea>
             </div>
-            
+
+           <div id="star-rating">
+            <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+           </div>
+
             <div class="input-box">
               <input type="submit" value="Send" name="">
-
             </div>
           </form>
         </div>
@@ -372,9 +434,34 @@ section {
         
       </div>
     </div>
+
+
+    <script>
+  const subjectSelect = document.getElementById('subject');
+  const starRatingBox = document.getElementById('star-rating');
+
+  subjectSelect.addEventListener('change', function () {
+    if (this.value === "Feedback: New Feedback from Contact Form") {
+      starRatingBox.style.display = 'flex';
+    } else {
+      starRatingBox.style.display = 'none';
+      const selectedStar = document.querySelector('input[name="rating"]:checked');
+      if (selectedStar) selectedStar.checked = false;
+    }
+  });
+
+  // Check on load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (subjectSelect.value === "Feedback: New Feedback from Contact Form") {
+      starRatingBox.style.display = 'flex';
+    } else {
+      starRatingBox.style.display = 'none';
+    }
+  });
+</script>
   </section>
 
-  <footer>
+  <footer style="margin-top: -3.55%;">
     <div class="container">
         <div class="footer-left">
             <h3>Location</h3>
@@ -456,8 +543,10 @@ section {
             modal.remove();
         }
     }
+
+    
         </script>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="750" height="290" style="border: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="750" height="250" style="border: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 </footer>
 <script src="https://kit.fontawesome.com/c32adfdcda.js" crossorigin="anonymous"></script>

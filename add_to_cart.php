@@ -23,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Check if product exists
-    $stmt = $conn->prepare("SELECT quantity FROM products WHERE id = ?");
+    // Check if product exists (no need to check for stock)
+    $stmt = $conn->prepare("SELECT id FROM products WHERE id = ?");
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -34,15 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    $product = $result->fetch_assoc();
-    $available_quantity = $product['quantity'];
     $stmt->close();
-
-    // Check if requested quantity is available
-    if ($quantity > $available_quantity) {
-        echo "Not enough stock available";
-        exit;
-    }
 
     // Check if product is already in the cart (using email instead of user_id)
     $stmt = $conn->prepare("SELECT quantity FROM cart WHERE email = ? AND product_id = ?");
@@ -52,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
 
     if ($result->num_rows > 0) {
-        // Update existing cart entry
+        // Update existing cart entry without stock validation
         $stmt = $conn->prepare("UPDATE cart SET quantity = quantity + ? WHERE email = ? AND product_id = ?");
         $stmt->bind_param("isi", $quantity, $email, $product_id);
         if ($stmt->execute()) {
@@ -75,6 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else {
     echo "Invalid request";
 }
-
+    
 $conn->close();
 ?>

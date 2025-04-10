@@ -12,11 +12,12 @@ $categoryFilter = isset($_GET['category']) ? $_GET['category'] : '';
 $whereClause = $categoryFilter ? "WHERE products.category_id = '$categoryFilter'" : "";
 
 // Fetch products with category names
-$sql = "SELECT products.id, products.name, products.price, products.quantity, products.image, products.description, categories.category_name 
+$sql = "SELECT products.id, products.name, products.price, products.image, products.description, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
         $whereClause
         ORDER BY products.id DESC";
+
 $result = $conn->query($sql);
 $conn->close();
 ?>
@@ -28,6 +29,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
+    <link rel="stylesheet" type="text/css" href="footer.css"> 
     <link rel="stylesheet" type="text/css" href="navbar2.css"> 
     <style>
         body {
@@ -252,7 +254,7 @@ $conn->close();
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
@@ -292,11 +294,10 @@ $conn->close();
                     <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>" onclick="openModal('<?php echo $row['image']; ?>')">
                     <h3><?php echo $row['name']; ?></h3>
                     <p class="price">₱<?php echo number_format($row['price'], 2); ?></p>
-                    <p>Available: <?php echo $row['quantity']; ?></p>
                     <button onclick="showDescription(`<?php echo addslashes($row['name']); ?>`, `<?php echo addslashes($row['description']); ?>`)">More</button>
                     <form onsubmit="addToCart(event, <?php echo $row['id']; ?>, this)">
                         <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                        <input type="number" name="quantity" value="1" min="1" max="<?php echo $row['quantity']; ?>" required>
+                        <input type="number" name="quantity" value="1" min="1" required>
                         <button type="submit">Add to Cart</button>
                     </form>
                     <span id="status-<?php echo $row['id']; ?>" class="status-message"></span>
@@ -377,7 +378,32 @@ function addToCart(event, productId, form) {
         console.error('Error adding to cart:', error);
     });
 }
+
 </script>
+
+<!--FOOTER-->
+<footer>
+   <div class="container">
+    <div class="get-in-touch">
+              <h4>Get in Touch</h4>
+              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
+                <img src="Img/facebook.png" alt="Facebook">
+              </a>
+              <a href="#" target="_blank">
+                <img src="Img/twitter.png" alt="Twitter">
+              </a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
+                <img src="Img/instagram.png" alt="Instagram">
+              </a>
+           </div>
+   </div>
+   
+   <div class="footer-bottom">
+       <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
+       <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
+   </div>
+</footer>
+ <!--END--> 
 
 </body>
 </html>

@@ -88,7 +88,7 @@ $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_can
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Statistics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
        /* body {
@@ -246,7 +246,7 @@ $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_can
 
         <label for="year">Select Year:</label>
         <select name="year">
-            <?php for ($y = date('Y'); $y >= 2020; $y--): ?>
+            <?php for ($y = date('Y'); $y >= 2021; $y--): ?>
                 <option value="<?php echo $y; ?>" <?php if ($y == $selected_year) echo 'selected'; ?>><?php echo $y; ?></option>
             <?php endfor; ?>
         </select>
@@ -254,11 +254,17 @@ $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_can
         
     </form>
 
-    <form method="POST" action="export_sales.php" style="display: inline-block; margin-left: 80%;">
+<form method="POST" action="export_sales.php" style="display: inline-block; margin-left: 80%;">
     <input type="hidden" name="month" value="<?php echo $selected_month; ?>">
     <input type="hidden" name="year" value="<?php echo $selected_year; ?>">
     <button type="submit" class="btn-download">
         <i class="fas fa-download"></i> Download Sales Data
+    </button>
+</form>
+
+<form method="GET" action="orders_history.php" style="display: inline-block; margin-left: 80%; margin-top: 1%;">
+    <button type="submit" class="btn-download">
+        <i class="fas fa-history"></i> All Orders History
     </button>
 </form>
 

@@ -27,6 +27,28 @@ $stmt = $conn->prepare("SELECT id, total_price, order_status, cancellation_reaso
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $orders_result = $stmt->get_result();
+
+
+// Pagination setup
+$ordersPerPage = 5;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$offset = ($page - 1) * $ordersPerPage;
+
+// Get total orders
+$count_stmt = $conn->prepare("SELECT COUNT(*) as total FROM orders WHERE email = ?");
+$count_stmt->bind_param("s", $email);
+$count_stmt->execute();
+$count_result = $count_stmt->get_result();
+$totalOrders = $count_result->fetch_assoc()['total'];
+$count_stmt->close();
+
+$totalPages = ceil($totalOrders / $ordersPerPage);
+
+// Fetch paginated orders
+$stmt = $conn->prepare("SELECT id, total_price, order_status, cancellation_reason FROM orders WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ?");
+$stmt->bind_param("sii", $email, $ordersPerPage, $offset);
+$stmt->execute();
+$orders_result = $stmt->get_result();
 $stmt->close();
 ?>
 
@@ -179,7 +201,7 @@ $stmt->close();
             <a href="user_products.php"><li>CATALOG</li></a>
             <a href="Contact.php"><li>CONTACT US</li></a>
             <a href="FAQs.php"><li>FAQs</li></a>
-            <a href="profile.php">Profile</a>
+            <a href="profile.php">PROFILE</a>
             <?php if (isset($_SESSION['email'])): ?>
                 <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
             <?php else: ?>
@@ -190,6 +212,7 @@ $stmt->close();
     </nav>
 </header>
 
+<br><br><br><br>
 <div class="container">
     <h2>My Profile</h2>
     <table>
@@ -218,9 +241,8 @@ $stmt->close();
             echo '-';
         }
     ?>
+
 </td>
-
-
         <td>
             <form method="POST" action="order_tracking.php">
                 <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
@@ -238,6 +260,20 @@ $stmt->close();
     <?php } else { ?>
         <p>No orders found.</p>
     <?php } ?>
+
+    <div style="text-align: center; margin-top: 20px;">
+    <?php if ($page > 1): ?>
+        <a href="?page=<?php echo $page - 1; ?>" style="margin-right: 10px;">&laquo; Previous</a>
+    <?php endif; ?>
+
+    Page <?php echo $page; ?> of <?php echo $totalPages; ?>
+
+    <?php if ($page < $totalPages): ?>
+        <a href="?page=<?php echo $page + 1; ?>" style="margin-left: 10px;">Next &raquo;</a>
+    <?php endif; ?>
+</div>
+
+
 </div>
 
 <!-- Modal -->
@@ -262,6 +298,7 @@ $stmt->close();
         <p id="cancellationReasonText"></p>
     </div>
 </div>
+
 
 
 

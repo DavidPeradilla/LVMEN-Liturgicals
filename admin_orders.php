@@ -28,7 +28,7 @@ $total_sales = file_get_contents("get_sales.php");
     <meta charset="UTF-8">
     <title>Admin - Manage Orders</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     <style>
         body {

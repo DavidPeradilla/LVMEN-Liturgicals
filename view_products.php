@@ -18,7 +18,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Fetch products with category names
-$sql = "SELECT products.id, products.name, products.price, products.quantity, products.image, 
+$sql = "SELECT products.id, products.name, products.price, products.image, 
                products.category_id, products.description, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
@@ -45,7 +45,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - View Products</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -161,9 +161,7 @@ $conn->close();
             font-size: 14px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
         }
-
-
-</style>
+    </style>
 </head>
 <body>
 
@@ -189,7 +187,6 @@ $conn->close();
             <th>Name</th>
             <th>Description</th>
             <th>Price (₱)</th>
-            <th>Quantity</th>
             <th>Category</th>
             <th>Image</th>
             <th>Actions</th>
@@ -198,10 +195,8 @@ $conn->close();
             <tr>
                 <td><?php echo $row['id']; ?></td>
                 <td contenteditable="true" id="name_<?php echo $row['id']; ?>"><?php echo $row['name']; ?></td>
-               <td><textarea id="description_<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['description']); ?></textarea></td>
+                <td><textarea id="description_<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['description']); ?></textarea></td>
                 <td contenteditable="true" id="price_<?php echo $row['id']; ?>"><?php echo $row['price']; ?></td>
-                <td contenteditable="true" id="quantity_<?php echo $row['id']; ?>"><?php echo $row['quantity']; ?></td>
-
                 <td>
                     <select id="category_<?php echo $row['id']; ?>">
                         <?php foreach ($category_options as $cat_id => $cat_name) { ?>
@@ -231,12 +226,8 @@ $conn->close();
  function saveProduct(id) {
     let name = document.getElementById('name_' + id).innerText.trim();
     let price = document.getElementById('price_' + id).innerText.trim();
-    let quantity = document.getElementById('quantity_' + id).innerText.trim();
     let category = document.getElementById('category_' + id).value;
-    let description = document.getElementById('description_' + id).value.trim();  // Using .value to get textarea value
-
-    // Log the description to ensure it's being fetched correctly
-    console.log("Description:", description); // Add this line to check
+    let description = document.getElementById('description_' + id).value.trim();
 
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "update_product.php", true);
@@ -251,11 +242,8 @@ $conn->close();
             }
         }
     };
-    xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&quantity=" + encodeURIComponent(quantity) + "&category_id=" + encodeURIComponent(category) + "&description=" + encodeURIComponent(description));
+    xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&category_id=" + encodeURIComponent(category) + "&description=" + encodeURIComponent(description));
 }
-
-
-
 
 function showToast(message) {
     let toast = document.getElementById("toast");
@@ -265,7 +253,6 @@ function showToast(message) {
         toast.style.display = "none";
     }, 2000);
 }
-
 </script>
 
 </body>

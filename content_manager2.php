@@ -15,51 +15,100 @@ if ($conn->connect_error) {
     <meta charset="UTF-8">
     <title>Admin Dashboard - Content Manager</title>
     <link rel="stylesheet" href="admin_styles.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-                /* Main Content */
+h2 {
+    font-size: 30px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-                body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            text-align: center;
-        }
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
-        .main-content {
-            margin-left: 450px;
-            padding: 20px;
-            width: 100%;
-            min-height: 100vh;
-        }
+/* Main Content Styles */
+.main-content {
+    margin-left: 100px; /* Adjust for your sidebar width */
+    padding: 240px;
+    background-color: #ffffff;
+    min-height: 100vh;
+    margin-top: -223px;
+}
 
-        .main-content h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
+.main-content h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
 
-        .main-content p {
-            font-size: 18px;
-            margin-top: 10px;
-        }
+.main-content p {
+    font-size: 18px;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
 
-        .main-content a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-        }
+.main-content a {
+    font-size: 18px;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
 
-        .main-content a:hover {
-            text-decoration: underline;
-        }
+.main-content a:hover {
+    color: #2980b9;
+}
 
-        /* Buttons Section */
-        .button-section {
-            gap: 20px;
-            margin-top: 20px;
-           
-        }
+/* Button Section */
+.button-section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.button-section a {
+    display: block;
+    padding: 15px 30px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 18px;
+    width: 250px;
+    transition: background-color 0.3s;
+    margin: 10px 0;
+}
+
+.button-section a:hover {
+    background-color: #2980b9;
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 200px; /* Adjust for smaller sidebar */
+    }
+
+    .button-section a {
+        width: 100%; /* Make buttons full width on smaller screens */
+    }
+}
+
 
     </style>
 
@@ -81,18 +130,15 @@ if ($conn->connect_error) {
 </div>
 
 
-<h2>Content Manager</h2>
+<div class="main-content">
+<h2 style=" text-align: center;">Content Manager</h2>
 
-  
     <!-- Content Manager Actions -->
     <div class="button-section">
         <a href="admin_featured.php">Add Featured Products</a>
-    </div>
-
-    <div class="button-section">
         <a href="slideshow.php">Add New Slideshow</a>
     </div>
-
+</div>
 
 </body>
 </html>

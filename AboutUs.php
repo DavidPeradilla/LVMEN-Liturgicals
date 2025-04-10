@@ -9,6 +9,7 @@ session_start();
         <title> About Us </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
         <link rel="stylesheet" type="text/css" href="navbar2.css"> 
+        <link rel="stylesheet" type="text/css" href="footer.css"> 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <style>
             body {
@@ -219,7 +220,7 @@ margin-bottom: 30px ;
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
@@ -240,15 +241,17 @@ margin-bottom: 30px ;
       <div class="flex">
         <h2>About Us</h2>
         <h3>Discover Our Team's Story</h3>
+        <div style="text-align: justify;">
         <p>We are LVMEN aims to provide beautiful and high-quality but, affordable liturgical products from Europe and Philippines.</p>
         <p>LVMEN Liturgical started in July 2021. Our Advocacy is to offer the best to God in the form of beautiful vestments, lace, and other liturgicals products that we sell. Our products are hand-made that is made form Europe. LVMEN offers to deliver nationwide.</p>
         <p>LVMEN is affiliated with different organizations in order to help those in needs some of their profits goes to charity, monastries/convent, and donations. </p>
+        </div>
         <div class="social-links">
           <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><i class="fab fa-facebook-f"></i></a> 
           <a href=""><i class="fab fa-twitter"></i></a> 
           <a href="https://www.instagram.com/sympaticou/" target="_blank" ><i class="fab fa-instagram"></i></a>
         </div>
-        <a href="" i class="btn">Learn More</a>
+        <!-- <a href="" i class="btn">Learn More</a> -->
       </div>
       <div class="flex">
         <img src="Img/LVMEN About Us.png" >
@@ -257,72 +260,29 @@ margin-bottom: 30px ;
     </div>
   </div>
 
-  
-  <h2 style="color: rgb(2, 1, 1);" align="center">Our Team</h2>
-  <div class="row2">
-    <div class="column">
-      <div class="card3">
-        <img src="Img/user.jpeg" alt="Jane" style="width:100%">
-        <div class="container3">
-          <h2>Jonas Peradilla</h2>
-          <p class="title">Owner</p>
-          <p>LVMEN Owner.</p>
-          <p>contact@lvmen24.com</p>
-          <p><button class="button">Contact</button></p>
-        </div>
-      </div>
-    </div>
-  
-    <div class="column">
-      <div class="card3">
-        <img src="Img/user.jpeg" alt="Mike" style="width:100%">
-        <div class="container3">
-          <h2>Jonas Peradilla</h2>
-          <p class="title">Assistant</p>
-          <p>LVMEN Assistant.</p>
-          <p>contact@lvmen24.com</p>
-          <p><button class="button">Contact</button></p>
-        </div>
-      </div>
-    </div>
-  
-    <div class="column">
-      <div class="card3">
-        <img src="Img/user.jpeg" alt="John" style="width:100%">
-        <div class="container3">
-          <h2>Jonas Peradilla</h2>
-          <p class="title">Secretary</p>
-          <p>LVMEN Secretary.</p>
-          <p>contact@lvmen24.com</p>
-          <p><button class="button">Contact</button></p>
-        </div>
-      </div>
-    </div>
-  </div>
 
  <!--FOOTER-->
- <hr class="hr2"> 
- <footer>
+<footer>
    <div class="container">
-       <div class="footer-left">
-           <h3>Location</h3>
-           <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
-       </div>
-       <div class="footer-right">
-           <h3>Opening Hours</h3>
-           <ul>
-               <li>Monday - Friday: 10am - 10pm</li>
-               <li>Saturday: 11am - 11pm</li>
-               <li>Sunday: Closed</li>
-           </ul>
-           <div class="social">
-            <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
-              <a href="#"><img src="Img/twitter.png" target="_blank" alt="Twitter"></a>
-              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank" ><img src="Img/instagram.png" alt="Instagram"></a>
+    <div class="get-in-touch">
+              <h4>Get in Touch</h4>
+              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
+                <img src="Img/facebook.png" alt="Facebook">
+              </a>
+              <a href="#" target="_blank">
+                <img src="Img/twitter.png" alt="Twitter">
+              </a>
+              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
+                <img src="Img/instagram.png" alt="Instagram">
+              </a>
            </div>
-       </div>
    </div>
- </footer>
- <!--END-->
+   
+   <div class="footer-bottom">
+       <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
+       <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
+   </div>
+</footer>
+ <!--END--> 
 
 </body>

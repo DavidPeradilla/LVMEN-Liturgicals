@@ -29,6 +29,7 @@
     align-items: stretch; /* Ensure links stretch to full width */
     justify-content: flex-start;
     width: 100%;
+    flex-grow: 1; /* Ensure links stretch to fill space above the logout button */
 }
 
 /* Styles for each navigation link */
@@ -64,6 +65,13 @@
 .navbar .logout {
     background-color: #e74c3c;
     color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Logout button hover effect */
@@ -93,11 +101,10 @@
 }
 
 /* Ensure the logout button is aligned at the bottom */
-.navbar .nav-links a.logout {
-    margin-top: auto; /* Push the logout to the bottom */
+.navbar .nav-links {
+    flex-grow: 1; /* Push logout button to the bottom */
 }
 
-/* Prevent background from exceeding the width */
-.navbar .nav-links a.logout {
-    width: 100%; /* Ensure logout button fills the width */
+.navbar .logout {
+    margin-top: auto; /* Push the logout to the bottom */
 }

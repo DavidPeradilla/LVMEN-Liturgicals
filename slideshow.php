@@ -6,7 +6,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch all slideshow images for management
+
 $sql = "SELECT * FROM slideshow_images";
 $result = $conn->query($sql);
 ?>
@@ -17,7 +17,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <title>Admin Dashboard - Slideshow</title>
     <link rel="stylesheet" href="admin_styles.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -27,8 +27,8 @@ $result = $conn->query($sql);
         }
        
         table {
-    width: 80%;  /* You can adjust the width as per your need */
-    margin: 20px auto;  /* This centers the table */
+    width: 80%;  
+    margin: 20px auto;  
     border-collapse: collapse;
 }
 
@@ -59,7 +59,7 @@ tr:hover {
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
-        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
