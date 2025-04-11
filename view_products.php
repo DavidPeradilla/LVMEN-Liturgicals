@@ -1,12 +1,17 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: login.php"); // Redirect to your login page
+    exit();
+}
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
-// Check database connection
+
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "error" => "Connection failed: " . $conn->connect_error]));
 }
 
-// Delete product if requested
+
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     if ($conn->query("DELETE FROM products WHERE id = $id") === TRUE) {
@@ -174,7 +179,7 @@ $conn->close();
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
-        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 

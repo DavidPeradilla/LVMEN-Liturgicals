@@ -1,10 +1,17 @@
 <?php
 session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: login.php"); // Redirect to your login page
+    exit();
+}
+
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+
 
 // Get selected month and year from form input (default to current month and year)
 $selected_month = $_GET['month'] ?? date('m');
@@ -101,6 +108,49 @@ $completed_orders_query = "SELECT * FROM orders
 $completed_orders_result = $conn->query($completed_orders_query);
 
 
+//chart
+$total_sales_query = "SELECT SUM(total_price) AS total_revenue FROM orders WHERE order_status = 'Delivered'";
+$total_sales_result = $conn->query($total_sales_query);
+$total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
+
+
+$selected_year = $_GET['year'] ?? date('Y');
+$yearly_sales_query = "SELECT SUM(total_price) AS total_revenue 
+                        FROM orders 
+                        WHERE order_status = 'Delivered' 
+                        AND YEAR(order_date) = '$selected_year'";
+$yearly_sales_result = $conn->query($yearly_sales_query);
+$yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
+
+
+$monthly_sales_query = "SELECT MONTH(order_date) AS month, SUM(total_price) AS total_revenue
+                        FROM orders
+                        WHERE order_status = 'Delivered' 
+                        AND YEAR(order_date) = '$selected_year'
+                        GROUP BY MONTH(order_date)";
+$monthly_sales_result = $conn->query($monthly_sales_query);
+
+$monthly_sales_data = array_fill(0, 12, 0); 
+$months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+while ($row = $monthly_sales_result->fetch_assoc()) {
+    $monthly_sales_data[$row['month'] - 1] = $row['total_revenue']; 
+}
+
+
+$canceled_sales_query = "SELECT MONTH(order_date) AS month, SUM(total_price) AS total_revenue 
+FROM orders 
+WHERE order_status = 'Canceled' 
+AND YEAR(order_date) = '$selected_year'
+GROUP BY MONTH(order_date)";
+
+$canceled_sales_result = $conn->query($canceled_sales_query);
+
+$canceled_sales_data = array_fill(0, 12, 0); 
+while ($row = $canceled_sales_result->fetch_assoc()) {
+    $canceled_sales_data[$row['month'] - 1] = $row['total_revenue']; 
+}
+
 ?>
 
 
@@ -112,7 +162,8 @@ $completed_orders_result = $conn->query($completed_orders_query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Statistics</title>
+    <title>Overview Sales</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -206,7 +257,7 @@ $completed_orders_result = $conn->query($completed_orders_query);
             background:rgb(92, 95, 93);
             color: white;
             border-radius: 5px;
-            width: 30%;
+            width: 29%;
         }
 
         .btn2{
@@ -234,6 +285,13 @@ $completed_orders_result = $conn->query($completed_orders_query);
     background: #138496;
 }
 
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+
 
     </style>
 </head>
@@ -248,14 +306,14 @@ $completed_orders_result = $conn->query($completed_orders_query);
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
-        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 
 <br><br>
 
 <div class="container">  
-    <h2>Sales Statistics </h2>
+    <h2> Overview Sales Statistics </h2>
     
 
 
@@ -279,22 +337,6 @@ $completed_orders_result = $conn->query($completed_orders_query);
         <button type="submit">Filter</button>
         
     </form>
-
-<form method="POST" action="export_sales.php" style="display: inline-block; margin-left: 80%;">
-    <input type="hidden" name="month" value="<?php echo $selected_month; ?>">
-    <input type="hidden" name="year" value="<?php echo $selected_year; ?>">
-    <button type="submit" class="btn-download">
-        <i class="fas fa-download"></i> Download Sales Data
-    </button>
-</form>
-
-<form method="GET" action="orders_history.php" style="display: inline-block; margin-left: 80%; margin-top: 1%;">
-    <button type="submit" class="btn-download">
-        <i class="fas fa-history"></i> All Orders History
-    </button>
-</form>
-
-
 
 
     <!-- Sales Stats -->
@@ -324,55 +366,68 @@ $completed_orders_result = $conn->query($completed_orders_query);
     <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Canceled:</strong>
     ₱<?php echo number_format($monthly_canceled_revenue, 2); ?>
     </div>
-    <div class="stat-box">
-        <i class="fas fa-box"></i> <br>
-        <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
-    </div>
+
     <div class="stat-box" style="background: #dc3545;">
         <i class="fas fa-ban"></i> <br>
         <strong>Total Canceled Orders:</strong> ₱<?php echo number_format($total_canceled_revenue, 2); ?>
+    </div>
+
+    <div class="stat-box">
+        <i class="fas fa-box"></i> <br>
+        <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
     </div>
 </div>
 
 
 
-    <h3>Completed Orders</h3>
-    <table border="1" width="100%">
-        <tr>
-            <th>Order ID</th>
-            <th>Email</th>
-            <th>Recipient Name</th>
-            <th>Ordered Products</th>
-            <th>Total Price</th>
-            <th>Order Date</th>
-        </tr>
-        <?php while ($order = $completed_orders_result->fetch_assoc()): ?>
-            <tr>
-                <td><?php echo $order['id']; ?></td>
-                <td><?php echo htmlspecialchars($order['email']); ?></td>
-                <td><?php echo htmlspecialchars($order['recipient_name']); ?></td>
-                <td>
-                    <a href="order_details.php?order_id=<?php echo $order['id']; ?>">
-                        <button class="btn2">View Items</button>
-                    </a>
-                </td>
-                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo $order['order_date']; ?></td>
-            </tr>
-        <?php endwhile; ?>
-    </table>
-    <?php if ($total_pages > 1): ?>
-    <div style="margin-top: 20px; text-align: center;">
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?month=<?php echo $selected_month; ?>&year=<?php echo $selected_year; ?>&page=<?php echo $i; ?>" 
-               style="margin: 0 5px; padding: 8px 12px; text-decoration: none; border: 1px solid #007bff; border-radius: 5px;
-                      background: <?php echo ($i == $current_page) ? '#007bff' : '#fff'; ?>; 
-                      color: <?php echo ($i == $current_page) ? '#fff' : '#007bff'; ?>;">
-                <?php echo $i; ?>
-            </a>
-        <?php endfor; ?>
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+        <canvas id="salesChart" width="400" height="200"></canvas>
     </div>
-<?php endif; ?>
+
+    <script>
+        // Fetch data from PHP variables
+        var monthlySales = <?php echo json_encode($monthly_sales_data); ?>;
+        var canceledSales = <?php echo json_encode($canceled_sales_data); ?>;
+        var months = <?php echo json_encode($months); ?>;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            var salesChart = new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Monthly Sales Revenue',
+                        data: monthlySales,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        type: 'bar' 
+                    },
+                    {
+                        label: 'Canceled Orders Revenue',
+                        data: canceledSales,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: false, 
+                        type: 'line', 
+                        tension: 0.4 
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 
 
 

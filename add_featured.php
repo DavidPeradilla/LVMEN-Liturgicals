@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $description = trim($_POST['description']);
 
-    // Validate inputs
+    
     if (empty($name) || empty($description)) {
         header("Location: admin_featured.php?error=empty_fields");
         exit();
@@ -39,15 +39,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        // Optional: check file size (limit to 2MB)
+        // check file size (limit to 2MB)
         if ($_FILES["image"]["size"] > 2 * 1024 * 1024) {
             header("Location: admin_featured.php?error=image_error");
             exit();
         }
 
-        // Move uploaded file
+        
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath)) {
-            // Insert into database
+            
             $stmt = $conn->prepare("INSERT INTO featured_products (name, image_path, description) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $name, $imagePath, $description);
             $stmt->execute();

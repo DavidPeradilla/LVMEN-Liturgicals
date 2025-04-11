@@ -1,16 +1,16 @@
 <?php
-include('db2.php');  // Database connection
+include('db2.php');  
 
-$success_message = "";  // Message to display to user
+$success_message = "";  
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Collect and sanitize input
+   
     $Fname = trim($_POST['Fname']);
     $Lname = trim($_POST['Lname']);
     $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
 
-    // Check if email already exists
+   
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();

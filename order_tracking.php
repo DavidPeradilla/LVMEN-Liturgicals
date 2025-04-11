@@ -11,42 +11,49 @@ $order = null;
 $order_items = [];
 $error_message = "";
 
-// Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Ensure the order_id is a valid integer
     $order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
 
-    // Fetch order details and order items
-    $stmt = $conn->prepare("
-    SELECT o.id, o.recipient_name, o.email, o.total_price, o.order_status, 
-           o.courier_name, o.tracking_link,
-           oi.product_id, oi.quantity, oi.price, p.name 
-    FROM orders o
-    LEFT JOIN order_items_backup oi ON o.id = oi.order_id
-    LEFT JOIN products p ON oi.product_id = p.id
-    WHERE o.id = ?
-    ");
+    if ($order_id > 0) {
+        // Fetch order details and order items
+        $stmt = $conn->prepare("
+        SELECT o.id, o.recipient_name, o.email, o.total_price, o.order_status, 
+               o.courier_name, o.tracking_link, o.status_updated_at,
+               oi.product_id, oi.quantity, oi.price, p.name 
+        FROM orders o
+        LEFT JOIN order_items_backup oi ON o.id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.id
+        WHERE o.id = ?
+        ");
+        $stmt->bind_param("i", $order_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    $stmt->bind_param("i", $order_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            // Collect order details and products
+            $order_items = [];
+            while ($row = $result->fetch_assoc()) {
+                $order_items[] = $row;
+            }
 
-    if ($result->num_rows > 0) {
-        // Collect order details and products
-        $order_items = [];
-        while ($row = $result->fetch_assoc()) {
-            $order_items[] = $row;
+            // Store order details and items in session
+                       // Store order details and items in session
+                       $_SESSION['order'] = $order_items[0]; // Use the first item for order details
+                       $_SESSION['order_items'] = $order_items;
+           
+                       // Redirect after POST to prevent form resubmission
+                       header("Location: " . $_SERVER['PHP_SELF']);
+                       exit();
+           
+        } else {
+            $error_message = "Order not found. Please check your Order ID.";
         }
 
-        // Store order details and items in session
-        $_SESSION['order'] = $order_items[0]; // The first row contains order-level details
-        $_SESSION['order_items'] = $order_items;
+        $stmt->close();
     } else {
-        $error_message = "Order not found. Please check your Order ID.";
+        $error_message = "Invalid Order ID.";
     }
-
-    // Redirect to the same page to avoid form resubmission
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
 }
 
 // Retrieve order data from session if available
@@ -120,25 +127,26 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
 
 <!-- NAVBAR -->
 <header> 
-<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: -88%;" width="80px" height="70px"></a>
-  <nav class="navbar"> 
-     <ul class="nav-links">
-     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-      <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
-      <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> PROFILE </a>
+    <a href="LVMEN.php"> 
+        <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: -88%;" width="80px" height="70px">
+    </a>
+    <nav class="navbar"> 
+        <ul class="nav-links">
+            <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
+            <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
+            <a href="user_products.php"> <li> CATALOG </li> </a>
+            <a href="Contact.php"> <li> CONTACT US </li> </a>
+            <a href="FAQs.php"> <li> FAQs </li> </a>
+            <a href="profile.php"> PROFILE </a>
 
-
-      <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-      <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-      <?php endif; ?>
-      <a href="view_cart.php" class="cart-link">🛒</a>
-     </ul>
-  </nav> 
+            <?php if (isset($_SESSION['email'])): ?>
+                <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
+            <?php else: ?>
+                <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+            <?php endif; ?>
+            <a href="view_cart.php" class="cart-link">🛒</a>
+        </ul>
+    </nav> 
 </header>
 <!-- END -->
 
@@ -150,11 +158,12 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
     <?php if ($order): ?>
         <h3>Order Details</h3>
         <table>
-            <tr><th>Order ID</th><td><?php echo $order['id']; ?></td></tr>
+            <tr><th>Order ID</th><td><?php echo htmlspecialchars($order['id']); ?></td></tr>
             <tr><th>Recipient Name</th><td><?php echo htmlspecialchars($order['recipient_name']); ?></td></tr>
             <tr><th>Email</th><td><?php echo htmlspecialchars($order['email']); ?></td></tr>
             <tr><th>Total Price</th><td>₱<?php echo number_format($order['total_price'], 2); ?></td></tr>
             <tr><th>Status</th><td class="status"><?php echo htmlspecialchars($order['order_status']); ?></td></tr>
+            <tr><th>Status Updated At</th><td><?php echo date("F j, Y, g:i a", strtotime($order['status_updated_at'])); ?></td></tr>
             <tr><th>Courier</th><td><?php echo htmlspecialchars($order['courier_name'] ?? 'Not Assigned'); ?></td></tr>
             <tr>
                 <th>Tracking Link</th>
@@ -174,13 +183,13 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
             <?php foreach ($order_items as $item): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($item['name']); ?></td>
-                    <td><?php echo $item['quantity']; ?></td>
+                    <td><?php echo htmlspecialchars($item['quantity']); ?></td>
                     <td>₱<?php echo number_format($item['price'], 2); ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
     <?php elseif ($error_message): ?>
-        <p style="color: red;"><?php echo $error_message; ?></p>
+        <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
     <?php endif; ?>
 
     <a href="profile.php" class="back-link">Back to Profile</a>

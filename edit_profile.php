@@ -122,7 +122,7 @@ $conn->close();
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE     </a>
       <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
       <a href="view_cart.php" class="cart-link">🛒</a>
      </ul>

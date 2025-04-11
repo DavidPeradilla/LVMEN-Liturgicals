@@ -7,10 +7,10 @@ if (isset($_GET['id'])) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Toggle the active status
+
     $sql = "UPDATE slideshow_images SET active = NOT active WHERE id = $id";
     if ($conn->query($sql) === TRUE) {
-        header("Location: dashboard.php"); // Redirect back to dashboard
+        header("Location: slideshow.php"); 
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }

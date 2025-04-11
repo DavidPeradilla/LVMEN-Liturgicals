@@ -1,12 +1,18 @@
 <?php
+session_name("user_session"); // Only if you used this in your login/logout files
 session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$cartEmpty = true; // Assume cart is empty initially
+$cartEmpty = true; 
 
 if (!isset($_SESSION['email'])) {
     echo "Please log in to view your cart.";
@@ -158,7 +164,7 @@ if (isset($conn) && $conn instanceof mysqli) {
             <a href="user_products.php"> <li> CATALOG </li> </a>
             <a href="Contact.php"> <li> CONTACT US </li> </a>
             <a href="FAQs.php"> <li> FAQs </li> </a>
-            <a href="profile.php"> Profile </a>
+            <a href="profile.php"> PROFILE </a>
 
             <?php if (isset($_SESSION['email'])): ?>
                 <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>

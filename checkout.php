@@ -180,10 +180,10 @@ $conn->close();
     <input type="text" name="recipient_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly required>
 
     <label>Shipping Address:</label>
-    <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly required>
+    <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly required placeholder="Enter Shipping Address in Profile">
 
     <label>Phone Number:</label>
-    <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required>
+    <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required placeholder="Enter Contact Number in Profile">
 
 
 
@@ -211,10 +211,10 @@ $conn->close();
     <input type="hidden" name="payment_method" value="GCash">
 
     <label>GCash Number:</label>
-    <input type="text" name="gcash_number" required> 
+    <input type="text" name="gcash_number" placeholder="Insert your GCash Number" required> 
 
     <label>GCash Reference Number:</label>
-    <input type="text" name="gcash_reference" required>
+    <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required>
 
     <label>Upload Payment Screenshot:</label>
     <div class="file-upload">
@@ -252,26 +252,26 @@ $conn->close();
 
 
 function validateForm() {
-    // Get the values of the shipping address and phone number fields
+    
     const address = document.querySelector('input[name="address"]').value;
     const phoneNumber = document.querySelector('input[name="contact_number"]').value;
 
-    // Check if the address or phone number is empty
+   
     if (!address.trim() || !phoneNumber.trim()) {
         alert("You need to add your shipping address and phone number before confirming the payment.");
         
-        // Redirect to profile.php after the alert
-        window.location.href = "profile.php"; // Redirect to the profile page
-        return false; // Prevent form submission
+       
+        window.location.href = "profile.php"; 
+        return false; 
     }
 
-    // If both fields are filled, proceed with the confirmation
+    
     return confirm("Are you sure you want to confirm the payment?");
 }
 
 function cancelOrder() {
     if (confirm("Are you sure you want to cancel the order?")) {
-        window.location.href = "user_products.php"; // Redirect back to products page
+        window.location.href = "user_products.php"; 
     }
 }
 </script>

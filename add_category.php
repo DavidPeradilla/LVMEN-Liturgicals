@@ -1,4 +1,13 @@
 <?php
+session_name("admin_session"); // Set session name to admin_session
+session_start();
+
+// Check if the user is logged in as an admin
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    // Redirect to login page if not logged in as admin
+    header("Location: login.php");
+    exit();
+}
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {

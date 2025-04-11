@@ -1,8 +1,10 @@
 <?php
+session_name("user_session"); // Ensure session name matches
 session_start();
-include('db2.php');  // Ensure correct database connection
 
-$error_message = ""; // Default empty
+include('db2.php');  
+
+$error_message = ""; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
@@ -10,7 +12,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Admin Login Check
     if ($email === "admin@gmail.com" && $password === "admin123") {
-        $_SESSION['admin_logged_in'] = true;
+        // Start admin session
+        session_regenerate_id(); // Regenerate session ID for security
+        $_SESSION['admin_logged_in'] = true;  // Set admin session
+        $_SESSION['email'] = $email; // Store email for redirection/validation purposes
         header("Location: admin_sales.php");
         exit();
     }
@@ -26,12 +31,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Verify hashed password (Assuming passwords are stored using password_hash)
         if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id']; // Store user ID
-            $_SESSION['email'] = $user['email']; // Store email for add-to-cart tracking
+            // Start user session
+            session_regenerate_id(); // Regenerate session ID for security
+            $_SESSION['user_id'] = $user['id']; 
+            $_SESSION['email'] = $user['email']; 
             $_SESSION['first_name'] = $user['first_name']; 
             $_SESSION['last_name'] = $user['last_name'];
 
-            header("Location: LVMEN.php"); // Redirect to user products page
+            header("Location: LVMEN.php"); 
             exit();
         } else {
             $error_message = "Invalid password. Please try again.";
@@ -49,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" type="text/css" href="navbar2.css"> 
     <style>
 
-/* General Page Styling */
+
 body {
     font-family: Arial, sans-serif;
     background: #f4f4f4;
@@ -72,7 +80,7 @@ body {
 
 }
 
-/* Form Container */
+
 .form-container {
     width: 460px;
     padding: 20px;
@@ -82,13 +90,13 @@ body {
     text-align: center;
 }
 
-/* Form Title */
+
 h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
-/* Form Fields */
+
 label {
     display: block;
     text-align: left;
@@ -106,7 +114,7 @@ input {
     font-size: 16px;
 }
 
-/* Submit Button */
+
 input[type="submit"] {
     width: 80%;
     background: #2e9de7;
@@ -125,7 +133,7 @@ input[type="submit"]:hover {
     background: #218838;
 }
 
-/* Sign Up Link */
+
 p {
     margin-top: 15px;
     font-size: 14px;

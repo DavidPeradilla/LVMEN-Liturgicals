@@ -180,7 +180,7 @@ if (!$orders_result) {
         <?php endif; ?>
     </div>
 
-    <a href="admin_sales.php" class="btn">Back to Sales Overview</a>
+    <a href="dashboard.php" class="btn">Back to Sales Overview</a>
 </div>
 
 </body>

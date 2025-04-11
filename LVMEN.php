@@ -1,9 +1,10 @@
 <?php
+session_name("user_session"); // Only if you're using a custom session name consistently
 session_start();
-// Database connection
+
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -20,7 +21,7 @@ $result_slideshow = $conn->query($sql_slideshow);
 // Check if there are any slides
 if ($result_slideshow->num_rows > 0) {
     while ($slide = $result_slideshow->fetch_assoc()) {
-        // Display each image
+        
         echo '<div class="mySlides fade">';
         echo '<div class="numbertext">1/' . $result_slideshow->num_rows . '</div>';
         echo '<img src="' . htmlspecialchars($slide['image_path']) . '" style="width: 100%;">';

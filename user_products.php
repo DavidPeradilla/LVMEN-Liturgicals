@@ -1,4 +1,5 @@
 <?php
+session_name("user_session"); // Only if you're using a custom session name consistently
 session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
@@ -257,10 +258,10 @@ $conn->close();
       <a href="profile.php"> PROFILE </a>
 
       <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-      <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-      <?php endif; ?>
+                <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
+            <?php else: ?>
+                <a href="login.php" class="login-btn"><li>LOGIN</li></a>
+            <?php endif; ?>
 <a href="view_cart.php" class="cart-link">🛒</a>
      </ul>
   </nav> 

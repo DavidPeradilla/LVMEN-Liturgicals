@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: login.php"); // Redirect to your login page
+    exit();
+}
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
@@ -163,7 +167,7 @@ $total_sales = file_get_contents("get_sales.php");
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
-        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
 
@@ -214,11 +218,14 @@ $total_sales = file_get_contents("get_sales.php");
                     </a>
                 </td>
                 <td>
-                    <?php echo $order['order_status']; ?>
-                    <?php if ($order['order_status'] == 'Canceled') { ?>
-                        <button class="btn" onclick="openCancellationReasonModal(<?php echo $order['id']; ?>, '<?php echo htmlspecialchars($order['cancellation_reason']); ?>')">Edit Cancellation Reason</button>
-                    <?php } ?>
-                </td>
+    <?php echo $order['order_status']; ?>
+    <br>
+    <?php if ($order['order_status'] == 'Canceled') { ?>
+        <button class="btn" onclick="openCancellationReasonModal(<?php echo $order['id']; ?>, '<?php echo htmlspecialchars($order['cancellation_reason']); ?>')">Edit Cancellation Reason</button>
+    <?php } ?>
+</td>
+
+
                 <td>
     <!-- Update Status Dropdown -->
     <form action="update_order.php" method="POST" style="margin-bottom: 10px;">

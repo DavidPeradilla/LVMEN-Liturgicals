@@ -1,5 +1,11 @@
 <?php
+session_name("user_session"); // Only if you used this in your login/logout files
 session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {

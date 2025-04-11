@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
@@ -7,7 +8,7 @@ if ($conn->connect_error) {
 }
 
 // Ensure user is logged in
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['user_session'])) {
     echo "User not logged in";
     exit;
 }
