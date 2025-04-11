@@ -220,26 +220,32 @@ $total_sales = file_get_contents("get_sales.php");
                     <?php } ?>
                 </td>
                 <td>
-                    <form action="update_order.php" method="POST">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <select name="order_status" onchange="this.form.submit()">
-                            <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
-                            <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
-                            <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
-                            <option value="Canceled" <?php if ($order['order_status'] == "Canceled") echo "selected"; ?>>Canceled</option>
-                        </select>
-                    </form>
-                    <br>
-                    <form action="update_order.php" method="POST">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" name="mark_delivered" class="btn btn-complete">Delivered</button>
-                    </form>
-                    <br>
-                    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
-                    </form>
-                </td>
+    <!-- Update Status Dropdown -->
+    <form action="update_order.php" method="POST" style="margin-bottom: 10px;">
+        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+        <select name="order_status" onchange="this.form.submit()">
+            <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
+            <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
+            <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
+            <option value="Canceled" <?php if ($order['order_status'] == "Canceled") echo "selected"; ?>>Canceled</option>
+        </select>
+    </form>
+
+    <!-- Deliver Button (only if not canceled) -->
+    <?php if ($order['order_status'] != 'Canceled') { ?>
+        <form action="update_order.php" method="POST" style="margin-bottom: 10px;">
+            <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+            <button type="submit" name="mark_delivered" class="btn btn-complete">Delivered</button>
+        </form>
+    <?php } ?>
+
+    <!-- Remove Button (always show) -->
+    <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
+        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
+    </form>
+</td>
+
             </tr>
         <?php } ?>
     </table>

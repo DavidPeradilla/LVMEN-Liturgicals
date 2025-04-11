@@ -75,6 +75,32 @@ $monthly_canceled_query = "SELECT SUM(total_price) AS monthly_canceled_revenue
 $monthly_canceled_result = $conn->query($monthly_canceled_query);
 $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_canceled_revenue'] ?? 0;
 
+
+// Pagination setup
+$records_per_page = 10;
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($current_page - 1) * $records_per_page;
+
+// Count total completed orders
+$count_query = "SELECT COUNT(*) AS total 
+                FROM orders 
+                WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
+                AND MONTH(order_date) = '$selected_month' 
+                AND YEAR(order_date) = '$selected_year'";
+$count_result = $conn->query($count_query);
+$total_records = $count_result->fetch_assoc()['total'] ?? 0;
+$total_pages = ceil($total_records / $records_per_page);
+
+// Modified completed orders query with LIMIT
+$completed_orders_query = "SELECT * FROM orders 
+                           WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
+                           AND MONTH(order_date) = '$selected_month' 
+                           AND YEAR(order_date) = '$selected_year' 
+                           ORDER BY id DESC
+                           LIMIT $records_per_page OFFSET $offset";
+$completed_orders_result = $conn->query($completed_orders_query);
+
+
 ?>
 
 
@@ -335,6 +361,19 @@ $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_can
             </tr>
         <?php endwhile; ?>
     </table>
+    <?php if ($total_pages > 1): ?>
+    <div style="margin-top: 20px; text-align: center;">
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?month=<?php echo $selected_month; ?>&year=<?php echo $selected_year; ?>&page=<?php echo $i; ?>" 
+               style="margin: 0 5px; padding: 8px 12px; text-decoration: none; border: 1px solid #007bff; border-radius: 5px;
+                      background: <?php echo ($i == $current_page) ? '#007bff' : '#fff'; ?>; 
+                      color: <?php echo ($i == $current_page) ? '#fff' : '#007bff'; ?>;">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+<?php endif; ?>
+
 
 
 

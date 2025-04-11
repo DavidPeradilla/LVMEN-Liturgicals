@@ -71,7 +71,7 @@ body {
 
 /* Form Container */
 .form-container {
-    width: 360px;
+    width: 460px;
     padding: 20px;
     background: white;
     border-radius: 8px;
@@ -186,6 +186,12 @@ a:hover {
 
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required>
+
+            <div style="display: flex; align-items: left; gap: 8px; text-align: left; margin-bottom: 10px;">
+               <input type="checkbox" id="showPassword" onclick="togglePassword()" style=" margin-left: -46%; margin-top: 1.5%;"> 
+                 <label for="showPassword" style="margin-left: -50%;">Show Password</label>
+            </div>
+
             
             <div class="submit2"> 
             <input type="submit" value="Login">
@@ -194,6 +200,14 @@ a:hover {
         
         <p class="highlight-box">Don't have an account? <a href="register.php">Sign up here</a></p>
     </div>
+
+
+    <script>
+function togglePassword() {
+    var passwordInput = document.getElementById("password");
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>

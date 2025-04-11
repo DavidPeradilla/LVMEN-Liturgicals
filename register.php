@@ -240,10 +240,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="password">Password:</label>
         <input type="password" name="password" id="password" required>
 
+        <div style="display: flex; align-items: left; gap: 8px; text-align: left; margin-bottom: 10px;">
+               <input type="checkbox" id="showPassword" onclick="togglePassword()" style=" margin-left: -46%; margin-top: 2%;"> 
+                 <label for="showPassword" style="margin-left: -50%; margin-top: 1.3%;">Show Password</label>
+            </div>
+
         <div style="display: flex; align-items: center; font-size: 14px; margin-bottom: 15px;">
             <label for="terms" style=" margin-left: 0%;" >By signing up, you agree to the LVMEN <a href="javascript:void(0);" style = "text-decoration: underline; color:blue;"onclick="openModal()">Terms and Conditions</a>.</label>
             <span id="termsError" style="color: red; font-size: 12px; margin-left: 5px; display: none;">This field is required</span>
         </div>
+
 
         <input type="submit" value="Register">
     </form>
@@ -290,6 +296,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+
+<script>
+function togglePassword() {
+    var passwordInput = document.getElementById("password");
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>
