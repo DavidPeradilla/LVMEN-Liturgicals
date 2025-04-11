@@ -2,6 +2,8 @@
 session_start();
 include('db2.php');  // Ensure correct database connection
 
+$error_message = ""; // Default empty
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -32,16 +34,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: LVMEN.php"); // Redirect to user products page
             exit();
         } else {
-            echo "Invalid password.";
+            $error_message = "Invalid password. Please try again.";
         }
     } else {
-        echo "Invalid login credentials.";
+        $error_message = "Invalid email or account does not exist.";
     }
 
     $stmt->close();
     $login_conn->close();
 }
 ?>
+
 
 
 
@@ -177,8 +180,19 @@ a:hover {
         </ul>
     </nav>
 </header>
-     
+
+<br><br><br><br><br><br>
+
+
+
     <div class="form-container">
+    <?php if (!empty($error_message)): ?>
+    <div class="highlight-box" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;">
+        <?php echo $error_message; ?>
+    </div>
+<?php endif; ?>
+
+
         <h2>Login Form</h2>
         <form method="POST" action="login.php">
             <label for="email">Gmail:</label>

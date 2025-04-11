@@ -128,7 +128,7 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
       <a href="user_products.php"> <li> CATALOG </li> </a>
       <a href="Contact.php"> <li> CONTACT US </li> </a>
       <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> Profile </a>
+      <a href="profile.php"> PROFILE </a>
 
 
       <?php if (isset($_SESSION['email'])): ?>

@@ -8,11 +8,11 @@ if ($conn->connect_error) {
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    
+    $name = trim($_POST['name']);
+    $description = trim($_POST['description']);
+
     // Validate inputs
-    if (empty($name) || empty($price)) {
+    if (empty($name) || empty($description)) {
         header("Location: admin_featured.php?error=empty_fields");
         exit();
     }
@@ -25,19 +25,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Upload image
-    if (isset($_FILES["image"])) {
-        $imagePath = "uploads/" . basename($_FILES["image"]["name"]);
-        move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath);
+    // Handle image upload
+    if (isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
+        $targetDir = "uploads/";
+        $imageName = basename($_FILES["image"]["name"]);
+        $imagePath = $targetDir . $imageName;
+        $imageType = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
 
-        // Insert into database
-        $stmt = $conn->prepare("INSERT INTO featured_products (name, image_path, price) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $imagePath, $price);
-        $stmt->execute();
+        // Check if file is an image and allowed type
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($imageType, $allowedTypes)) {
+            header("Location: admin_featured.php?error=image_error");
+            exit();
+        }
 
-        header("Location: admin_featured.php?success=added");
+        // Optional: check file size (limit to 2MB)
+        if ($_FILES["image"]["size"] > 2 * 1024 * 1024) {
+            header("Location: admin_featured.php?error=image_error");
+            exit();
+        }
+
+        // Move uploaded file
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath)) {
+            // Insert into database
+            $stmt = $conn->prepare("INSERT INTO featured_products (name, image_path, description) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $name, $imagePath, $description);
+            $stmt->execute();
+
+            header("Location: admin_featured.php?success=added");
+            exit();
+        } else {
+            header("Location: admin_featured.php?error=image_error");
+            exit();
+        }
     } else {
         header("Location: admin_featured.php?error=image_error");
+        exit();
     }
 }
 ?>

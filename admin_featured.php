@@ -11,6 +11,7 @@ if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM featured_products WHERE id = $id");
     header("Location: admin_featured.php");
+    exit;
 }
 
 // Fetch all featured products
@@ -20,9 +21,7 @@ $result = $conn->query("SELECT * FROM featured_products");
 $countResult = $conn->query("SELECT COUNT(*) as total FROM featured_products");
 $countRow = $countResult->fetch_assoc();
 $totalProducts = $countRow['total'];
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +29,6 @@ $totalProducts = $countRow['total'];
     <title>Admin - Manage Featured Products</title>
     <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -107,37 +105,27 @@ $totalProducts = $countRow['total'];
             background: #f1f1f1;
         }
 
-        .action-buttons a {
-            text-decoration: none;
+        .btn {
             padding: 8px 12px;
-            margin: 5px;
+            border: none;
             border-radius: 5px;
-            color: white;
-            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
         }
 
-    /* Button Styling */
-.btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
+        .btn-delete {
+            background-color: red;
+            color: white;
+        }
 
-.btn-delete {
-    background-color: red;
-    color: white;
-}
+        .btn-complete {
+            background-color: green;
+            color: white;
+        }
 
-.btn-complete {
-    background-color: green;
-    color: white;
-}
-
-.btn:hover {
-    opacity: 0.8;
-}
+        .btn:hover {
+            opacity: 0.8;
+        }
 
         .message {
             position: fixed;
@@ -150,7 +138,8 @@ $totalProducts = $countRow['total'];
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            display: none;
+            opacity: 1;
+            transition: opacity 1s ease-out;
         }
 
         .error {
@@ -163,14 +152,10 @@ $totalProducts = $countRow['total'];
 
         .fade-out {
             opacity: 0;
-            transition: opacity 1s ease-out;
         }
-
-
     </style>
 </head>
 <body>
-
 
 <div class="navbar">
     <div class="logo">Admin Panel</div>
@@ -188,24 +173,22 @@ $totalProducts = $countRow['total'];
 <div class="container">
     <h2>Manage Featured Products</h2>
 
-<!-- Show messages -->
-<?php if (isset($_GET['error'])): ?>
-        <?php if ($_GET['error'] == "max_reached"): ?>
+    <!-- Show messages -->
+    <?php if (isset($_GET['error'])): ?>
+        <?php if ($_GET['error'] === "max_reached"): ?>
             <div class="message error">⚠️ You can only have 6 featured products. Remove one to add a new one.</div>
-        <?php elseif ($_GET['error'] == "empty_fields"): ?>
+        <?php elseif ($_GET['error'] === "empty_fields"): ?>
             <div class="message error">⚠️ Please fill in all fields.</div>
-        <?php elseif ($_GET['error'] == "image_error"): ?>
+        <?php elseif ($_GET['error'] === "image_error"): ?>
             <div class="message error">⚠️ There was an error uploading the image.</div>
         <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['success']) && $_GET['success'] == "added"): ?>
+    <?php elseif (isset($_GET['success']) && $_GET['success'] === "added"): ?>
         <div class="message success">✅ Product added successfully!</div>
     <?php endif; ?>
 
     <form action="add_featured.php" method="POST" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Product Name" required>
-        <input type="text" name="price" placeholder="Price" required>
+        <input type="text" name="description" placeholder="Description" required>
         <input type="file" name="image" required>
         <button type="submit" <?php if ($totalProducts >= 6) echo 'disabled'; ?>>Add Product</button>
     </form>
@@ -213,50 +196,44 @@ $totalProducts = $countRow['total'];
     <!-- Featured Products Table -->
     <table>
         <thead>
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <tr>
-                    <td><img src="<?= htmlspecialchars($row['image_path']); ?>" width="100"></td>
-                    <td><?= htmlspecialchars($row['name']); ?></td>
-                    <td>₱<?= number_format(floatval(preg_replace("/[^0-9.]/", "", $row['price'])), 2); ?></td>
-                    <td>
-                        <a href="edit_featured.php?id=<?= $row['id']; ?>" class="btn btn-complete">Edit</a>
-                        <a href="?delete=<?= $row['id']; ?>" class="btn btn-delete" onclick="return confirm('Delete this product?')">Delete</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><img src="<?= htmlspecialchars($row['image_path']); ?>" width="100"></td>
+                <td><?= htmlspecialchars($row['name']); ?></td>
+                <td><?= htmlspecialchars($row['description']); ?></td>
+                <td>
+                    <a href="edit_featured.php?id=<?= $row['id']; ?>" class="btn btn-complete">Edit</a>
+                    <a href="?delete=<?= $row['id']; ?>" class="btn btn-delete" onclick="return confirm('Delete this product?')">Delete</a>
+                </td>
+            </tr>
+        <?php endwhile; ?>
         </tbody>
     </table>
 </div>
 
 <script>
-        // Notification display logic
-        window.onload = function() {
-            const message = document.querySelector('.message');
-            if (message) {
-                message.style.display = 'block';
-
-                // Fade out the message after 5 seconds
+    window.onload = function () {
+        const message = document.querySelector('.message');
+        if (message) {
+            // Fade out the message after 5 seconds
+            setTimeout(() => {
+                message.classList.add('fade-out');
                 setTimeout(() => {
-                    message.classList.add('fade-out');
-                    setTimeout(() => {
-                        message.style.display = 'none';
-                    }, 1000); // Wait for the fade-out transition
-                }, 5000); // Keep the message visible for 5 seconds
-            }
-        };
-    </script>
+                    message.style.display = 'none';
+                }, 1000);
+            }, 5000);
+        }
+    };
+</script>
 
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
+<?php $conn->close(); ?>

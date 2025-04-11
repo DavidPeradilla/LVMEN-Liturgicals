@@ -89,7 +89,7 @@ if (!$orders_result) {
             border-radius: 5px;
             text-decoration: none;
             margin-top: 20px;
-            display: block;
+            
             width: 200px;
             text-align: center;
         }

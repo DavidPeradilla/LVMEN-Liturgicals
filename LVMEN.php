@@ -287,7 +287,7 @@ if ($result_slideshow->num_rows > 0) {
         <div class="card" style="margin: 1%;">
             <img src="<?= htmlspecialchars($row['image_path']); ?>" style="width: 100%;">
             <h3> <?= htmlspecialchars($row['name']); ?> </h3>
-            <p class="price"> <?= htmlspecialchars($row['price']); ?> </p>
+            <p class="price"> <?= htmlspecialchars($row['description']); ?> </p>
         </div>
     <?php endwhile; ?>
 </div>
