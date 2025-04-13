@@ -1,4 +1,5 @@
 <?php
+session_name("user_session"); // Only if you're using a custom session name consistently
 session_start();
 
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
@@ -8,7 +9,7 @@ if ($conn->connect_error) {
 }
 
 // Ensure user is logged in
-if (!isset($_SESSION['user_session'])) {
+if (!isset($_SESSION['email'])) {
     echo "User not logged in";
     exit;
 }

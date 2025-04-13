@@ -1,4 +1,5 @@
 <?php
+session_name("user_session"); // Add this line
 session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 

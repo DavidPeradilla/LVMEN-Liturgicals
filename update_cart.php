@@ -1,35 +1,34 @@
 <?php
+session_name("user_session");
 session_start();
-$conn = new mysqli("localhost", "root", "", "shopping_cart");
 
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "error" => "Database connection failed."]));
-}
+header('Content-Type: application/json');
 
-if (!isset($_SESSION['email'])) {
-    die(json_encode(["success" => false, "error" => "User not logged in."]));
-}
-
-if (isset($_POST['cart_id'], $_POST['quantity'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cart_id'], $_POST['quantity'])) {
     $cart_id = intval($_POST['cart_id']);
     $quantity = intval($_POST['quantity']);
 
-    if ($quantity < 1) {
-        echo json_encode(["success" => false, "error" => "Invalid quantity."]);
+    $conn = new mysqli("localhost", "root", "", "shopping_cart");
+
+    if ($conn->connect_error) {
+        echo json_encode(["success" => false, "error" => "Connection failed"]);
         exit();
     }
 
+    // Optional: check if the cart_id actually belongs to the logged-in user (for security)
+
     $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ?");
     $stmt->bind_param("ii", $quantity, $cart_id);
-    
+
     if ($stmt->execute()) {
         echo json_encode(["success" => true]);
     } else {
-        echo json_encode(["success" => false, "error" => "Update failed."]);
+        echo json_encode(["success" => false, "error" => "Failed to update"]);
     }
-} else {
-    echo json_encode(["success" => false, "error" => "Invalid request."]);
-}
 
-$conn->close();
+    $stmt->close();
+    $conn->close();
+} else {
+    echo json_encode(["success" => false, "error" => "Invalid request"]);
+}
 ?>

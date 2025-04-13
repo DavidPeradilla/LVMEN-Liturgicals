@@ -1,9 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php"); // Redirect to your login page
-    exit();
-}
+ session_name("admin_session");
+ session_start();
+ 
+ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+     header("Location: login.php");
+     exit();
+ }
 include('db2.php'); // Include the database connection
 
 $search = "";

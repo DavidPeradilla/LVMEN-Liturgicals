@@ -33,7 +33,7 @@ if ($result_slideshow->num_rows > 0) {
 
 
 
-?>
+?> 
 
 <!DOCTYPE html>
 <html> 

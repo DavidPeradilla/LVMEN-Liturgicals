@@ -1,5 +1,12 @@
 <?php
-session_name("user_session"); // Ensure session name matches
+// Determine which session to start based on login intent
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'], $_POST['password'])) {
+    if ($_POST['email'] === "admin@gmail.com" && $_POST['password'] === "admin123") {
+        session_name("admin_session");
+    } else {
+        session_name("user_session");
+    }
+}
 session_start();
 
 include('db2.php');  
@@ -12,10 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Admin Login Check
     if ($email === "admin@gmail.com" && $password === "admin123") {
-        // Start admin session
         session_regenerate_id(); // Regenerate session ID for security
-        $_SESSION['admin_logged_in'] = true;  // Set admin session
-        $_SESSION['email'] = $email; // Store email for redirection/validation purposes
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['email'] = $email;
         header("Location: admin_sales.php");
         exit();
     }
@@ -28,16 +34,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
-        
-        // Verify hashed password (Assuming passwords are stored using password_hash)
+
         if (password_verify($password, $user['password'])) {
-            // Start user session
             session_regenerate_id(); // Regenerate session ID for security
             $_SESSION['user_id'] = $user['id']; 
             $_SESSION['email'] = $user['email']; 
             $_SESSION['first_name'] = $user['first_name']; 
             $_SESSION['last_name'] = $user['last_name'];
-
             header("Location: LVMEN.php"); 
             exit();
         } else {
@@ -51,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $login_conn->close();
 }
 ?>
+
 
 
 
