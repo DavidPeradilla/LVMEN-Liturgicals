@@ -4,36 +4,41 @@ include('db2.php');
 $success_message = "";  
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
-    $Fname = trim($_POST['Fname']);
-    $Lname = trim($_POST['Lname']);
-    $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
+    $Fname = ucfirst(strtolower(trim($_POST['Fname'])));
+    $Lname = ucfirst(strtolower(trim($_POST['Lname'])));
+    $email = strtolower(trim($_POST['email']));
 
-   
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $check = $stmt->get_result();
-
-    if ($check->num_rows > 0) {
-        $success_message = "<p style='color: red;'>Email already registered!</p>";
+    if (!preg_match('/^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/', $_POST['password'])) {
+        $success_message = "<p style='color: red;'>Password must be at least 8 characters and include a number and a special character.</p>";
     } else {
-        // Insert user with prepared statement
-        $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $Fname, $Lname, $email, $password);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
 
-        if ($stmt->execute()) {
-            $success_message = "<p style='color: green;'>Registration successful!</p>";
+        // Check if email already exists
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $check = $stmt->get_result();
+
+        if ($check->num_rows > 0) {
+            $success_message = "<p style='color: red;'>Email already registered!</p>";
         } else {
-            $success_message = "<p style='color: red;'>Error: " . $stmt->error . "</p>";
-        }
-    }
+            // Insert user
+            $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $Fname, $Lname, $email, $password);
 
-    $stmt->close();
-    $conn->close();
+            if ($stmt->execute()) {
+                $success_message = "<p style='color: green;'>Registration successful!</p>";
+            } else {
+                $success_message = "<p style='color: red;'>Error: " . $stmt->error . "</p>";
+            }
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             flex-direction: column;
         }
         .form-container {
-            width: 460px;
+            width: 360px;
             padding: 20px;
             background: white;
             border-radius: 8px;
@@ -222,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </ul>
     </nav> 
 </header>
-<br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- Registration Form -->
 <div class="form-container">
@@ -245,16 +250,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  <label for="showPassword" style="margin-left: -50%; margin-top: 1.3%;">Show Password</label>
             </div>
 
+            <input type="submit" value="Register">
+            <?php echo $success_message; ?>
+
         <div style="display: flex; align-items: center; font-size: 14px; margin-bottom: 15px;">
             <label for="terms" style=" margin-left: 0%;" >By signing up, you agree to the LVMEN <a href="javascript:void(0);" style = "text-decoration: underline; color:blue;"onclick="openModal()">Terms and Conditions</a>.</label>
             <span id="termsError" style="color: red; font-size: 12px; margin-left: 5px; display: none;">This field is required</span>
         </div>
 
 
-        <input type="submit" value="Register">
+       
     </form>
 
-    <?php echo $success_message; ?>
+   
 
     <p class="highlight-box">Already have an account? <a href="login.php">Login here</a></p>
 </div>
@@ -302,6 +310,38 @@ function togglePassword() {
     var passwordInput = document.getElementById("password");
     passwordInput.type = passwordInput.type === "password" ? "text" : "password";
 }
+
+function validateForm() {
+    var checkbox = document.getElementById("terms");
+    var password = document.getElementById("password").value;
+    var passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    if (!checkbox.checked) {
+        document.getElementById("termsError").style.display = "inline";
+        return false;
+    } else {
+        document.getElementById("termsError").style.display = "none";
+    }
+
+    if (!passwordPattern.test(password)) {
+        alert("Password must be at least 8 characters long and include at least one number and one special character.");
+        return false;
+    }
+
+    return true;
+}
+
+function capitalizeFirstLetter(input) {
+    let words = input.value.toLowerCase().split(" ");
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].length > 0) {
+            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+        }
+    }
+    input.value = words.join(" ");
+}
+
+
 </script>
 
 </body>
