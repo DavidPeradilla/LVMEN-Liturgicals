@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar', // Bar chart for sales revenue
+        type: 'line', // Bar chart for sales revenue
         data: {
             labels: ['January', 'February', 'March', 'April', 'May'],
             datasets: [

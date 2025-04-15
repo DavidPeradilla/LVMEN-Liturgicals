@@ -16,67 +16,66 @@ if ($conn->connect_error) {
 
 
 
-// Get selected month and year from form input (default to current month and year)
 $selected_month = $_GET['month'] ?? date('m');
 $selected_year = $_GET['year'] ?? date('Y');
 
-// Fetch Overall Total Sales (All Time) including 'Delivered' and 'Removed' statuses
+//Overall Total Sales (All Time) including 'Delivered' and 'Removed' statuses
 $total_sales_query = "SELECT SUM(total_price) AS total_revenue 
                       FROM orders 
                       WHERE order_status = 'Delivered' OR order_status = 'Removed'";
-// Make sure to include both statuses in the query
+
 $total_sales_result = $conn->query($total_sales_query);
 $total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Overall Total Products Sold (All Time) including 'Delivered' and 'Removed' statuses
+//Overall Total Products Sold (All Time) including 'Delivered' and 'Removed' 
 $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
                          FROM order_items_backup 
                          JOIN orders ON order_items_backup.order_id = orders.id
                          WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
-// Include both statuses for the total products sold
+
 $total_products_result = $conn->query($total_products_query);
 $total_products_sold = $total_products_result->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Fetch Monthly Sales including 'Delivered' and 'Removed' statuses
+// Fetch Monthly Sales including 'Delivered' and 'Removed' 
 $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                         FROM orders 
                         WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                         AND MONTH(order_date) = '$selected_month' 
                         AND YEAR(order_date) = '$selected_year'";
-// Ensure the query includes the 'Removed' status for monthly sales
+
 $monthly_sales_result = $conn->query($monthly_sales_query);
 $monthly_sales = $monthly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Yearly Sales including 'Delivered' and 'Removed' statuses
+// Yearly Sales including 'Delivered' and 'Removed'
 $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                        FROM orders 
                        WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                        AND YEAR(order_date) = '$selected_year'";
-// Ensure the query includes the 'Removed' status for yearly sales
+
 $yearly_sales_result = $conn->query($yearly_sales_query);
 $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Completed Orders with Monthly and Yearly Filter (including 'Delivered' and 'Removed' statuses)
+//Completed Orders with Monthly and Yearly Filter
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
                            AND YEAR(order_date) = '$selected_year' 
                            ORDER BY id DESC";
-// Fetch orders marked as either 'Delivered' or 'Removed' for monthly/yearly stats
+
 $completed_orders_result = $conn->query($completed_orders_query);
 
 if (!$completed_orders_result) {
     die("Error fetching completed orders: " . $conn->error);
 }
 
-// Fetch Total Canceled Orders Revenue (Only Canceled status)
+// Total Canceled Orders Revenue 
 $canceled_orders_query = "SELECT SUM(total_price) AS canceled_revenue 
                           FROM orders 
                           WHERE order_status = 'Canceled'";
 $canceled_orders_result = $conn->query($canceled_orders_query);
 $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_revenue'] ?? 0;
 
-// Fetch Monthly Canceled Orders (Only 'Canceled' status for selected month/year)
+// Fetch Monthly Canceled Orders 
 $monthly_canceled_query = "SELECT SUM(total_price) AS monthly_canceled_revenue 
                            FROM orders 
                            WHERE order_status = 'Canceled'
@@ -86,12 +85,11 @@ $monthly_canceled_result = $conn->query($monthly_canceled_query);
 $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_canceled_revenue'] ?? 0;
 
 
-// Pagination setup
 $records_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $records_per_page;
 
-// Count total completed orders
+//  total completed orders
 $count_query = "SELECT COUNT(*) AS total 
                 FROM orders 
                 WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
@@ -101,7 +99,7 @@ $count_result = $conn->query($count_query);
 $total_records = $count_result->fetch_assoc()['total'] ?? 0;
 $total_pages = ceil($total_records / $records_per_page);
 
-// Modified completed orders query with LIMIT
+// completed orders query with LIMIT
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
@@ -154,6 +152,14 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
     $canceled_sales_data[$row['month'] - 1] = $row['total_revenue']; 
 }
 
+//  recent orders
+$recent_orders_query = "SELECT id, recipient_name, total_price, order_status, order_date 
+                        FROM orders 
+                        ORDER BY order_date DESC 
+                        LIMIT 5";
+$recent_orders_result = $conn->query($recent_orders_query);
+
+
 ?>
 
 
@@ -170,16 +176,9 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="sidebar2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-       /* body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }*/
 
         h2, h3 {
             text-align: center;
@@ -248,7 +247,8 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
             background: white;
             box-shadow: 0px 0px 10px gray;
             border-radius: 5px;
-            margin-left: 11.5%;
+            margin-left: 1%;
+            
         }
         .stats {
             display: flex;
@@ -264,37 +264,45 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
         }
 
         .btn2{
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+             font-size: 14px;
     
-}
-
-.btn-download {
-    background: #17a2b8;
-    color: white;
-    padding: 6px 14px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background 0.3s ease;
-}
-
-.btn-download:hover {
-    background: #138496;
-}
-
-        .chart-container {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
         }
+        .chart-container {
+            display: inline-block;
+    vertical-align: top;
+    margin-right: 2%;
+        }
+        .recent-orders table {
+        margin-top: 20px;
+         width: 100%;
+    border-collapse: collapse;
+}
 
+.recent-orders th, .recent-orders td {
+    padding: 12px;
+    text-align: left;
+}
 
+.recent-orders tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.recent-orders tr:hover {
+    background-color: #f1f1f1;
+}
+
+.chart-container, .recent-orders {
+    width: 48%; /* Adjust the width to fit the two elements side by side */
+}
+
+.recent-orders {
+    display: inline-block;
+    vertical-align: top;
+}
 
     </style>
 </head>
@@ -313,84 +321,75 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
     </div>
 </div>
 
-<br><br>
+<br>
+<div class="container max-w-6xl mx-auto mr-6 mt-1 m-8 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-xl font-bold mb-4">Overview Sales Statistics</h2>
 
-<div class="container">  
-    <h2> Overview Sales Statistics </h2>
-    
-
-
-    <!-- Filter Form -->
-    <form method="GET" class="filter-form">
-        <label for="month">Select Month:</label>
-        <select name="month">
-            <?php for ($m=1; $m<=12; $m++): ?>
-                <option value="<?php echo $m; ?>" <?php if ($m == $selected_month) echo 'selected'; ?>>
-                    <?php echo date("F", mktime(0, 0, 0, $m, 1)); ?>
-                </option>
-            <?php endfor; ?>
-        </select>
-
-        <label for="year">Select Year:</label>
-        <select name="year">
-            <?php for ($y = date('Y'); $y >= 2021; $y--): ?>
-                <option value="<?php echo $y; ?>" <?php if ($y == $selected_year) echo 'selected'; ?>><?php echo $y; ?></option>
-            <?php endfor; ?>
-        </select>
-        <button type="submit">Filter</button>
-        
+  
+    <form method="GET" class="flex flex-wrap gap-3 justify-center items-end mb-6">
+        <div class="flex flex-col text-sm">
+            <label for="month" class="text-gray-600 mb-1">Month:</label>
+            <select name="month" id="month" class="border rounded px-2 py-1">
+                <?php for ($m=1; $m<=12; $m++): ?>
+                    <option value="<?php echo $m; ?>" <?php if ($m == $selected_month) echo 'selected'; ?>>
+                        <?php echo date("F", mktime(0, 0, 0, $m, 1)); ?>
+                    </option>
+                <?php endfor; ?>
+            </select>
+        </div>
+        <div class="flex flex-col text-sm">
+            <label for="year" class="text-gray-600 mb-1">Year:</label>
+            <select name="year" id="year" class="border rounded px-2 py-1">
+                <?php for ($y = date('Y'); $y >= 2021; $y--): ?>
+                    <option value="<?php echo $y; ?>" <?php if ($y == $selected_year) echo 'selected'; ?>>
+                        <?php echo $y; ?>
+                    </option>
+                <?php endfor; ?>
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Filter</button>
     </form>
 
 
-    <!-- Sales Stats -->
-    <div class="stats">
-        <!-- Overall Sales -->
-        <div class="stat-box" style="background: #343a40;">
-            <i class="fas fa-chart-line"></i> <br>
-            <strong>Overall Sales:</strong> ₱<?php echo number_format($total_sales, 2); ?>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-white text-base">
+        <div class="p-4 bg-gray-800 rounded shadow">
+            <i class="fas fa-chart-line text-lg"></i><br>
+            <strong>Overall Sales:</strong><br>₱<?php echo number_format($total_sales, 2); ?>
         </div>
-
-        <!-- Yearly Sales -->
-        <div class="stat-box" style="background: #28a745;">
-            <i class="fas fa-calendar-alt"></i> <br>
-            <strong><?php echo $selected_year; ?> Sales:</strong> ₱<?php echo number_format($yearly_sales, 2); ?>
+        <div class="p-4 bg-green-600 rounded shadow">
+            <i class="fas fa-calendar-alt text-lg"></i><br>
+            <strong><?php echo $selected_year; ?> Sales:</strong><br>₱<?php echo number_format($yearly_sales, 2); ?>
         </div>
-
-        <!-- Monthly Sales -->
-        <div class="stat-box" style="background: #007bff;">
-            <i class="fas fa-calendar"></i> <br>
-            <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales:</strong> ₱<?php echo number_format($monthly_sales, 2); ?>
+        <div class="p-4 bg-blue-600 rounded shadow">
+            <i class="fas fa-calendar text-lg"></i><br>
+            <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales:</strong><br>₱<?php echo number_format($monthly_sales, 2); ?>
+        </div>
+        <div class="p-4 bg-yellow-500 rounded shadow">
+            <i class="fas fa-calendar-times text-lg"></i><br>
+            <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Canceled:</strong><br>
+            ₱<?php echo number_format($monthly_canceled_revenue, 2); ?>
+        </div>
+        <div class="p-4 bg-red-600 rounded shadow">
+            <i class="fas fa-ban text-lg"></i><br>
+            <strong>Total Canceled Orders:</strong><br>₱<?php echo number_format($total_canceled_revenue, 2); ?>
+        </div>
+        <div class="p-4 bg-gray-700 rounded shadow">
+            <i class="fas fa-box text-lg"></i><br>
+            <strong>Total Products Sold:</strong><br><?php echo number_format($total_products_sold); ?>
         </div>
     </div>
 
-    <div class="stats">
-    <div class="stat-box" style="background: #ffc107;">
-    <i class="fas fa-calendar-times"></i> <br>
-    <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Canceled:</strong>
-    ₱<?php echo number_format($monthly_canceled_revenue, 2); ?>
-    </div>
-
-    <div class="stat-box" style="background: #dc3545;">
-        <i class="fas fa-ban"></i> <br>
-        <strong>Total Canceled Orders:</strong> ₱<?php echo number_format($total_canceled_revenue, 2); ?>
-    </div>
-
-    <div class="stat-box">
-        <i class="fas fa-box"></i> <br>
-        <strong>Total Products Sold:</strong> <?php echo number_format($total_products_sold); ?>
-    </div>
-</div>
+<br>
 
 
-
-
-    <!-- Chart Container -->
-    <div class="chart-container">
-        <canvas id="salesChart" width="400" height="200"></canvas>
-    </div>
+   
+<div style="display: flex; justify-content: space-between;">
+        <div class="chart-container">
+            <canvas id="salesChart" width="450" height="410"></canvas>
+        </div>
 
     <script>
-        // Fetch data from PHP variables
+     
         var monthlySales = <?php echo json_encode($monthly_sales_data); ?>;
         var canceledSales = <?php echo json_encode($canceled_sales_data); ?>;
         var months = <?php echo json_encode($months); ?>;
@@ -399,7 +398,7 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
             
             var ctx = document.getElementById('salesChart').getContext('2d');
             var salesChart = new Chart(ctx, {
-                type: 'bar', 
+                type: 'line', 
                 data: {
                     labels: months,
                     datasets: [{
@@ -408,7 +407,7 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1,
-                        type: 'bar' 
+                        type: 'line' 
                     },
                     {
                         label: 'Canceled Orders Revenue',
@@ -431,8 +430,34 @@ while ($row = $canceled_sales_result->fetch_assoc()) {
             });
         });
     </script>
+<br>
 
 
+<div class="recent-orders -mt-2">
+    <h3 class="text-lg font-semibold -mb-2">Recent Orders</h3>
+    <table class="table-auto w-full bg-white rounded-lg shadow-md">
+        <thead>
+            <tr>
+                <th class="p-2 bg-blue-600 text-white">Order ID</th>
+                <th class="p-2 bg-blue-600 text-white">Customer</th>
+                <th class="p-2 bg-blue-600 text-white">Total Price</th>
+                <th class="p-2 bg-blue-600 text-white">Status</th>
+                <th class="p-2 bg-blue-600 text-white">Order Date</th>
+            </tr>   
+        </thead>
+        <tbody>
+            <?php while ($order = $recent_orders_result->fetch_assoc()): ?>
+                <tr>
+                    <td class="p-2"><?php echo $order['id']; ?></td>
+                    <td class="p-2"><?php echo $order['recipient_name']; ?></td>
+                    <td class="p-2">₱<?php echo number_format($order['total_price'], 2); ?></td>
+                    <td class="p-2"><?php echo $order['order_status']; ?></td>
+                    <td class="p-2"><?php echo date("F j, Y", strtotime($order['order_date'])); ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
 
 
 

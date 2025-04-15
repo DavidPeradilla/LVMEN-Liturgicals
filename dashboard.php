@@ -6,7 +6,7 @@
      header("Location: login.php");
      exit();
  }
-include 'db2.php'; // Ensure this file sets $conn
+include 'db2.php'; 
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 
@@ -16,67 +16,67 @@ if ($conn->connect_error) {
 
 
 
-// Get selected month and year from form input (default to current month and year)
+
 $selected_month = $_GET['month'] ?? date('m');
 $selected_year = $_GET['year'] ?? date('Y');
 
-// Fetch Overall Total Sales (All Time) including 'Delivered' and 'Removed' statuses
+// Overall Total Sales (All Time) 
 $total_sales_query = "SELECT SUM(total_price) AS total_revenue 
                       FROM orders 
                       WHERE order_status = 'Delivered' OR order_status = 'Removed'";
-// Make sure to include both statuses in the query
+
 $total_sales_result = $conn->query($total_sales_query);
 $total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Overall Total Products Sold (All Time) including 'Delivered' and 'Removed' statuses
+// Overall Total Products Sold (All Time) 
 $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
                          FROM order_items_backup 
                          JOIN orders ON order_items_backup.order_id = orders.id
                          WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
-// Include both statuses for the total products sold
+
 $total_products_result = $conn->query($total_products_query);
 $total_products_sold = $total_products_result->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Fetch Monthly Sales including 'Delivered' and 'Removed' statuses
+// Monthly Sales 
 $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                         FROM orders 
                         WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                         AND MONTH(order_date) = '$selected_month' 
                         AND YEAR(order_date) = '$selected_year'";
-// Ensure the query includes the 'Removed' status for monthly sales
+
 $monthly_sales_result = $conn->query($monthly_sales_query);
 $monthly_sales = $monthly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Yearly Sales including 'Delivered' and 'Removed' statuses
+//  Yearly Sales 
 $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                        FROM orders 
                        WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                        AND YEAR(order_date) = '$selected_year'";
-// Ensure the query includes the 'Removed' status for yearly sales
+
 $yearly_sales_result = $conn->query($yearly_sales_query);
 $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Fetch Completed Orders with Monthly and Yearly Filter (including 'Delivered' and 'Removed' statuses)
+//  Completed Orders with Monthly and Yearly
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
                            AND YEAR(order_date) = '$selected_year' 
                            ORDER BY id DESC";
-// Fetch orders marked as either 'Delivered' or 'Removed' for monthly/yearly stats
+
 $completed_orders_result = $conn->query($completed_orders_query);
 
 if (!$completed_orders_result) {
     die("Error fetching completed orders: " . $conn->error);
 }
 
-// Fetch Total Canceled Orders Revenue (Only Canceled status)
+//  Total Canceled Orders Revenue 
 $canceled_orders_query = "SELECT SUM(total_price) AS canceled_revenue 
                           FROM orders 
                           WHERE order_status = 'Canceled'";
 $canceled_orders_result = $conn->query($canceled_orders_query);
 $total_canceled_revenue = $canceled_orders_result->fetch_assoc()['canceled_revenue'] ?? 0;
 
-// Fetch Monthly Canceled Orders (Only 'Canceled' status for selected month/year)
+// Monthly Canceled Orders 
 $monthly_canceled_query = "SELECT SUM(total_price) AS monthly_canceled_revenue 
                            FROM orders 
                            WHERE order_status = 'Canceled'
@@ -86,12 +86,11 @@ $monthly_canceled_result = $conn->query($monthly_canceled_query);
 $monthly_canceled_revenue = $monthly_canceled_result->fetch_assoc()['monthly_canceled_revenue'] ?? 0;
 
 
-// Pagination setup
 $records_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $records_per_page;
 
-// Count total completed orders
+
 $count_query = "SELECT COUNT(*) AS total 
                 FROM orders 
                 WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
@@ -101,7 +100,7 @@ $count_result = $conn->query($count_query);
 $total_records = $count_result->fetch_assoc()['total'] ?? 0;
 $total_pages = ceil($total_records / $records_per_page);
 
-// Modified completed orders query with LIMIT
+
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 

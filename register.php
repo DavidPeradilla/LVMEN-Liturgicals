@@ -217,7 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="user_products.php"><li>CATALOG</li></a>
             <a href="Contact.php"><li>CONTACT US</li></a>
             <a href="FAQs.php"><li>FAQs</li></a>
-            <a href="profile.php">Profile</a>
+            <a href="profile.php">PROFILE</a>
             <?php if (isset($_SESSION['email'])): ?>
                 <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
             <?php else: ?>

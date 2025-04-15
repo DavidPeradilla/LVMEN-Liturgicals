@@ -13,7 +13,7 @@ $search = "";
 // Check if a search query is submitted
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
-    $sql = "SELECT id, FirstName, LastName, username, email FROM users 
+    $sql = "SELECT id, first_name, last_name, email FROM users 
             WHERE id = '$search'";
 } else {
     $sql = "SELECT id, first_name, last_name, email FROM users";; // Fetch all users if no search query
@@ -173,9 +173,6 @@ $result = $conn->query($sql);
         <?php endwhile; ?>
     </table>
 
-    <div class="back-link"> 
-    <a href="dashboard.php">Back to Admin Panel</a>
-    </div>
 
 </body>
 </html>
