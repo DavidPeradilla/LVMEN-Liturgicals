@@ -35,7 +35,9 @@ $stmt->close();
     <head>
         <title> Contact </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar2.css"> 
+        <link rel="stylesheet" type="text/css" href="navbar2.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+ 
         <style>
 #map {
     width: 2%;
@@ -106,18 +108,11 @@ input[type="submit"]:hover {
 body {
   
   background-image: url(p1.jpg) !important;
-
-}
-
-body::after {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 0;
-  height: 150.2%;
-  width: 100%;
   background-color: rgba(0, 0, 0, 0.8);
+
 }
+
+
 
 section {
   position: relative;
@@ -207,7 +202,7 @@ section {
 .contact-form h2 {
   font-weight: bold;
   font-size: 2em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   color: #333;
 }
 
@@ -287,10 +282,12 @@ section {
 }
 
 #star-rating {
-  display: none; /* hidden initially */
-  justify-content: start;
-  gap: 5px;
-}
+    direction: ltr;
+    unicode-bidi: bidi-override;
+    display: inline-flex;
+    flex-direction: row-reverse; /* Right to left visually */
+    margin-right: 68%;
+  }
 
 
 #star-rating input[type="radio"] {
@@ -423,11 +420,11 @@ section {
             </div>
 
            <div id="star-rating">
-            <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
-            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
-            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
-            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
             <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+            <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
            </div>
 
             <div class="input-box">
@@ -467,7 +464,7 @@ section {
 </script>
   </section>
 
-  <footer style="margin-top: -3.55%;">
+  <footer style="margin-top: 1.55%;">
     <div class="container">
         <div class="footer-left">
             <h3>Location</h3>

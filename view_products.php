@@ -219,7 +219,7 @@ $conn->close();
                         <i class="fas fa-save"></i> Save
                     </button>
                     <a href="?delete=<?php echo $row['id']; ?>" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">
-                        <i class="fas fa-trash"></i> Delete
+                        <i class="fas fa-trash"></i> 
                     </a>
                 </td>
             </tr>

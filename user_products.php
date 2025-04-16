@@ -94,7 +94,7 @@ $conn->close();
         width: 100%;
         padding: 10px;
         font-size: 16px;
-        border: 2px solid #007bff;
+        border-color:rgb(102, 105, 109);
         border-radius: 10px;
         background: #fff;
         color: #333;    
@@ -105,7 +105,7 @@ $conn->close();
 
     .filter-select:hover, .filter-select:focus {
         background: #eef5ff;
-        border-color: #0056b3;
+        border-color:rgb(102, 105, 109);
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     }
 

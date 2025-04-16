@@ -65,6 +65,7 @@ $stmt->close();
     <title>My Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
     <link rel="stylesheet" type="text/css" href="navbar2.css">
     <style>
@@ -218,8 +219,9 @@ $stmt->close();
     </nav>
 </header>
 
-<br><br><br><br>
-<div class="container">
+<br><br><br><br><br>
+<div class="mx-auto mt-10 max-w-3xl bg-white p-4 rounded-xl shadow-lg">
+
     <h2>My Profile</h2>
     <table>
         <tr><th>First Name</th><td><?php echo htmlspecialchars($user['first_name']); ?></td></tr>
@@ -242,7 +244,7 @@ $stmt->close();
         <td>
     <?php
         if ($order['order_status'] == 'Canceled') {
-            echo '<button class="cancel-reason-btn" onclick="openCancellationReasonModal(' . $order['id'] . ')">View Reason</button>';
+            echo '<button class="cancel-reason-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition" onclick="openCancellationReasonModal(' . $order['id'] . ')">View Reason</button>';
         } else {
             echo '-';
         }

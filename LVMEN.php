@@ -46,6 +46,9 @@ if ($result_slideshow->num_rows > 0) {
 
 
         <style>
+
+
+ 
     /* Slideshow container */
     .slideshow-container {
         position: relative;
