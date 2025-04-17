@@ -155,5 +155,31 @@ $conn->close();
     </form>
 </div>
 
+
+<script>
+    // Function to capitalize the first letter of each word in the input
+    function capitalizeFirstLetter(inputField) {
+        let value = inputField.value;
+        value = value.replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+        inputField.value = value;
+    }
+
+    // Attach the function to the fields
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('input[name="first_name"]').addEventListener('input', function() {
+            capitalizeFirstLetter(this);
+        });
+        document.querySelector('input[name="last_name"]').addEventListener('input', function() {
+            capitalizeFirstLetter(this);
+        });
+        document.querySelector('input[name="address"]').addEventListener('input', function() {
+            capitalizeFirstLetter(this);
+        });
+    });
+</script>
+
+
 </body>
 </html>

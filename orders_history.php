@@ -95,8 +95,7 @@ if (!$orders_result) {
             border-radius: 5px;
             text-decoration: none;
             margin-top: 20px;
-            
-            width: 200px;
+            width: 150px;
             text-align: center;
         }
 
@@ -171,7 +170,7 @@ if (!$orders_result) {
         <?php endwhile; ?>
     </table>
 
-    <!-- Pagination -->
+
     <div class="pagination">
         <?php if ($page > 1): ?>
             <a href="orders_history.php?page=<?php echo $page - 1; ?>">Previous</a>

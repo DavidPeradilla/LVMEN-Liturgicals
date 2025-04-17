@@ -111,6 +111,7 @@ $completed_orders_result = $conn->query($completed_orders_query);
 
 
 
+
 ?>
 
 <!DOCTYPE html>
@@ -287,6 +288,13 @@ $completed_orders_result = $conn->query($completed_orders_query);
         <i class="fas fa-history"></i> All Orders History
     </button>
 </form>
+
+<form method="GET" action="canceled_orders.php" style="display: inline-block; margin-left: 80%;">
+    <button type="submit" class="btn-download">
+        <i class="fas fa-history"></i> Canceled Orders  
+    </button>
+</form>
+
 
 <h3>Completed Orders</h3>
         <tr>

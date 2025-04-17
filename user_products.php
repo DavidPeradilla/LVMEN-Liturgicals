@@ -17,7 +17,8 @@ $sql = "SELECT products.id, products.name, products.price, products.image, produ
         FROM products 
         JOIN categories ON products.category_id = categories.id 
         $whereClause
-        ORDER BY products.id DESC";
+        ORDER BY RAND()";
+
 
 $result = $conn->query($sql);
 $conn->close();
