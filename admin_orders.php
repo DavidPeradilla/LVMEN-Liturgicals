@@ -116,9 +116,7 @@ $total_sales = file_get_contents("get_sales.php");
             transition: transform 0.2s;
         }
 
-        img:hover {
-            transform: scale(1.5);
-        }
+
 
         .modal {
             display: none;
@@ -150,8 +148,8 @@ $total_sales = file_get_contents("get_sales.php");
             font-weight: bold;
         }
 
-        .close:hover,
-        .close:focus {
+        .close:hover
+         {
             color: black;
             text-decoration: none;
             cursor: pointer;

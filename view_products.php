@@ -168,7 +168,46 @@ $conn->close();
             font-size: 14px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
         }
+
+
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 95vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+
     </style>
+
 </head>
 <body>
 
@@ -213,7 +252,7 @@ $conn->close();
                         <?php } ?>
                     </select>
                 </td>
-                <td><img src="<?php echo $row['image']; ?>" alt="Product"></td>
+                <td> <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>" onclick="openModal('<?php echo $row['image']; ?>')">
                 <td>
                     <button class="action-btn save-btn" onclick="saveProduct(<?php echo $row['id']; ?>)">
                         <i class="fas fa-save"></i> Save
@@ -260,7 +299,22 @@ function showToast(message) {
         toast.style.display = "none";
     }, 2000);
 }
+
+
+function openModal(imageSrc) {
+        document.getElementById('modalImage').src = imageSrc;
+        document.getElementById('imageModal').style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
 </script>
+
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modalImage" class="modal-content">
+</div>
 
 </body>
 </html>

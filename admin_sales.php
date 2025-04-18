@@ -19,7 +19,7 @@ if ($conn->connect_error) {
 $selected_month = $_GET['month'] ?? date('m');
 $selected_year = $_GET['year'] ?? date('Y');
 
-//Overall Total Sales (All Time) including 'Delivered' and 'Removed' statuses
+//Overall Total Sales (All Time) 
 $total_sales_query = "SELECT SUM(total_price) AS total_revenue 
                       FROM orders 
                       WHERE order_status = 'Delivered' OR order_status = 'Removed'";
@@ -27,7 +27,7 @@ $total_sales_query = "SELECT SUM(total_price) AS total_revenue
 $total_sales_result = $conn->query($total_sales_query);
 $total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-//Overall Total Products Sold (All Time) including 'Delivered' and 'Removed' 
+//Overall Total Products Sold 
 $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_products_sold 
                          FROM order_items_backup 
                          JOIN orders ON order_items_backup.order_id = orders.id
@@ -36,7 +36,7 @@ $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_produc
 $total_products_result = $conn->query($total_products_query);
 $total_products_sold = $total_products_result->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Fetch Monthly Sales including 'Delivered' and 'Removed' 
+// Fetch Monthly Sales
 $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                         FROM orders 
                         WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
@@ -46,7 +46,7 @@ $monthly_sales_query = "SELECT SUM(total_price) AS total_revenue
 $monthly_sales_result = $conn->query($monthly_sales_query);
 $monthly_sales = $monthly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-// Yearly Sales including 'Delivered' and 'Removed'
+// Yearly Sales including 
 $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue 
                        FROM orders 
                        WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
@@ -55,7 +55,7 @@ $yearly_sales_query = "SELECT SUM(total_price) AS total_revenue
 $yearly_sales_result = $conn->query($yearly_sales_query);
 $yearly_sales = $yearly_sales_result->fetch_assoc()['total_revenue'] ?? 0;
 
-//Completed Orders with Monthly and Yearly Filter
+//Completed Orders 
 $completed_orders_query = "SELECT * FROM orders 
                            WHERE (order_status = 'Delivered' OR order_status = 'Removed') 
                            AND MONTH(order_date) = '$selected_month' 
@@ -109,10 +109,7 @@ $completed_orders_query = "SELECT * FROM orders
 $completed_orders_result = $conn->query($completed_orders_query);
 
 
-//chart
-$total_sales_query = "SELECT SUM(total_price) AS total_revenue FROM orders WHERE order_status = 'Delivered'";
-$total_sales_result = $conn->query($total_sales_query);
-$total_sales = $total_sales_result->fetch_assoc()['total_revenue'] ?? 0;
+
 
 
 $selected_year = $_GET['year'] ?? date('Y');
@@ -158,6 +155,19 @@ $recent_orders_query = "SELECT id, recipient_name, total_price, order_status, or
                         ORDER BY order_date DESC 
                         LIMIT 5";
 $recent_orders_result = $conn->query($recent_orders_query);
+
+$best_selling_query = "
+    SELECT p.name AS name, p.image, SUM(oib.quantity) AS total_sold
+    FROM order_items_backup oib
+    JOIN products p ON oib.product_id = p.id
+    JOIN orders o ON oib.order_id = o.id
+    WHERE o.order_status = 'Delivered' OR o.order_status = 'Removed'
+    GROUP BY p.name, p.image
+    ORDER BY total_sold DESC
+    LIMIT 5
+";
+$best_selling_result = $conn->query($best_selling_query);
+
 
 
 ?>
@@ -462,14 +472,40 @@ $recent_orders_result = $conn->query($recent_orders_query);
 
 
 
-
 </div>
 
 
 
 
 
-    
+<div class="mt-8">
+    <h3 class="text-lg font-semibold mb-2">Best Selling Products</h3>
+    <table class="table-auto w-full bg-white rounded-lg shadow-md">
+        <thead>
+            <tr>
+                <th class="p-2 bg-green-600 text-white">Image</th>
+                <th class="p-2 bg-green-600 text-white">Product Name</th>
+                <th class="p-2 bg-green-600 text-white">Total Sold</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($best_selling_result && $best_selling_result->num_rows > 0): ?>
+                <?php while ($row = $best_selling_result->fetch_assoc()): ?>
+                    <tr>
+                        <td class="p-2 text-center">
+                        <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>" onclick="openModal('<?php echo $row['image']; ?>')" alt="<?php echo htmlspecialchars($row['name']); ?>" class="w-16 h-16 object-cover rounded mx-auto">
+                        </td>
+                        <td class="p-2 text-center"><?php echo htmlspecialchars($row['name']); ?></td>
+                        <td class="p-2 text-center"><?php echo number_format($row['total_sold']); ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr><td colspan="3" class="text-center p-2">No sales data available.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
 
 </body>
 </html>
