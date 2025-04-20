@@ -35,7 +35,7 @@ $stmt->close();
     <head>
         <title> Contact </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar2.css">
+        <link rel="stylesheet" type="text/css" href="navbar3.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
  
         <style>
@@ -317,35 +317,41 @@ section {
 
 
 
-
         </style>
     </head>
 <body>
   
-<!--NAVBAR-->
+<!-- NAVBAR -->
 <header> 
-<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
+  </a>
+
   <nav class="navbar"> 
-     <ul class="nav-links">
-     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-      <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
-      <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> PROFILE </a>
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
 
       <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-  <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-  <?php endif; ?>
-  <a href="view_cart.php" class="cart-link">🛒</a>
-     </ul>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+      <?php else: ?>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <?php endif; ?>
+    </ul>
   </nav> 
 </header>
-<!--END-->
+<!-- END -->
 
-
+<br><br>
 
 <section id="contactForm">
     <div class="section-header">
@@ -464,19 +470,10 @@ section {
 </script>
   </section>
 
-  <footer style="margin-top: 1.55%;">
-    <div class="container">
-        <div class="footer-left">
-            <h3>Location</h3>
-            <p>Blk 2 Lot 15,<br>Annex 3 Shappel Homes Perpetual Village 8<br>Habay 1 , Bacoor Cavite, Philippines</p>
-        </div>
-        <div class="footer-right">
-            <h3>Opening Hours</h3>
-            <ul>
-                <li>Monday - Friday: 10am - 10pm</li>
-                <li>Saturday: 11am - 11pm</li>
-                <li>Sunday: Closed</li>
-            </ul>
+  <footer style="margin-top: 1.55%; height: 300px;">
+    <div class="container" style="height: 50%;">
+        <div class="footer-right">  
+            <h3>GET IN TOUCH</h3>
             <div class="social">
               <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank" ><img src="Img/facebook.png" alt="Facebook"></a>
               <a href="#"><img src="Img/twitter.png" target="_blank" alt="Twitter"></a>

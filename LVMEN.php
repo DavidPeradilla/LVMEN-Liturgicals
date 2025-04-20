@@ -9,6 +9,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch latest products (e.g., latest 4)
+$sql_latest = "SELECT * FROM products ORDER BY created_at DESC LIMIT 3";
+$result_latest = $conn->query($sql_latest);
+
 // Fetch featured products
 $sql = "SELECT * FROM featured_products";
 $result = $conn->query($sql);
@@ -33,6 +37,9 @@ if ($result_slideshow->num_rows > 0) {
 
 
 
+
+
+
 ?> 
 
 <!DOCTYPE html>
@@ -40,109 +47,149 @@ if ($result_slideshow->num_rows > 0) {
     <head>
         <title> LVMEN Liturgicals </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar2.css"> 
-        <link rel="stylesheet" type="text/css" href="footer.css"> 
+        <link rel="stylesheet" type="text/css" href="navbar3.css"> 
+        <link rel="stylesheet" type="text/css" href="footer3.css"> 
+        <link rel="stylesheet" type="text/css" href="card.css"> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
         <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
-
-
         <style>
 
-
  
-    /* Slideshow container */
-    .slideshow-container {
-        position: relative;
-        max-width: 100%;
-        margin: auto;
-        overflow: hidden;
-    }
-
-    /* Hide all images by default */
-    .mySlides2 {
-        display: none;
-    }
-
-    /* Image styling */
-    .slide-image {
-        width: 100%; /* Make the images fill the container */
-        height: auto; /* Maintain aspect ratio */
-        object-fit: cover; /* Ensures images cover the entire container without distorting */
-    }
-
-    /* Dots for slide indicators */
-    .dot {
-        height: 15px;
-        width: 15px;
-        margin: 0 2px;
-        background-color: #bbb;
-        border-radius: 50%;
-        display: inline-block;
-        transition: background-color 0.6s ease;
-    }
-
-    /* Style for active dot */
-    .active {
-        background-color: #717171;
-    }
-
-    /* Previous and next buttons */
-    .prev, .next {
-        cursor: pointer;
-        position: absolute;
-        top: 50%;
-        padding: 16px;
-        margin-top: -22px;
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-        transition: 0.3s;
-        border-radius: 0 3px 3px 0;
-        user-select: none;
-    }
-
-    .next {
-        right: 0;
-        border-radius: 3px 0 0 3px;
-    }
-
-    .prev:hover, .next:hover {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    .card {
-    width: 350px;
-    height: 480px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+.slideshow-container {
+    position: relative;
+    max-width: 100%;
+    height: 626px; /* Set a fixed height to prevent jumping */
+    margin: auto;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Position slides absolutely on top of each other */
+.mySlides {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 101%; 
+    display: none;
+    z-index: 0;
+}
+
+/* Image styling */
+.slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Optional fade animation */
+.fade {
+    animation: fadeEffect 1s;
+}
+
+@keyframes fadeEffect {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    user-select: none;
+    transition: 0.6s ease;
+    display: block; /* force always visible */
+    z-index: 1; /* ensure above images */
+}
+
+.next {
+    right: 0;
+}
+
+body{ 
+    background: #303134;
+}
+
+.headline, .headline2 {
+    font-family: 'Playfair Display', serif;
+   font-size: 35px;
+    font-weight: 700;
+    color: white;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
     text-align: center;
-    background-color: white;
+}
+
+.headline.visible, .headline2.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card {
+    width: 350px;
+    height: 560px;
+    border-radius: 16px; /* Rounded corners */
+    background: #fff; /* White background */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Soft shadow */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    text-align: center;
+    transition: all 0.4s ease;
+    transform: translateY(30px); /* Start position */
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 0.8s forwards; /* Add animation */
+    padding: 20px; /* Inner padding */
+    position: relative;
 }
 
+
+
 .card img {
-    height: 350px;
+    height: 400px;
     object-fit: cover;
     width: 100%;
+    transition: transform 0.3s ease;
+}
+
+
+.card:hover img {
+    transform: scale(1.05);
 }
 
 .card h3 {
     font-size: 18px;
-    margin: 10px 0;
+   margin-bottom: 10px;
     padding: 0 10px;
     height: 50px;
     overflow: hidden;
 }
 
+
 .card .price {
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 15%;
     color: #333;
 }
+
+.card.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 
 
 .row {
@@ -152,139 +199,124 @@ if ($result_slideshow->num_rows > 0) {
     gap: 20px;
 }
 
+.cart-link {
+    position: relative;
+    display: inline-block;
+    font-size: 24px; 
+}
+
+#cart-icon {
+    width: 30px;
+    height: 30px; 
+}
+
 
 </style>
     </head>
 <body>
+    
 <!-- NAVBAR -->
 <header> 
-<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
+  </a>
+
   <nav class="navbar"> 
-     <ul class="nav-links">
-     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-      <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
-      <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> PROFILE </a>
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
 
       <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
       <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
-<a href="view_cart.php" class="cart-link">🛒</a>
-     </ul>
+    </ul>
   </nav> 
 </header>
 <!-- END -->
 
 
-<!-- SLIDESHOW -->
 <div class="slideshow-container">
     <?php
-    // Fetch active slideshow images
     $sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
     $result_slideshow = $conn->query($sql_slideshow);
-    
-    if ($result_slideshow->num_rows > 0) {
-        $counter = 1;
-        while ($slide = $result_slideshow->fetch_assoc()) {
+    $slides = [];
+
+    if ($result_slideshow && $result_slideshow->num_rows > 0) {
+        while ($row = $result_slideshow->fetch_assoc()) {
+            $slides[] = $row;
+        }
+
+        foreach ($slides as $index => $slide) {
             echo '<div class="mySlides fade">';
-            echo '<div class="numbertext">' . $counter . '/' . $result_slideshow->num_rows . '</div>';
+            echo '<div class="numbertext">' . ($index + 1) . '/' . count($slides) . '</div>';
             echo '<img src="' . htmlspecialchars($slide['image_path']) . '" class="slide-image">';
             echo '</div>';
-            $counter++;
         }
     } else {
-        echo "No slideshow images found.";
+        echo '<p>No slideshow images found.</p>';
     }
     ?>
-    
-    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-    <a class="next" onclick="plusSlides(1)">&#10095;</a>
 </div>
 
-<div style="text-align:center">
-    <?php
-    // Display dots for each active slide
-    for ($i = 1; $i <= $result_slideshow->num_rows; $i++) {
-        echo '<span class="dot"></span>';
-    }
-    ?>
-</div>
+
 
 <!-- END -->
 
+
 <script>
-    let slideIndex = 0;
-    let slides = document.getElementsByClassName("mySlides");
-    let dots = document.getElementsByClassName("dot");
+let slideIndex = 0;
 
-    // Initialize the slideshow to start at the first slide
-    showSlides();
+function showSlidesAuto() {
+    const slides = document.getElementsByClassName("mySlides");
 
-    function showSlides() {
-        let i;
-        
-        // Hide all slides
-        for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";  
-        }
-
-        slideIndex++;
-        
-        // If we've reached the end, reset to the first slide
-        if (slideIndex > slides.length) {
-            slideIndex = 1;
-        }
-
-        // Reset dot styling
-        for (i = 0; i < dots.length; i++) {
-            dots[i].className = dots[i].className.replace(" active", "");
-        }
-
-        // Display the current slide and highlight the corresponding dot
-        slides[slideIndex-1].style.display = "block";
-        dots[slideIndex-1].className += " active";
-
-        // Change the slide every 3 seconds
-        setTimeout(showSlides, 3000);
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
     }
 
-    function plusSlides(n) {
-        slideIndex += n;
+    slideIndex++;
+    if (slideIndex > slides.length) { slideIndex = 1; }
 
-        // If we've reached the end, reset to the first slide
-        if (slideIndex > slides.length) {
-            slideIndex = 1;
-        }
-
-        if (slideIndex < 1) {
-            slideIndex = slides.length;
-        }
-
-        showSlides();
+    if (slides.length > 0) {
+        slides[slideIndex - 1].style.display = "block";
     }
+
+    setTimeout(showSlidesAuto, 5000); // Change image every 5 seconds
+}
+
+document.addEventListener("DOMContentLoaded", showSlidesAuto);
 </script>
 
+<!--LATEST PRODUCTS-->
+
+</br></br></br></br>
+
+<p class="headline" ALIGN="center"> LATEST PRODUCTS </p>
+<div class="row">
+    <?php while ($latest = $result_latest->fetch_assoc()): ?>
+        <div class="card" style="margin: 1%;">
+        <img src="<?= htmlspecialchars($latest['image']); ?>" alt="<?= htmlspecialchars($latest['name']); ?>">
+            <h3> <?= htmlspecialchars($latest['name']); ?> </h3>
+        </div>
+    <?php endwhile; ?>
+</div>
+
+<!--END-->
 
 
-    <div class="backgroundcolor" > 
-  
-     <p class="header1" ALIGN="left"> 2 <br> </p>
-     <p class="headerstyle" ALIGN="left"> YEARS ON THE MARKET  </p>
 
-      
-    <p class="header2" ALIGN="left"> 39 </p>
-    <p class="headerstyle2" ALIGN="left"> PRODUCTS OFFERS  </p>
-    
-    </div>
-    
- <!--BEST SELLERS-->
-</br>
-</br>
- <p class="headline" ALIGN="center"> FEATURED PRODUCTS </p> 
+</br></br></br></br>
+<p class="headline headline2" ALIGN="center"> FEATURED PRODUCTS </p> 
 
  <div class="row">
     <?php while ($row = $result->fetch_assoc()): ?>
@@ -299,33 +331,125 @@ if ($result_slideshow->num_rows > 0) {
 <?php $conn->close(); ?>
 <!--END-->
 
-</br>
-</br> 
+
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="user_products.php" style="
+        display: inline-block;
+        padding: 20px 84px;
+        background-color: white;
+        color: #837953;
+        border: 2px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+    " onmouseover="this.style.backgroundColor='#837953'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#837953';">
+        View Full Catalog
+    </a>
+</div>
+
+</br></br> 
+
+<div class="backgroundcolor" > 
+  
+  <p class="header1" ALIGN="left"> 2 <br> </p>
+  <p class="headerstyle" ALIGN="left"> YEARS ON THE MARKET  </p>
+
+   
+ <p class="header2" ALIGN="left"> 39 </p>
+ <p class="headerstyle2" ALIGN="left"> PRODUCTS OFFERS  </p>
+ 
+ </div>
 
 
 <!--FOOTER-->
-<footer>
-   <div class="container">
+<footer class="site-footer">
+  <div class="container">
     <div class="get-in-touch">
-              <h4>Get in Touch</h4>
-              <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
-                <img src="Img/facebook.png" alt="Facebook">
-              </a>
-              <a href="#" target="_blank">
-                <img src="Img/twitter.png" alt="Twitter">
-              </a>
-              <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
-                <img src="Img/instagram.png" alt="Instagram">
-              </a>
-           </div>
-   </div>
-   
-   <div class="footer-bottom">
-       <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
-       <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
-   </div>
+      <h4>Get in Touch</h4>
+      <div class="social-icons">
+        <a href="https://www.facebook.com/LvmenLiturgicalVestments" target="_blank">
+          <img src="Img/facebook.png" alt="Facebook">
+        </a>
+        <a href="#" target="_blank">
+          <img src="Img/twitter.png" alt="Twitter">
+        </a>
+        <a href="https://www.instagram.com/explore/locations/108212715189138/dankatsu/" target="_blank">
+          <img src="Img/instagram.png" alt="Instagram">
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 LVMEN Liturgicals. All Rights Reserved.</p>
+    <p><a href="Contact.php">Contact Us</a> | <a href="/privacy-policy">Terms and Condition</a></p>
+  </div>
 </footer>
+
  <!--END--> 
+
+
+
+ <script>
+const cards = document.querySelectorAll('.card');
+
+// Function to handle visibility on scroll and initial load
+const handleCardVisibility = () => {
+    const triggerBottom = window.innerHeight * 0.9;
+
+    cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        const cardBottom = card.getBoundingClientRect().bottom;
+
+        // Check if the card is in the viewport
+        if (cardTop < triggerBottom && cardBottom > 0) {
+            card.classList.add('visible');
+        } else {
+            card.classList.remove('visible');
+        }
+    });
+};
+
+// Run the visibility check on page load
+document.addEventListener('DOMContentLoaded', handleCardVisibility);
+
+// Run the visibility check on scroll
+window.addEventListener('scroll', handleCardVisibility);
+
+ // Select both headline elements
+const headlines = document.querySelectorAll('.headline, .headline2');  // Selects both .headline and .headline2
+
+// Function to handle fade-in effect when scrolling
+const toggleHeadlineVisibility = () => {
+    const triggerBottom = window.innerHeight * 0.9;  // Trigger when 90% of the viewport height is reached
+    
+    // Iterate through each headline and check its position
+    headlines.forEach(headline => {
+        const headlineTop = headline.getBoundingClientRect().top;  // Get the position of the headline element
+        
+        // Check if the headline is in view
+        if (headlineTop < triggerBottom) {
+            headline.classList.add('visible');  // Add the 'visible' class to trigger fade-in
+        } else {
+            headline.classList.remove('visible');  // Remove the 'visible' class to fade it out
+        }
+    });
+};
+
+// Listen for the 'scroll' event to trigger the fade-in/fade-out effect
+window.addEventListener('scroll', toggleHeadlineVisibility);
+
+// Run the function once on page load to handle the initial visibility
+window.addEventListener('load', toggleHeadlineVisibility);
+
+
+
+
+    
+</script>
+
 
 
 </body>

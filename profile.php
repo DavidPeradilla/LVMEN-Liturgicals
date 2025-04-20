@@ -67,7 +67,7 @@ $stmt->close();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
-    <link rel="stylesheet" type="text/css" href="navbar2.css">
+    <link rel="stylesheet" type="text/css" href="navbar3.css">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -133,10 +133,9 @@ $stmt->close();
             width: 200px;
             margin: 20px auto;
             text-align: center;
+            
         }
-        .edit-profile-btn:hover {
-            background:rgb(95, 96, 96);
-        }
+ 
         .logout-link {
             display: block;
             text-align: center;
@@ -198,31 +197,40 @@ $stmt->close();
 </head>
 <body>
 
-<!--NAVBAR-->
-<header>
-    <a href="LVMEN.php"><img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
-    <nav class="navbar">
-        <ul class="nav-links">
-            <a href="LVMEN.php"><li>HOMEPAGE</li></a>
-            <a href="AboutUs.php"><li>ABOUT US</li></a>
-            <a href="user_products.php"><li>CATALOG</li></a>
-            <a href="Contact.php"><li>CONTACT US</li></a>
-            <a href="FAQs.php"><li>FAQs</li></a>
-            <a href="profile.php">PROFILE</a>
-            <?php if (isset($_SESSION['email'])): ?>
-                <a href="logout.php" class="login-btn"><li>LOGOUT</li></a>
-            <?php else: ?>
-                <a href="login.php" class="login-btn"><li>LOGIN</li></a>
-            <?php endif; ?>
-            <a href="view_cart.php" class="cart-link">🛒</a>
-        </ul>
-    </nav>
+<!-- NAVBAR -->
+<header> 
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
+  </a>
+
+  <nav class="navbar"> 
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
+
+      <?php if (isset($_SESSION['email'])): ?>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+      <?php else: ?>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <?php endif; ?>
+    </ul>
+  </nav> 
 </header>
+<!-- END -->
 
 <br><br><br><br><br>
 <div class="mx-auto mt-10 max-w-3xl bg-white p-4 rounded-xl shadow-lg">
 
-    <h2>My Profile</h2>
+    <h2 style=" font-weight: bold;">My Profile</h2>
     <table>
         <tr><th>First Name</th><td><?php echo htmlspecialchars($user['first_name']); ?></td></tr>
         <tr><th>Last Name</th><td><?php echo htmlspecialchars($user['last_name']); ?></td></tr>
@@ -232,7 +240,7 @@ $stmt->close();
     </table>
     <a href="edit_profile.php" class="edit-profile-btn">Edit Profile</a>
 
-    <h2>My Order History</h2>
+    <h2 style=" font-weight: bold;">My Order History</h2>
     <?php if ($orders_result->num_rows > 0) { ?>
     <table>
     <tr><th>Order ID</th><th>Total Price</th><th>Status</th><th>Reason</th><th>Track</th><th>Action</th></tr>
@@ -244,7 +252,7 @@ $stmt->close();
         <td>
     <?php
         if ($order['order_status'] == 'Canceled') {
-            echo '<button class="cancel-reason-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition" onclick="openCancellationReasonModal(' . $order['id'] . ')">View Reason</button>';
+            echo '<button class="cancel-reason-btn bg-gray-600 text-white px-2 py-2 rounded-lg hover:bg-gray-700 transition" onclick="openCancellationReasonModal(' . $order['id'] . ')">View Reason</button>';
         } else {
             echo '-';
         }

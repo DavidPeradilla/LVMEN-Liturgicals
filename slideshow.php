@@ -22,7 +22,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <title>Admin Dashboard - Slideshow</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="sidebar2.css">
+    <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gray-100 font-sans min-h-screen">

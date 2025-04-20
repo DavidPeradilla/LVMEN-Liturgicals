@@ -9,8 +9,8 @@ session_start();
     <head>
         <title> About Us </title>
         <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-        <link rel="stylesheet" type="text/css" href="navbar2.css"> 
-        <link rel="stylesheet" type="text/css" href="footer.css"> 
+        <link rel="stylesheet" type="text/css" href="navbar3.css"> 
+        <link rel="stylesheet" type="text/css" href="footer3.css"> 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <style>
             body {
@@ -199,7 +199,7 @@ width:30px;
 height: 30px; 
 Line-height: 30px; 
 font-size: 14px; 
-margin-right: 5px
+margin-right: 5px 
 }
 .btn{
 font-size: 16px; 
@@ -207,32 +207,41 @@ padding:8px 16px;
 margin-bottom: 30px ;
 }
 }
+
+
         </style>
     </head>
 <body>
   
-<!--NAVBAR-->
+<!-- NAVBAR -->
 <header> 
-<a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
+  </a>
+
   <nav class="navbar"> 
-     <ul class="nav-links">
-     <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-      <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-      <a href="user_products.php"> <li> CATALOG </li> </a>
-      <a href="Contact.php"> <li> CONTACT US </li> </a>
-      <a href="FAQs.php"> <li> FAQs </li> </a>
-      <a href="profile.php"> PROFILE </a>
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
 
       <?php if (isset($_SESSION['email'])): ?>
-      <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-  <?php else: ?>
-      <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-  <?php endif; ?>
-  <a href="view_cart.php" class="cart-link">🛒</a>
-     </ul>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+      <?php else: ?>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <?php endif; ?>
+    </ul>
   </nav> 
 </header>
-<!--END-->
+<!-- END -->
 
 
 

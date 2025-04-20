@@ -33,7 +33,7 @@ $totalProducts = $countRow['total'];
 <head>
     <meta charset="UTF-8">
     <title>Admin - Manage Featured Products</title>
-    <link rel="stylesheet" href="sidebar2.css">
+    <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {

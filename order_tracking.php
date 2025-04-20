@@ -1,4 +1,5 @@
 <?php
+session_name("user_session"); // Only if you're using a custom session name consistently
 session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
@@ -68,85 +69,111 @@ $order_items = isset($_SESSION['order_items']) ? $_SESSION['order_items'] : [];
     <title>Track Your Order</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="LVMEN.css">
-    <link rel="stylesheet" type="text/css" href="navbar2.css">
+    <link rel="stylesheet" type="text/css" href="navbar3.css">
     <style>
         body {
-            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        .container {
-            width: 90%;
-            max-width: 600px;
-            margin: 40px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #333;
-            font-weight: 600;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background:rgb(141, 138, 136);
-            color: white;
-            border-radius: 10px 10px 0 0;
-        }
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-        .status {
-            font-weight: bold;
-            color: #007aff;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #007aff;
-            font-weight: bold;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden; /* helps with border-radius clipping */
+}
+
+th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: rgb(141, 138, 136);
+    color: white;
+    font-weight: 600;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) td {
+    background: #f2f2f2;
+}
+
+.status {
+    font-weight: bold;
+    color: #007aff;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 25px;
+    text-decoration: none;
+    color: #007aff;
+    padding: 8px 16px;
+    border: 2px solidrgb(0, 0, 0);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+
     </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <header> 
-    <a href="LVMEN.php"> 
-        <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: -88%;" width="80px" height="70px">
-    </a>
-    <nav class="navbar"> 
-        <ul class="nav-links">
-            <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-            <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-            <a href="user_products.php"> <li> CATALOG </li> </a>
-            <a href="Contact.php"> <li> CONTACT US </li> </a>
-            <a href="FAQs.php"> <li> FAQs </li> </a>
-            <a href="profile.php"> PROFILE </a>
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: -88%;" width="80px" height="70px">
+  </a>
 
-            <?php if (isset($_SESSION['email'])): ?>
-                <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-            <?php else: ?>
-                <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-            <?php endif; ?>
-            <a href="view_cart.php" class="cart-link">🛒</a>
-        </ul>
-    </nav> 
+  <nav class="navbar"> 
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
+
+      <?php if (isset($_SESSION['email'])): ?>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+      <?php else: ?>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <?php endif; ?>
+    </ul>
+  </nav> 
 </header>
 <!-- END -->
 

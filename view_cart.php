@@ -49,7 +49,10 @@ if (isset($conn) && $conn instanceof mysqli) {
     <title>View Cart</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="LVMEN.css"> 
-    <link rel="stylesheet" type="text/css" href="navbar2.css"> 
+    <link rel="stylesheet" type="text/css" href="navbar3.css"> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+
     <style>
        body {
             font-family: Arial, sans-serif;
@@ -153,69 +156,113 @@ if (isset($conn) && $conn instanceof mysqli) {
 <body>
 
 <header> 
-    <a href="LVMEN.php"> <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px"></a>
-    <nav class="navbar"> 
-        <ul class="nav-links">
-            <a href="LVMEN.php"> <li> HOMEPAGE </li> </a>  
-            <a href="AboutUs.php"> <li> ABOUT US  </li> </a>
-            <a href="user_products.php"> <li> CATALOG </li> </a>
-            <a href="Contact.php"> <li> CONTACT US </li> </a>
-            <a href="FAQs.php"> <li> FAQs </li> </a>
-            <a href="profile.php"> PROFILE </a>
+  <a href="LVMEN.php">
+    <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
+  </a>
 
-            <?php if (isset($_SESSION['email'])): ?>
-                <a href="logout.php" class="login-btn"> <li> LOGOUT </li> </a>
-            <?php else: ?>
-                <a href="login.php" class="login-btn"> <li> LOGIN </li> </a>
-            <?php endif; ?>
-            <a href="view_cart.php" class="cart-link">🛒</a>
-        </ul>
-    </nav> 
+  <nav class="navbar"> 
+    <ul class="nav-links">
+      <li><a href="LVMEN.php"> HOMEPAGE </a></li>
+      <li><a href="AboutUs.php"> ABOUT US </a></li>
+      <li><a href="user_products.php"> CATALOG </a></li>
+      <li><a href="Contact.php"> CONTACT US </a></li>
+      <li><a href="FAQs.php"> FAQs </a></li>
+      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+      <li>
+        <a href="view_cart.php" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </li>
+
+      <?php if (isset($_SESSION['email'])): ?>
+        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+      <?php else: ?>
+        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <?php endif; ?>
+    </ul>
+  </nav> 
 </header>
 
-<br> <br> <br> <br> <br> <br>
-
-<div class="container">
-    <h2>Your Shopping Cart</h2>
+<br> <br> <br>
+      <!--CART-->
+      
+      <div class="container mx-auto max-w-4xl p-6 bg-white shadow-lg rounded-2xl my-10">
+    <h2 class="text-2xl font-semibold text-center mb-6">Your Shopping Cart</h2>
 
     <?php if ($cartEmpty): ?>
-        <p align="center">Your cart is empty.</p>
+        <p class="text-center text-gray-500">Your cart is empty.</p>
     <?php else: ?>
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <div class="cart-item" data-id="<?php echo $row['id']; ?>">
-                <img src="<?php echo $row['image']; ?>" alt="Product">
-                <div class="cart-details">
-                    <h3><?php echo $row['name']; ?></h3>
-                    <p>₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
+        <div class="space-y-4">
+            <?php while ($row = $result->fetch_assoc()) { ?>
+              <div class="cart-item flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm min-h-[80px]">
+                    <!-- Image + Details -->
+                    <div class="flex items-center gap-4">
+                        <img src="<?php echo $row['image']; ?>" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
+                        <div>
+                        <h3 class="text-base font-medium text-gray-800  max-w-[150px]">
+    <?php echo $row['name']; ?>
+</h3>
+
+                            <p class="text-gray-600 text-sm">₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Quantity Controls -->
+                    <div class="flex items-center justify-center space-x-0 h-10">
+    <button
+        onclick="updateQuantity(<?php echo $row['id']; ?>, -1)"
+        class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300"
+    >-</button>
+
+    <input
+        type="text"
+        id="quantity-<?php echo $row['id']; ?>"
+        value="<?php echo $row['quantity']; ?>"
+        readonly
+        class="w-12 h-10 text-center border-y border-gray-300 text-sm appearance-none"
+    />
+
+    <button
+        onclick="updateQuantity(<?php echo $row['id']; ?>, 1)"
+        class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300"
+    >+</button>
+</div>
+
+
+                    <!-- Remove Button -->
+                    <form action="remove_from_cart.php" method="POST" class="ml-3">
+                        <input type="hidden" name="cart_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" class="text-red-500 hover:text-red-700 text-lg">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
                 </div>
+            <?php } ?>
+        </div>
 
-                <div class="quantity">
-                    <button onclick="updateQuantity(<?php echo $row['id']; ?>, -1)">-</button>
-                    <input type="text" id="quantity-<?php echo $row['id']; ?>" value="<?php echo $row['quantity']; ?>" readonly>
-                    <button onclick="updateQuantity(<?php echo $row['id']; ?>, 1)">+</button>
-                </div>
-
-                <form action="remove_from_cart.php" method="POST">
-                    <input type="hidden" name="cart_id" value="<?php echo $row['id']; ?>">
-                    <button type="submit" class="remove-btn"><i class="fas fa-trash"></i></button>
-                </form>
-            </div>
-        <?php } ?>
-
-        <div class="checkout-section">
+        <!-- Checkout Section -->
+        <div class="checkout-section mt-8 bg-gray-100 p-6 rounded-xl text-center shadow-inner">
             <?php
             $total = 0;
-            mysqli_data_seek($result, 0); // Reset result pointer
+            mysqli_data_seek($result, 0);
             while ($row = $result->fetch_assoc()) {
                 $total += $row['price'] * $row['quantity'];
             }
             ?>
-            <p>Total: ₱ <span id="total-price"><?php echo number_format($total, 2); ?></span></p>
-            <a href="checkout.php"><button class="checkout-btn">Proceed to Checkout</button></a>
+            <p class="text-xl font-semibold mb-4">Total: ₱ <span id="total-price"><?php echo number_format($total, 2); ?></span></p>
+            <a href="checkout.php">
+                <button class="checkout-btn bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-2 rounded-lg transition duration-200">
+                    Proceed to Checkout
+                </button>
+            </a>
         </div>
     <?php endif; ?>
 </div>
 
+
+
+
+        <!--SCRIPT-->
 <script>
     function updateQuantity(id, change) {
         let quantityInput = document.getElementById("quantity-" + id);

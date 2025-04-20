@@ -21,7 +21,7 @@ if ($conn->connect_error) {
     <meta charset="UTF-8">
     <title>Admin Dashboard - Content Manager</title>
     <link rel="stylesheet" href="admin_styles.css">
-    <link rel="stylesheet" href="sidebar2.css">
+    <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
 /* General Styles */

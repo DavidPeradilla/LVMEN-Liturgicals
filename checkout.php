@@ -62,6 +62,8 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     
     <style>
         body {
@@ -171,68 +173,92 @@ $conn->close();
 </head>
 <body>
 
-<div class="container">
-    <h2>Checkout</h2>
+<div class="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Checkout</h2>
 
-    <form action="gcash_payment.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-    <label>Email Address:</label>
-    <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" readonly required>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Checkout Form (Left) -->
+        <form action="gcash_payment.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()" class="space-y-4">
+            <div>
+                <label class="block font-medium text-gray-700">Email Address:</label>
+                <input type="email" name="email" value="<?= htmlspecialchars($email); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+            </div>
 
-    <label>Recipient's Name:</label>
-    <input type="text" name="recipient_name" value="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly required>
+            <div>
+                <label class="block font-medium text-gray-700">Recipient's Name:</label>
+                <input type="text" name="recipient_name" value="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+            </div>
 
-    <label>Shipping Address:</label>
-    <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" readonly required placeholder="Enter Shipping Address in Profile">
+            <div>
+                <label class="block font-medium text-gray-700">Shipping Address:</label>
+                <input type="text" name="address" value="<?= htmlspecialchars($user['address']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+            </div>
 
-    <label>Phone Number:</label>
-    <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" readonly required placeholder="Enter Contact Number in Profile">
+            <div>
+                <label class="block font-medium text-gray-700">Phone Number:</label>
+                <input type="text" name="contact_number" value="<?= htmlspecialchars($user['contact_number']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+            </div>
 
+            <div>
+                <label class="block font-medium text-gray-700">GCash Number:</label>
+                <input type="text" name="gcash_number" placeholder="Insert your GCash Number" required class="w-full mt-1 p-2 border rounded-md">
+            </div>
 
+            <div>
+                <label class="block font-medium text-gray-700">GCash Reference Number:</label>
+                <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required class="w-full mt-1 p-2 border rounded-md">
+            </div>
 
+            <div>
+                <label class="block font-medium text-gray-700">Upload Payment Screenshot:</label>
+                <div class="flex items-center gap-4 mt-2">
+                    <input type="file" name="payment_screenshot" accept="image/*" required onchange="previewImage(event)" class="w-full">
+                    <img id="preview" class="w-24 h-24 object-cover rounded hidden" alt="Screenshot Preview">
+                </div>
+            </div>
 
-        <h3>Order Summary</h3>
-        <table>
-            <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-            <?php foreach ($cart_items as $item) { ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($item['product_name']); ?></td>
-                    <td>₱<?php echo number_format($item['price'], 2); ?></td>
-                    <td><?php echo $item['quantity']; ?></td>
-                    <td>₱<?php echo number_format($item['total_price'], 2); ?></td>
-                </tr>
-            <?php } ?>
-        </table>
-        
-        <h3>Payment Method</h3>
-    <input type="text" value="GCash: +123-456-7890" disabled>
-    <input type="hidden" name="payment_method" value="GCash">
+            <input type="hidden" name="payment_method" value="GCash">
+            <input type="hidden" name="total_price" value="<?= $total_order_price; ?>">
 
-    <label>GCash Number:</label>
-    <input type="text" name="gcash_number" placeholder="Insert your GCash Number" required> 
+            <div class="flex gap-4 mt-4">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md">Confirm Payment</button>
+                <button type="button" onclick="cancelOrder()" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+            </div>
+        </form>
 
-    <label>GCash Reference Number:</label>
-    <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required>
+        <!-- Order Summary (Right) -->
+        <div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Order Summary</h3>
+            <table class="w-full text-sm border">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="text-left p-2 border">Product Name</th>
+                        <th class="text-left p-2 border">Price</th>
+                        <th class="text-left p-2 border">Qty</th>
+                        <th class="text-left p-2 border">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cart_items as $item): ?>
+                        <tr class="border-t">
+                            <td class="p-2 border"><?= htmlspecialchars($item['product_name']); ?></td>
+                            <td class="p-2 border">₱<?= number_format($item['price'], 2); ?></td>
+                            <td class="p-2 border"><?= $item['quantity']; ?></td>
+                            <td class="p-2 border">₱<?= number_format($item['total_price'], 2); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
-    <label>Upload Payment Screenshot:</label>
-    <div class="file-upload">
-        <input type="file" name="payment_screenshot" accept="image/*" required onchange="previewImage(event)">
-        <img id="preview" alt="Payment Screenshot">
+            <div class="text-right mt-4 text-lg font-bold">
+                Total: ₱<?= number_format($total_order_price, 2); ?>
+            </div>
+
+            <div class="mt-6 bg-blue-100 text-blue-800 p-3 rounded-md">
+                <strong>Payment Method:</strong> GCash: +123-456-7890
+            </div>
+        </div>
     </div>
-
-    <div class="total-section">
-        Total Price: ₱<?php echo number_format($total_order_price, 2); ?>
-    </div>
-
-    <input type="hidden" name="total_price" value="<?php echo $total_order_price; ?>">
-
-    <button type="submit" class="checkout-btn">Confirm Payment</button>
-    <button type="button" class="checkout-btn cancel-btn" onclick="cancelOrder()">Cancel</button>
-</form>
 </div>
 
 
