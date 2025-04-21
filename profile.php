@@ -18,6 +18,11 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+if (isset($_SESSION['cancel_message'])) {
+    $message = $_SESSION['cancel_message'];
+    unset($_SESSION['cancel_message']); // Clear the message after displaying it
+}
+
 $email = $_SESSION['email'];
 
 // Fetch user details
@@ -193,10 +198,25 @@ $stmt->close();
             border-radius: 5px;
             font-size: 14px;
         }
+
+
+        .notification {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+ 
     </style>
 </head>
 <body>
-
+<?php if (isset($message)): ?>
+    <div class="notification" style="background-color: #28a745; color: white; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+        <?php echo $message; ?>
+    </div>
+<?php endif; ?>
 <!-- NAVBAR -->
 <header> 
   <a href="LVMEN.php">

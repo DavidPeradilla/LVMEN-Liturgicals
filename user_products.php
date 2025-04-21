@@ -12,12 +12,25 @@ $categoryResult = $conn->query("SELECT * FROM categories");
 $categoryFilter = isset($_GET['category']) ? $_GET['category'] : '';
 $whereClause = $categoryFilter ? "WHERE products.category_id = '$categoryFilter'" : "";
 
-// Fetch products with category names
+// Pagination setup
+$products_per_page = 13; // You can change this number
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $products_per_page;
+
+// Get total product count for pagination
+$count_sql = "SELECT COUNT(*) as total FROM products $whereClause";
+$count_result = $conn->query($count_sql);
+$total_products = $count_result->fetch_assoc()['total'];
+$total_pages = ceil($total_products / $products_per_page);
+
+// Update main product query with LIMIT
 $sql = "SELECT products.id, products.name, products.price, products.image, products.description, categories.category_name 
         FROM products 
         JOIN categories ON products.category_id = categories.id 
         $whereClause
-        ORDER BY RAND()";
+        ORDER BY RAND()
+        LIMIT $products_per_page OFFSET $offset";
+
 
 
 $result = $conn->query($sql);
@@ -315,6 +328,34 @@ $conn->close();
                 </div>
             <?php } ?>
         </div>
+
+
+        <div style="text-align: center; margin-top: 30px;">
+    <?php if ($total_pages > 1): ?>
+        <div style="display: inline-block; padding: 10px;">
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a 
+                    href="?page=<?php echo $i; ?><?php if ($categoryFilter) echo '&category=' . $categoryFilter; ?>" 
+                    style="
+                        display: inline-block;
+                        margin: 0 5px;
+                        padding: 8px 12px;
+                        background-color: <?php echo ($i == $page) ? '#ff5733' : '#eee'; ?>;
+                        color: <?php echo ($i == $page) ? '#fff' : '#333'; ?>;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                    ">
+                    <?php echo $i; ?>
+                </a>
+            <?php endfor; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+
+
     </div>
 </div>
 

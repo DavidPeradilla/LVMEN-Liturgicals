@@ -72,7 +72,7 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ecf0f1 ;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -145,15 +145,16 @@ $conn->close();
 </head>
 <body>
 
+
 <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
-        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
-        <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>

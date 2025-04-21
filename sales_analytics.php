@@ -168,162 +168,88 @@ $best_selling_query = "
 ";
 $best_selling_result = $conn->query($best_selling_query);
 
+// Monthly Order Status Breakdown
+$monthly_order_status_query = "
+    SELECT order_status, COUNT(*) AS total
+    FROM orders
+    WHERE MONTH(order_date) = '$selected_month'
+    AND YEAR(order_date) = '$selected_year'
+    GROUP BY order_status
+";
+
+$monthly_status_result = $conn->query($monthly_order_status_query);
+
+$order_status_labels = [];
+$order_status_counts = [];
+
+while ($row = $monthly_status_result->fetch_assoc()) {
+    $order_status_labels[] = $row['order_status'];
+    $order_status_counts[] = (int)$row['total'];
+}
+
+
+$all_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+$monthly_products_data = array_fill(0, 12, 0); // default all to 0
+
+$query = "
+    SELECT MONTH(o.order_date) AS month_num, SUM(oib.quantity) AS total_sold
+    FROM order_items_backup oib
+    JOIN orders o ON oib.order_id = o.id
+    WHERE (o.order_status = 'Delivered' OR o.order_status = 'Removed')
+      AND YEAR(o.order_date) = '$selected_year'
+    GROUP BY MONTH(o.order_date)
+";
+
+$result = $conn->query($query);
+while ($row = $result->fetch_assoc()) {
+    $month_index = (int)$row['month_num'] - 1; // 0-based index
+    $monthly_products_data[$month_index] = (int)$row['total_sold'];
+}
+
+$monthly_products_labels = $all_months;
+
+
 
 
 ?>
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overview Sales</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Sales Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
     <link rel="stylesheet" href="sidebar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-
-        h2, h3 {
-            text-align: center;
-            color: #333;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .stat-box {
-            background: #007bff;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 18px;
-            width: 45%;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .btn {
-            display: block;
-            width: 200px;
-            padding: 10px;
-            text-align: center;
-            background: #28a745;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            margin: 20px auto;
-            font-size: 16px;
-        }
-        .btn:hover {
-            background: #218838;
-        }
-        
-
         body {
-            font-family: Arial, sans-serif;
-            background:rgb(225, 225, 225);
-            text-align: center;
+            font-family: 'Roboto', sans-serif;
         }
-        .container {
-            width: 80%;
-            margin: auto;
+
+
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 78px;
             padding: 20px;
-            background-color:rgb(255, 255, 255);
-            box-shadow: 0px 0px 10px gray;
-            border-radius: 5px;
-            margin-left: 1%;
-            
-        }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
-        .stat-box {
-            padding: 20px;
-            background:rgb(92, 95, 93);
-            color: white;
-            border-radius: 5px;
-            width: 29%;
+            background-color: #ecf0f1;
+            height: 230vh;
         }
 
-        .btn2{
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-             font-size: 14px;
-    
-        }
-
-        .recent-orders table {
-        margin-top: 20px;
-         width: 100%;
-    border-collapse: collapse;
-}
-
-.recent-orders th, .recent-orders td {
-    padding: 12px;
-    text-align: left;
-}
-
-.recent-orders tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.recent-orders tr:hover {
-    background-color: #f1f1f1;
-}
-
-.chart-container, .recent-orders {
-    width: 48%; /* Adjust the width to fit the two elements side by side */
-}
-
-.recent-orders {
-    display: inline-block;
-    vertical-align: top;
-}
-
-
-.card {
+        /* Card Styling */
+        .card {
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
             background-color: white;
         }
-
     </style>
 </head>
 <body>
-
-<div class="navbar">
+    <!-- Sidebar -->
+    <div class="navbar">
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
@@ -336,127 +262,70 @@ $best_selling_result = $conn->query($best_selling_query);
     </div>
 </div>
 
-<br>
-<div class="container max-w-6xl mx-auto mr-6 mt-1 m-8 p-6 bg-#ecf0f1 rounded-lg shadow-md">
-    <h2 class="text-xl font-bold mb-4">Overview Sales Statistics</h2>
+<!-- Main Content -->
+<div class="main-content">
+    <h2 class="text-xl font-bold mb-6">Sales Analytics Dashboard</h2>
 
-  
-    <form method="GET" class="flex flex-wrap gap-3 justify-center items-end mb-6">
-        <div class="flex flex-col text-sm">
-            <label for="month" class="text-gray-600 mb-1">Month:</label>
-            <select name="month" id="month" class="border rounded px-2 py-1">
-                <?php for ($m=1; $m<=12; $m++): ?>
+    <!-- Filter Form -->
+    <form method="GET" class="mb-6">
+        <div class="flex space-x-4">
+            <select name="month" class="form-select border rounded p-2">
+                <?php for ($m = 1; $m <= 12; $m++): ?>
                     <option value="<?php echo $m; ?>" <?php if ($m == $selected_month) echo 'selected'; ?>>
                         <?php echo date("F", mktime(0, 0, 0, $m, 1)); ?>
                     </option>
                 <?php endfor; ?>
             </select>
-        </div>
-        <div class="flex flex-col text-sm">
-            <label for="year" class="text-gray-600 mb-1">Year:</label>
-            <select name="year" id="year" class="border rounded px-2 py-1">
+            <select name="year" class="form-select border rounded p-2">
                 <?php for ($y = date('Y'); $y >= 2021; $y--): ?>
                     <option value="<?php echo $y; ?>" <?php if ($y == $selected_year) echo 'selected'; ?>>
                         <?php echo $y; ?>
                     </option>
                 <?php endfor; ?>
             </select>
+            <button type="submit" class="bg-blue-500 text-white rounded p-2">Filter</button>
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Filter</button>
     </form>
 
-<!-- Statistics Cards -->
-<div class="grid grid-cols-3 gap-4 mb-6">
-
-    <div class="card">
-        <i class="fas fa-calendar text-lg"></i><br>
-        <h5 class="font-bold text-lg mb-1">Overall Sales</h5>
-        <p class="text-lg ">₱<?php echo number_format($total_sales, 2); ?></p>  
-    </div>
-    <div class="card">
-        <i class="fas fa-calendar-times text-lg"></i><br>
-        <strong class="text-md"><?php echo $selected_year; ?> Sales:</strong><br>
-        <span class="text-lg">₱<?php echo number_format($yearly_sales, 2); ?></span>
-    </div>
-    <div class="card">
-        <i class="fas fa-ban text-lg"></i><br>
-        <strong>Total Canceled Orders:</strong><br>
-        ₱<?php echo number_format($total_canceled_revenue, 2); ?>
-    </div>
-</div>
-
-
-
-
-   
-    <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-
-<!-- Sales Chart -->
-<div class="card mt-4 p-4" style="display: flex; width: 100%; max-width: 1100px; margin: auto; gap: 20px; align-items: flex-start;">
-    <!-- Left Side: Sales Chart -->
-    <div style="flex: 2;">
-        <canvas id="salesChart" width="600" height="400"></canvas>
+    <!-- Order History Button -->
+    <div class="mb-6">
+        <a href="dashboard.php" class="bg-green-500 text-white rounded p-2">
+            View Order History
+        </a>
     </div>
 
-<!-- Right Side: Sales Summary Cards -->
-<div style="flex: 1; display: flex; flex-direction: column; gap: 0px; margin-top: 45px; max-width: 400px;"> <!-- Increased width and gap -->
-
-
-    <div class="card p-4 text-green-700">
-        <i class="fas fa-calendar-alt text-xl mb-1"></i><br>
-        <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales:</strong><br>
-        ₱<?php echo number_format($monthly_sales, 2); ?>
-    </div>
-
-    <div class="card p-4 text-red-600">
-        <i class="fas fa-calendar-alt text-xl mb-1"></i><br>
-        <strong><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Canceled:</strong><br>
-        ₱<?php echo number_format($monthly_canceled_revenue, 2); ?>
-    </div>
-
-    <div class="card p-4 text-blue-700">
-        <i class="fas fa-box text-xl mb-1"></i><br>
-        <strong class="text-md">Total Products Sold:</strong><br>
-        <span class="text-lg"><?php echo number_format($total_products_sold); ?></span>
-    </div>
-</div>
-
-</div>
-
-<!-- Below: Recent Orders + Best Selling Products Side by Side -->
-<div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: stretch; margin-left: 30px;">
-
-    <!-- Recent Orders -->
-    <div class="recent-orders" style="flex: 1; min-width: 400px; display: flex; flex-direction: column;">
-        <div class="bg-white rounded-lg shadow-md p-4 h-full">
-            <h3 class="text-lg font-semibold mb-4">Recent Orders</h3>
-            <table class="table-auto w-full">
-                <thead>
-                    <tr>
-                        <th class="p-2 bg-blue-600 text-white rounded-tl-lg">Order ID</th>
-                        <th class="p-2 bg-blue-600 text-white">Customer</th>
-                        <th class="p-2 bg-blue-600 text-white">Total Price</th>
-                        <th class="p-2 bg-blue-600 text-white">Status</th>
-                        <th class="p-2 bg-blue-600 text-white rounded-tr-lg">Order Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($order = $recent_orders_result->fetch_assoc()): ?>
-                        <tr>
-                            <td class="p-2"><?php echo $order['id']; ?></td>
-                            <td class="p-2"><?php echo $order['recipient_name']; ?></td>
-                            <td class="p-2">₱<?php echo number_format($order['total_price'], 2); ?></td>
-                            <td class="p-2"><?php echo $order['order_status']; ?></td>
-                            <td class="p-2"><?php echo date("F j, Y", strtotime($order['order_date'])); ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="card">
+            <h5 class="font-bold">Overall Sales</h5>
+            <p class="text-2xl">₱<?php echo number_format($total_sales, 2); ?></p>
         </div>
+        <div class="card">
+            <h5 class="font-bold"><?php echo $selected_year; ?> Sales</h5>
+            <p class="text-2xl">₱<?php echo number_format($yearly_sales, 2); ?></p>
+        </div>
+        <div class="card">
+            <h5 class="font-bold"><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales</h5>
+            <p class="text-2xl">₱<?php echo number_format($monthly_sales, 2); ?></p>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="card mt-4" style="width: 1150px;">  <!-- Adjust width as needed -->
+        <h5 class="font-bold"> Sales Chart</h5>
+        <canvas id="salesChart" width="1200" height="410"></canvas>  <!-- Set canvas width and height -->
+    </div>
+
+
+    <div class="flex gap-6 mt-4">
+    <!-- Monthly Products Sold -->
+    <div class="card w-3/5 flex flex-col items-center text-center">
+        <h5 class="font-bold mb-4">Monthly Products Sold (Quantity)</h5>
+        <canvas id="productsPieChart" width="400" height="320"></canvas>
     </div>
 
     <!-- Best Selling Products -->
-    <div class="card w-3/5 flex flex-col items-center text-center" style="flex: 1; min-width: 400px;">
+    <div class="card w-3/5 flex flex-col items-center text-center">
         <h5 class="font-bold mb-4">Best Selling Products</h5>
         <div class="overflow-x-auto shadow-lg rounded-lg w-full">
             <table class="min-w-full bg-white rounded-lg">
@@ -490,62 +359,137 @@ $best_selling_result = $conn->query($best_selling_query);
 </div>
 
 
-</div>
-
-
-
-
-</div>
 
 
     <script>
-     
-        var monthlySales = <?php echo json_encode($monthly_sales_data); ?>;
-        var canceledSales = <?php echo json_encode($canceled_sales_data); ?>;
-        var months = <?php echo json_encode($months); ?>;
+    // Chart.js Configuration
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($months); ?>,
+                datasets: [{
+                    label: 'Monthly Sales Revenue',
+                    data: <?php echo json_encode($monthly_sales_data); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                }, {
+                    label: 'Canceled Orders Revenue',
+                    data: <?php echo json_encode($canceled_sales_data); ?>,
+                    type: 'line',
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    tension: 0.10
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            var ctx = document.getElementById('salesChart').getContext('2d');
-            var salesChart = new Chart(ctx, {
-                type: 'line', 
-                data: {
-                    labels: months,
-                    datasets: [{
-                        label: 'Monthly Sales Revenue',
-                        data: monthlySales,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        type: 'line' 
-                    },
-                    {
-                        label: 'Canceled Orders Revenue',
-                        data: canceledSales,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        fill: false, 
-                        type: 'line', 
+        // Monthly Orders Donut Chart
+        const ordersCtx = document.getElementById('ordersDonutChart').getContext('2d');
+        const orderStatusCounts = <?php echo json_encode($order_status_counts); ?>;
+        const totalOrders = orderStatusCounts.reduce((a, b) => a + b, 0);
+
+        const ordersDonutChart = new Chart(ordersCtx, {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo json_encode($order_status_labels); ?>,
+                datasets: [{
+                    data: orderStatusCounts,
+                    backgroundColor: [
+                        '#4CAF50',  // Delivered
+                        '#f39c12',  // Pending
+                        '#3498db',  // Processing
+                        '#e74c3c',  // Canceled
                         
-                    }]
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const percentage = ((value / totalOrders) * 100).toFixed(1);
+                                return `${context.label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+
+
+    // Monthly Products Sold Pie Chart
+    document.addEventListener('DOMContentLoaded', function() {
+    // ... Existing code for other charts ...
+
+    // Monthly Products Sold Bar Chart
+    const productsCtx = document.getElementById('productsPieChart').getContext('2d');
+    const productsLabels = <?php echo json_encode($monthly_products_labels); ?>; // e.g. ['Jan', 'Feb', 'Mar']
+    const productsData = <?php echo json_encode($monthly_products_data); ?>;     // e.g. [50, 75, 100]
+
+    const productsBarChart = new Chart(productsCtx, {
+        type: 'bar',
+        data: {
+            labels: productsLabels,
+            datasets: [{
+                label: 'Products Sold',
+                data: productsData,
+                backgroundColor: '#4CAF50',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Sold: ${context.raw}`;
                         }
                     }
                 }
-            });
-        });
-    </script>
-<br>
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantity Sold'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                }
+            }
+        }
+    });
+});
 
 
-
+</script>
 
 
 </body>
 </html>
-

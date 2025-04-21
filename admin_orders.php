@@ -57,14 +57,14 @@ $total_sales = file_get_contents("get_sales.php");
         }
 
         table {
-            width: 100%;
+            width: 60%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;  
+            padding: 7px;  
             text-align: center;
         }
 
@@ -162,11 +162,11 @@ $total_sales = file_get_contents("get_sales.php");
     <div class="logo">Admin Panel</div>
     <div class="nav-links">
         <a href="admin_sales.php"><i class="fas fa-tachometer-alt"></i><span>Overview</span></a>
-        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="upload.php"><i class="fas fa-upload"></i><span>Manage Products</span></a>
         <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
-        <a href="dashboard.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
+        <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -285,18 +285,18 @@ $total_sales = file_get_contents("get_sales.php");
         document.getElementById("modalImage").src = src;
         document.getElementById("imageModal").style.display = "block";
     }
-
-    function closeModal() {
-        document.getElementById("imageModal").style.display = "none";
-        document.getElementById("cancelModal").style.display = "none";
-    }
-
-    // Open the cancellation reason modal
     function openCancellationReasonModal(orderId, currentReason) {
-        document.getElementById("order_id").value = orderId;
-        document.getElementsByName("reason")[0].value = currentReason;
-        document.getElementById("cancelModal").style.display = "block";
-    }
+    console.log('Opening modal for orderId:', orderId);  // Debugging line
+    document.getElementById("order_id").value = orderId;
+    document.getElementsByName("reason")[0].value = currentReason;
+    document.getElementById("cancelModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+    document.getElementById("cancelModal").style.display = "none";
+}
+
 
     // Close the modal if the user clicks outside of it
     window.onclick = function(event) {

@@ -193,40 +193,42 @@ if (isset($conn) && $conn instanceof mysqli) {
         <p class="text-center text-gray-500">Your cart is empty.</p>
     <?php else: ?>
         <div class="space-y-4">
-            <?php while ($row = $result->fetch_assoc()) { ?>
-              <div class="cart-item flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm min-h-[80px]">
-                    <!-- Image + Details -->
-                    <div class="flex items-center gap-4">
-                        <img src="<?php echo $row['image']; ?>" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
-                        <div>
-                        <h3 class="text-base font-medium text-gray-800  max-w-[150px]">
-    <?php echo $row['name']; ?>
-</h3>
+    <?php while ($row = $result->fetch_assoc()) { ?>
+        <div class="cart-item flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm min-h-[80px]">
+            <!-- Image + Details -->
+            <div class="flex items-center gap-4 w-full max-w-[75%]">
+                <img src="<?php echo $row['image']; ?>" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
+                <div class="flex flex-col">
+                    <h3 class="text-base font-medium text-gray-800 max-w-[200px] truncate" title="<?php echo $row['name']; ?>">
+                        <?php echo $row['name']; ?>
+                    </h3>
+                    <p class="text-gray-600 text-sm">₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
+                </div>
+            </div>
 
-                            <p class="text-gray-600 text-sm">₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
-                        </div>
-                    </div>
+            <!-- Quantity Controls -->
+            <div class="flex items-center space-x-0 h-10 min-w-[120px] justify-end">
+                <button
+                    onclick="updateQuantity(<?php echo $row['id']; ?>, -1)"
+                    class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300"
+                >-</button>
 
-                    <!-- Quantity Controls -->
-                    <div class="flex items-center justify-center space-x-0 h-10">
-    <button
-        onclick="updateQuantity(<?php echo $row['id']; ?>, -1)"
-        class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300"
-    >-</button>
+                <input
+                    type="text"
+                    id="quantity-<?php echo $row['id']; ?>"
+                    value="<?php echo $row['quantity']; ?>"
+                    readonly
+                    class="w-12 h-10 text-center border-y border-gray-300 text-sm appearance-none"
+                />
 
-    <input
-        type="text"
-        id="quantity-<?php echo $row['id']; ?>"
-        value="<?php echo $row['quantity']; ?>"
-        readonly
-        class="w-12 h-10 text-center border-y border-gray-300 text-sm appearance-none"
-    />
-
-    <button
-        onclick="updateQuantity(<?php echo $row['id']; ?>, 1)"
-        class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300"
-    >+</button>
+                <button
+                    onclick="updateQuantity(<?php echo $row['id']; ?>, 1)"
+                    class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300"
+                >+</button>
+         
+       
 </div>
+
 
 
                     <!-- Remove Button -->
