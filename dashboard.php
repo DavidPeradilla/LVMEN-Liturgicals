@@ -297,7 +297,7 @@ $completed_orders_result = $conn->query($completed_orders_query);
 </form>
 
 
-<h3>Completed Orders</h3>
+<h3>Monthly Orders</h3>
         <tr>
             <th>Order ID</th>
             <th>Email</th>

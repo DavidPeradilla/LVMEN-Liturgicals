@@ -262,32 +262,34 @@ $conn->close();
 <body>
 
 <!-- NAVBAR -->
-<header> 
+<header>
   <a href="LVMEN.php">
     <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
   </a>
 
-  <nav class="navbar"> 
+  <nav class="navbar">
     <ul class="nav-links">
       <li><a href="LVMEN.php"> HOMEPAGE </a></li>
       <li><a href="AboutUs.php"> ABOUT US </a></li>
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
-      <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
 
-      <?php if (isset($_SESSION['email'])): ?>
-        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
-      <?php else: ?>
-        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <!-- Show profile link if logged in -->
+      <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
+
+      <!-- Show cart link -->
+      <li><a href="view_cart.php" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+      </a></li>
+
+      <!-- Hide login button only if user is logged in -->
+      <?php if (!isset($_SESSION['email'])): ?>
+        <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
+      
     </ul>
-  </nav> 
+  </nav>
 </header>
 <!-- END -->
 
@@ -321,7 +323,7 @@ $conn->close();
                     <button onclick="showDescription(`<?php echo addslashes($row['name']); ?>`, `<?php echo addslashes($row['description']); ?>`)">More</button>
                     <form onsubmit="addToCart(event, <?php echo $row['id']; ?>, this)">
                         <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                        <input type="number" name="quantity" value="1" min="1" required>
+                        <input type="number" name="quantity" value="1" min="1" max="10" required>
                         <button type="submit">Add to Cart</button>
                     </form>
                     <span id="status-<?php echo $row['id']; ?>" class="status-message"></span>
@@ -397,41 +399,41 @@ function closeDescModal() {
     }
 </script>
 
-<script>
-function addToCart(event, productId, form) {
-    event.preventDefault(); // Prevent page reload
+    <script>
+    function addToCart(event, productId, form) {
+        event.preventDefault(); // Prevent page reload
 
-    <?php if (!isset($_SESSION['email'])) { ?>
-        alert("Please log in to add items to your cart.");
-        window.location.href = "login.php";
-        return;
-    <?php } ?>
+        <?php if (!isset($_SESSION['email'])) { ?>
+            alert("Please log in to add items to your cart.");
+            window.location.href = "login.php";
+            return;
+        <?php } ?>
 
-    let formData = new FormData(form);
+        let formData = new FormData(form);
 
-    fetch("add_to_cart.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log("Server Response:", data); // Log response in Console
+        fetch("add_to_cart.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Server Response:", data); // Log response in Console
 
-        let statusElement = document.getElementById('status-' + productId);
-        if (data.trim() === "success") {
-            statusElement.innerText = "Added to cart!";
-            statusElement.style.color = "green";
-        } else {
-            statusElement.innerText = "Failed to add: " + data;
-            statusElement.style.color = "red";
-        }
-    })
-    .catch(error => {
-        console.error('Error adding to cart:', error);
-    });
-}
+            let statusElement = document.getElementById('status-' + productId);
+            if (data.trim() === "success") {
+                statusElement.innerText = "Added to cart!";
+                statusElement.style.color = "green";
+            } else {
+                statusElement.innerText = "Failed to add: " + data;
+                statusElement.style.color = "red";
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+        });
+    }
 
-</script>
+    </script>
 
 <!--FOOTER-->
 <footer>

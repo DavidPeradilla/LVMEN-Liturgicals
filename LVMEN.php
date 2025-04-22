@@ -9,13 +9,20 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+
+// Fetch featured products with full details
+$query = "
+    SELECT p.id, p.name, p.price, p.image, p.description, c.category_name
+    FROM featured_products fp
+    JOIN products p ON fp.id = p.id
+    JOIN categories c ON p.category_id = c.id
+";
+$result = $conn->query($query);
+
 // Fetch latest products (e.g., latest 4)
 $sql_latest = "SELECT * FROM products ORDER BY created_at DESC LIMIT 3";
 $result_latest = $conn->query($sql_latest);
 
-// Fetch featured products
-$sql = "SELECT * FROM featured_products";
-$result = $conn->query($sql);
 
 
 // Query to fetch active slideshow images
@@ -38,8 +45,6 @@ if ($result_slideshow->num_rows > 0) {
 
 
 
-
-
 ?> 
 
 <!DOCTYPE html>
@@ -51,7 +56,7 @@ if ($result_slideshow->num_rows > 0) {
         <link rel="stylesheet" type="text/css" href="footer3.css"> 
         <link rel="stylesheet" type="text/css" href="card.css"> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
         <form action="/LVMEN Liturgicals/php files/login.php" method="POST">
@@ -60,30 +65,42 @@ if ($result_slideshow->num_rows > 0) {
  
 .slideshow-container {
     position: relative;
-    max-width: 100%;
-    height: 626px; /* Set a fixed height to prevent jumping */
-    margin: auto;
+    width: 100%;
+    height: 600px; /* Set this to your desired banner height */
     overflow: hidden;
 }
 
-/* Position slides absolutely on top of each other */
 .mySlides {
+    display: none;
     position: absolute;
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 101%; 
-    display: none;
-    z-index: 0;
 }
 
-/* Image styling */
 .slide-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    display: block;
+    object-fit: cover; /* This makes sure the image fills the area and maintains aspect ratio */
 }
+
+
+.hero-overlay {
+    position: absolute;
+    top: 30%;
+    left: 49.8%;
+    transform: translate(-50%, -30%);
+    color: #fff;
+    text-align: center;
+    z-index: 2;
+    margin-top: 26.5%;
+    font-size: 35px;
+    text-decoration: none;
+    font-family: "Gill Sans", "Gill Sans MT", "Trebuchet MS", sans-serif;
+    
+}
+
 
 /* Optional fade animation */
 .fade {
@@ -210,69 +227,113 @@ body{
     height: 30px; 
 }
 
+.hero-section {
+    width: 100%;
+}
 
+.hero-background {
+    width: 100%;
+    height: 650px; /* adjust as needed */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+.hero-btn {
+    padding: 10px 40px;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+}
+
+
+.hero-btn:hover {
+
+    color: blck;
+
+}
+
+.card button{
+    background-color: #ff5733;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: background 0.3s;
+}
         
 </style>
     </head>
 <body>
     
 <!-- NAVBAR -->
-<header> 
+<header>
   <a href="LVMEN.php">
     <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
   </a>
 
-  <nav class="navbar"> 
+  <nav class="navbar">
     <ul class="nav-links">
       <li><a href="LVMEN.php"> HOMEPAGE </a></li>
       <li><a href="AboutUs.php"> ABOUT US </a></li>
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
-      <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
 
-      <?php if (isset($_SESSION['email'])): ?>
-        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
-      <?php else: ?>
-        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <!-- Show profile link if logged in -->
+      <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
+
+      <!-- Show cart link -->
+      <li><a href="view_cart.php" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+      </a></li>
+
+      <!-- Hide login button only if user is logged in -->
+      <?php if (!isset($_SESSION['email'])): ?>
+        <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
+      
     </ul>
-  </nav> 
+  </nav>
 </header>
 <!-- END -->
 
 
-<div class="slideshow-container">
+
+
+<section class="hero-section">
     <?php
-    $sql_slideshow = "SELECT * FROM slideshow_images WHERE active = 1";
-    $result_slideshow = $conn->query($sql_slideshow);
-    $slides = [];
+    $sql_banner = "SELECT * FROM slideshow_images WHERE active = 1 LIMIT 1";
+    $result_banner = $conn->query($sql_banner);
 
-    if ($result_slideshow && $result_slideshow->num_rows > 0) {
-        while ($row = $result_slideshow->fetch_assoc()) {
-            $slides[] = $row;
-        }
-
-        foreach ($slides as $index => $slide) {
-            echo '<div class="mySlides fade">';
-            echo '<div class="numbertext">' . ($index + 1) . '/' . count($slides) . '</div>';
-            echo '<img src="' . htmlspecialchars($slide['image_path']) . '" class="slide-image">';
-            echo '</div>';
-        }
+    if ($result_banner && $result_banner->num_rows > 0) {
+        $row = $result_banner->fetch_assoc();
+        echo '<div class="hero-background" style="background-image: url(' . htmlspecialchars($row['image_path']) . ');">';
     } else {
-        echo '<p>No slideshow images found.</p>';
+        echo '<div class="hero-background" style="background-image: url(images/default-banner.jpg);">';
     }
     ?>
-</div>
+        <div class="hero-overlay">
+            <a href="user_products.php" class="hero-btn">Order Now!!</a>
+        </div>
+    </div> <!-- end of hero-background -->
+</section>
 
 
 
-<!-- END -->
 
 
 <script>
@@ -298,6 +359,8 @@ function showSlidesAuto() {
 document.addEventListener("DOMContentLoaded", showSlidesAuto);
 </script>
 
+
+
 <!--LATEST PRODUCTS-->
 
 </br></br></br></br>
@@ -312,25 +375,23 @@ document.addEventListener("DOMContentLoaded", showSlidesAuto);
     <?php endwhile; ?>
 </div>
 
-<!--END-->
 
 
 
-</br></br></br></br>
-<p class="headline headline2" ALIGN="center"> FEATURED PRODUCTS </p> 
+</br></br>
 
- <div class="row">
+<!-- FEATURED PRODUCTS -->
+<p class="headline headline2" align="center"> FEATURED PRODUCTS </p>
+<div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
     <?php while ($row = $result->fetch_assoc()): ?>
-        <div class="card" style="margin: 1%;">
-            <img src="<?= htmlspecialchars($row['image_path']); ?>" style="width: 100%;">
-            <h3> <?= htmlspecialchars($row['name']); ?> </h3>
-            <p class="price"> <?= htmlspecialchars($row['description']); ?> </p>
+        <div class="card" style="width: 300px; margin: 1%; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center;">
+            <img src="<?= htmlspecialchars($row['image']); ?>" alt="<?= htmlspecialchars($row['name']); ?>" style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px;">
+            <h3 style="margin: 15px 0; font-size: 18px; text-align: center;"><?= htmlspecialchars($row['name']); ?></h3>
+            <p style="font-weight: bold; font-size: 16px; color: #333;">₱<?= number_format($row['price'], 2); ?></p>
         </div>
     <?php endwhile; ?>
 </div>
-
-<?php $conn->close(); ?>
-<!--END-->
+<!-- END -->
 
 
 

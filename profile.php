@@ -217,35 +217,39 @@ $stmt->close();
         <?php echo $message; ?>
     </div>
 <?php endif; ?>
+
 <!-- NAVBAR -->
-<header> 
+<header>
   <a href="LVMEN.php">
     <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
   </a>
 
-  <nav class="navbar"> 
+  <nav class="navbar">
     <ul class="nav-links">
       <li><a href="LVMEN.php"> HOMEPAGE </a></li>
       <li><a href="AboutUs.php"> ABOUT US </a></li>
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
-      <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
 
-      <?php if (isset($_SESSION['email'])): ?>
-        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
-      <?php else: ?>
-        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <!-- Show profile link if logged in -->
+      <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
+
+      <!-- Show cart link -->
+      <li><a href="view_cart.php" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+      </a></li>
+
+      <!-- Hide login button only if user is logged in -->
+      <?php if (!isset($_SESSION['email'])): ?>
+        <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
+      
     </ul>
-  </nav> 
+  </nav>
 </header>
 <!-- END -->
+
 
 <br><br><br><br><br>
 <div class="mx-auto mt-10 max-w-3xl bg-white p-4 rounded-xl shadow-lg">
@@ -307,6 +311,9 @@ $stmt->close();
     <?php if ($page < $totalPages): ?>
         <a href="?page=<?php echo $page + 1; ?>" style="margin-left: 10px;">Next &raquo;</a>
     <?php endif; ?>
+
+    <a href="logout.php" class="logout-link">Logout</a>
+
 </div>
 
 

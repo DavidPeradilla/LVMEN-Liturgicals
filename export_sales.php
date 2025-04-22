@@ -52,26 +52,64 @@ $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_produc
                          WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
 $total_products_sold = $conn->query($total_products_query)->fetch_assoc()['total_products_sold'] ?? 0;
 
-// Prepare CSV
-header('Content-Type: text/csv');
-header('Content-Disposition: attachment; filename="sales_summary_'.$month.'_'.$year.'.csv"');
-
-$output = fopen('php://output', 'w');
-
-// CSV Headings
-fputcsv($output, ['Sales Data']);
-fputcsv($output, ['Month', date("F", mktime(0, 0, 0, $month, 1))]);
-fputcsv($output, ['Year', $year]);
-fputcsv($output, []); // empty line
-
-// Sales Breakdown
-fputcsv($output, ['Monthly Sales', number_format($monthly_sales, 2)]);
-fputcsv($output, ['Monthly Canceled Sales', number_format($monthly_canceled, 2)]);
-fputcsv($output, ['Yearly Sales', number_format($yearly_sales, 2)]);
-fputcsv($output, ['Total Sales (All Time)', number_format($total_sales, 2)]);
-fputcsv($output, ['Total Products Sold (All Time)', number_format($total_products_sold)]);
-fputcsv($output, ['Total Canceled Orders (All Time)', number_format($total_canceled, 2)]);
-
-fclose($output);
-exit;
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report - <?php echo date("F", mktime(0, 0, 0, $month, 1)) . " " . $year; ?></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Sales Summary for <?php echo date("F", mktime(0, 0, 0, $month, 1)) . " " . $year; ?></h1>
+
+        <!-- Print Button -->
+        <div class="flex justify-center mb-6">
+            <button class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300" onclick="window.print();">Print Report</button>
+        </div>
+
+        <!-- Sales Data Table -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full table-auto text-left">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-3 px-6 text-sm font-semibold text-gray-700">Sales Data</th>
+                        <th class="py-3 px-6 text-sm font-semibold text-gray-700">Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Monthly Sales</td>
+                        <td class="py-3 px-6"><?php echo number_format($monthly_sales, 2); ?></td>
+                    </tr>
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Monthly Canceled Sales</td>
+                        <td class="py-3 px-6"><?php echo number_format($monthly_canceled, 2); ?></td>
+                    </tr>
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Yearly Sales</td>
+                        <td class="py-3 px-6"><?php echo number_format($yearly_sales, 2); ?></td>
+                    </tr>
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Total Sales (All Time)</td>
+                        <td class="py-3 px-6"><?php echo number_format($total_sales, 2); ?></td>
+                    </tr>
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Total Products Sold (All Time)</td>
+                        <td class="py-3 px-6"><?php echo number_format($total_products_sold); ?></td>
+                    </tr>
+                    <tr class="border-t">
+                        <td class="py-3 px-6">Total Canceled Orders (All Time)</td>
+                        <td class="py-3 px-6"><?php echo number_format($total_canceled, 2); ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

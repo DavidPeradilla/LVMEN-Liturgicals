@@ -200,14 +200,18 @@ $conn->close();
             </div>
 
             <div>
-                <label class="block font-medium text-gray-700">GCash Number:</label>
-                <input type="text" name="gcash_number" placeholder="Insert your GCash Number" required class="w-full mt-1 p-2 border rounded-md">
-            </div>
-
             <div>
-                <label class="block font-medium text-gray-700">GCash Reference Number:</label>
-                <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required class="w-full mt-1 p-2 border rounded-md">
-            </div>
+    <label class="block font-medium text-gray-700">GCash Number:</label>
+    <input type="text" name="gcash_number" placeholder="Insert your GCash Number (e.g., 0912-345-6789)" required class="w-full mt-1 p-2 border rounded-md" maxlength="13" pattern="\d{4}-\d{3}-\d{4}" title="GCash number must be in the format: 0912-345-6789">
+</div>
+
+
+<div>
+    <label class="block font-medium text-gray-700">GCash Reference Number:</label>
+    <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required class="w-full mt-1 p-2 border rounded-md" maxlength="16" pattern="\d{16}" title="Reference number must be exactly 16 alphanumeric characters">
+</div>
+
+
 
             <div>
                 <label class="block font-medium text-gray-700">Upload Payment Screenshot:</label>

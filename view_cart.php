@@ -154,34 +154,38 @@ if (isset($conn) && $conn instanceof mysqli) {
     </style>
 </head>
 <body>
-
-<header> 
+    
+<!-- NAVBAR -->
+<header>
   <a href="LVMEN.php">
     <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
   </a>
 
-  <nav class="navbar"> 
+  <nav class="navbar">
     <ul class="nav-links">
       <li><a href="LVMEN.php"> HOMEPAGE </a></li>
       <li><a href="AboutUs.php"> ABOUT US </a></li>
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
-      <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
 
-      <?php if (isset($_SESSION['email'])): ?>
-        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
-      <?php else: ?>
-        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <!-- Show profile link if logged in -->
+      <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
+
+      <!-- Show cart link -->
+      <li><a href="view_cart.php" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+      </a></li>
+
+      <!-- Hide login button only if user is logged in -->
+      <?php if (!isset($_SESSION['email'])): ?>
+        <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
+      
     </ul>
-  </nav> 
+  </nav>
 </header>
+<!-- END -->
 
 <br> <br> <br>
       <!--CART-->
@@ -265,13 +269,20 @@ if (isset($conn) && $conn instanceof mysqli) {
 
 
         <!--SCRIPT-->
-<script>
+        <script>
     function updateQuantity(id, change) {
         let quantityInput = document.getElementById("quantity-" + id);
-        let newQuantity = parseInt(quantityInput.value) + change;
-        
-        if (newQuantity < 1) return;
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity + change;
 
+        // Ensure new quantity is between 1 and 10
+        if (newQuantity < 1) newQuantity = 1;
+        if (newQuantity > 10) newQuantity = 10;
+
+        // If there's no change, return
+        if (newQuantity === currentQuantity) return;
+
+        // Send updated quantity to the server
         fetch("update_cart.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -301,6 +312,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 
     window.onload = updateTotal;
 </script>
+
 
 </body>
 </html>
