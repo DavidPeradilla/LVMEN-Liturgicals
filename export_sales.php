@@ -105,23 +105,37 @@ if (isset($_GET['export_pdf'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Report - <?php echo date("F", mktime(0, 0, 0, $month, 1)) . " " . $year; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+@media print {
+        .btn-container {
+            display: none;
+        }
+    }
+    </style>
+
+
+
 </head>
+
+
 <body class="bg-gray-100 text-gray-900">
 
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Sales Summary for <?php echo date("F", mktime(0, 0, 0, $month, 1)) . " " . $year; ?></h1>
 
-        <!-- Print Button -->
+     <div class="btn-container"> 
         <div class="flex justify-center mb-6">
             <button class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300" onclick="window.print();">Print Report</button>
         </div>
-
-        <!-- Export to PDF Button -->
+    </div>
+    
+    <div class="btn-container">
         <div class="flex justify-center mb-6">
             <a href="?export_pdf=1" class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-300">Export to PDF</a>
         </div>
-
-        <!-- Sales Data Table -->
+    </div>
+      
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <table class="min-w-full table-auto text-left">
                 <thead class="bg-gray-200">
@@ -159,6 +173,9 @@ if (isset($_GET['export_pdf'])) {
             </table>
         </div>
     </div>
+
+
+
 
 </body>
 </html>
