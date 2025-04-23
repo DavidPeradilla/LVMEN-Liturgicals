@@ -1,5 +1,5 @@
 <?php
-session_name("user_session"); // Only if you're using a custom session name consistently
+session_name("user_session");
 session_start();
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
@@ -7,44 +7,45 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Redirect if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: login.php");
-    exit();
+    die("You need to log in to access this page.");
 }
 
 $email = $_SESSION['email'];
 
-// Fetch current user data
-$stmt = $conn->prepare("SELECT first_name, last_name, email, address, contact_number FROM users WHERE email = ?");
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = trim($_POST['first_name']);
+    $last_name = trim($_POST['last_name']);
+    $address = trim($_POST['address']);
+    $contact_number = trim($_POST['contact_number']);
+
+    if (empty($first_name) || empty($last_name) || empty($address) || empty($contact_number)) {
+        $error_message = "All fields are required.";
+    } else {
+        $update_sql = "UPDATE users SET first_name = ?, last_name = ?, address = ?, contact_number = ? WHERE email = ?";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("sssss", $first_name, $last_name, $address, $contact_number, $email);
+        if ($stmt->execute()) {
+            $success_message = "Profile updated successfully.";
+        } else {
+            $error_message = "Failed to update profile. Please try again.";
+        }
+        $stmt->close();
+    }
+}
+
+// ✅ Fetch user info *after* the update so the form gets fresh data
+$user_sql = "SELECT first_name, last_name, address, contact_number FROM users WHERE email = ?";
+$stmt = $conn->prepare($user_sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
 
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $address = $_POST['address'];
-    $contact_number = $_POST['contact_number'];
-
-    // Update user data in the database
-    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, address = ?, contact_number = ? WHERE email = ?");
-    $stmt->bind_param("sssss", $first_name, $last_name, $address, $contact_number, $email);
-
-    if ($stmt->execute()) {
-        $success_message = "Profile updated successfully!";
-    } else {
-        $error_message = "Error updating profile.";
-    }
-    $stmt->close();
-}
-
-// Close the database connection
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -115,59 +116,61 @@ $conn->close();
 <body>
 
 <!-- NAVBAR -->
-<header> 
+<header>
   <a href="LVMEN.php">
     <img class="logo" src="Img/LVMEN Logo.jpg" style="margin-left: 1%;" width="80px" height="70px">
   </a>
 
-  <nav class="navbar"> 
+  <nav class="navbar">
     <ul class="nav-links">
       <li><a href="LVMEN.php"> HOMEPAGE </a></li>
       <li><a href="AboutUs.php"> ABOUT US </a></li>
       <li><a href="user_products.php"> CATALOG </a></li>
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
-      <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
-      <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
 
-      <?php if (isset($_SESSION['email'])): ?>
-        <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
-      <?php else: ?>
-        <li class="right-align"><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
+      <!-- Show profile link if logged in -->
+      <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
+
+      <!-- Show cart link -->
+      <li><a href="view_cart.php" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+      </a></li>
+
+      <!-- Hide login button only if user is logged in -->
+      <?php if (!isset($_SESSION['email'])): ?>
+        <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
       <?php endif; ?>
+      
     </ul>
-  </nav> 
+  </nav>
 </header>
 <!-- END -->
 
 <br> <br> <br>
 
-<div class="container">
-    <h2>Edit Profile</h2>
+    <div class="container">
+        <h2>Edit Profile</h2>
 
-    <?php if (isset($success_message)) echo "<p class='message'>$success_message</p>"; ?>
-    <?php if (isset($error_message)) echo "<p class='message error'>$error_message</p>"; ?>
+        <?php if (isset($success_message)) echo "<p class='message'>$success_message</p>"; ?>
+        <?php if (isset($error_message)) echo "<p class='message error'>$error_message</p>"; ?>
 
-    <form method="POST">
-        <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
+        <form method="POST">
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
 
-        <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
 
-        <label for="address">Address:</label>
-        <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" required>
+            <label for="address">Address:</label>
+            <input type="text" name="address" value="<?php echo htmlspecialchars($user['address']); ?>" required>
 
-        <label for="contact_number">Contact Number:</label>
-        <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" required>
+            <label for="contact_number">Contact Number:</label>
+            <input type="text" name="contact_number" value="<?php echo htmlspecialchars($user['contact_number']); ?>" required>
 
-        <button type="submit" class="btn">Update Profile</button>
-    </form>
-</div>
+            <button type="submit" class="btn">Update Profile</button>
+        </form>
+    </div>
 
 
 <script>

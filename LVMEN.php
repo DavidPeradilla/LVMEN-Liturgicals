@@ -327,7 +327,7 @@ body{
     }
     ?>
         <div class="hero-overlay">
-            <a href="user_products.php" class="hero-btn">Order Now!!</a>
+            <a href="user_products.php" class="hero-btn"></a>
         </div>
     </div> <!-- end of hero-background -->
 </section>

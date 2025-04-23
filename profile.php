@@ -298,7 +298,7 @@ $stmt->close();
 <?php } ?>
     </table>
     <?php } else { ?>
-        <p>No orders found.</p>
+        <p  align="center" style="margin-top: 1%;">No orders found.</p>
     <?php } ?>
 
     <div style="text-align: center; margin-top: 20px;">

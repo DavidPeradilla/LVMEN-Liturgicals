@@ -193,6 +193,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-left: -180px;
             margin-top: 20px;
         }
+
+
+        .notification {
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: sans-serif;
+    position: relative;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.notification.success {
+    background-color: #e6ffed;
+    color: #256029;
+    border: 1px solid #a3d9a5;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+        
     </style>
     <script>
         // Open the Modal
@@ -248,11 +272,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </header>
 <!-- END -->
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- Registration Form -->
 <div class="form-container">
     <h2>Registration Form</h2>
+    <?php if (!empty($success_message)): ?>
+    <div class="notification success">
+        <?php echo $success_message; ?>
+    </div>
+<?php endif; ?>
     <form method="POST" action="register.php" onsubmit="return validateForm()">
         <label for="Fname">First Name:</label>
         <input type="text" name="Fname" id="Fname" required oninput="capitalizeFirstLetter(this)">
@@ -261,7 +290,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="text" name="Lname" id="Lname" required oninput="capitalizeFirstLetter(this)">
 
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required>
+        <input type="email" name="email" id="email" required style="text-transform: lowercase;">
+
 
         <label for="password">Password:</label>
         <input type="password" name="password" id="password" required>
@@ -270,9 +300,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                <input type="checkbox" id="showPassword" onclick="togglePassword()" style=" margin-left: -46%; margin-top: 2%;"> 
                  <label for="showPassword" style="margin-left: -50%; margin-top: 1.3%;">Show Password</label>
             </div>
+              
+
+
 
             <input type="submit" value="Register">
-            <?php echo $success_message; ?>
+            
 
         <div style="display: flex; align-items: center; font-size: 14px; margin-bottom: 15px;">
             <label for="terms" style=" margin-left: 0%;" >By signing up, you agree to the LVMEN <a href="javascript:void(0);" style = "text-decoration: underline; color:blue;"onclick="openModal()">Terms and Conditions</a>.</label>

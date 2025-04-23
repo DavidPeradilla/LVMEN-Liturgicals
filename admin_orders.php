@@ -174,14 +174,18 @@ $total_sales = file_get_contents("get_sales.php");
 
 <div class="container">
     <h2>Manage Orders</h2>
+
     <form method="GET" style="margin-bottom: 10px;">
         <label for="status">Filter by Status:</label>
         <select name="status" id="status" onchange="this.form.submit()">
             <option value="">All</option>
-            <option value="Pending" <?php if ($selected_status == "Pending") echo "selected"; ?>>Pending</option>
-            <option value="Processing" <?php if ($selected_status == "Processing") echo "selected"; ?>>Processing</option>
-            <option value="Shipped" <?php if ($selected_status == "Shipped") echo "selected"; ?>>Shipped</option>
-            <option value="Canceled" <?php if ($selected_status == "Canceled") echo "selected"; ?>>Canceled</option>
+            <?php
+            $statuses = ['Pending', 'Processing', 'Shipped', 'Canceled'];
+            foreach ($statuses as $status) {
+                $selected = ($selected_status == $status) ? 'selected' : '';
+                echo "<option value=\"$status\" $selected>$status</option>";
+            }
+            ?>
         </select>
     </form>
 
@@ -199,49 +203,52 @@ $total_sales = file_get_contents("get_sales.php");
             <th>Status</th>
             <th>Actions</th>
         </tr>
-
         <?php while ($order = $orders_result->fetch_assoc()) { ?>
             <tr>
-                <td><?php echo $order['id']; ?></td>
-                <td><?php echo htmlspecialchars($order['email']); ?></td>
-                <td><?php echo htmlspecialchars($order['recipient_name']); ?></td>
-                <td><?php echo htmlspecialchars($order['phone_number']); ?></td>
-                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
-                <td><?php echo !empty($order['gcash_number']) ? htmlspecialchars($order['gcash_number']) : 'N/A'; ?></td>
-                <td><?php echo htmlspecialchars($order['gcash_reference']); ?></td>
+                <td><?= $order['id'] ?></td>
+                <td><?= htmlspecialchars($order['email']) ?></td>
+                <td><?= htmlspecialchars($order['recipient_name']) ?></td>
+                <td><?= htmlspecialchars($order['phone_number']) ?></td>
+                <td>₱<?= number_format($order['total_price'], 2) ?></td>
+                <td><?= !empty($order['gcash_number']) ? htmlspecialchars($order['gcash_number']) : 'N/A' ?></td>
+                <td><?= htmlspecialchars($order['gcash_reference']) ?></td>
                 <td>
-                    <?php if (!empty($order['payment_screenshot'])) { ?>
-                        <img src="<?php echo htmlspecialchars($order['payment_screenshot']); ?>" onclick="openModal(this.src)">
-                    <?php } else { echo "No Screenshot"; } ?>
+                    <?php if (!empty($order['payment_screenshot'])): ?>
+                        <img src="<?= htmlspecialchars($order['payment_screenshot']) ?>" onclick="openModal(this.src)">
+                    <?php else: ?>
+                        No Screenshot
+                    <?php endif; ?>
                 </td>
                 <td>
-                    <a href="order_details.php?order_id=<?php echo $order['id']; ?>">
+                    <a href="order_details.php?order_id=<?= $order['id'] ?>">
                         <button class="btn">View Items</button>
                     </a>
                 </td>
-                <td><?php echo $order['order_status']; ?></td>
-
                 <td>
-                    <form action="update_order.php" method="POST" style="margin-bottom: 10px;">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                    <?= $order['order_status'] ?>
+                    <?php if ($order['order_status'] == 'Canceled'): ?>
+                        <br>
+                        <button class="btn" onclick="openCancellationReasonModal(<?= $order['id'] ?>, `<?= htmlspecialchars($order['cancellation_reason']) ?>`)"> Reason</button>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <form action="update_order.php" method="POST" style="margin-bottom: 5px;">
+                        <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
                         <select name="order_status" onchange="this.form.submit()">
-                            <option value="Pending" <?php if ($order['order_status'] == "Pending") echo "selected"; ?>>Pending</option>
-                            <option value="Processing" <?php if ($order['order_status'] == "Processing") echo "selected"; ?>>Processing</option>
-                            <option value="Shipped" <?php if ($order['order_status'] == "Shipped") echo "selected"; ?>>Shipped</option>
-                            <option value="Canceled" <?php if ($order['order_status'] == "Canceled") echo "selected"; ?>>Canceled</option>
+                            <?php foreach ($statuses as $status): ?>
+                                <option value="<?= $status ?>" <?= ($order['order_status'] == $status) ? 'selected' : '' ?>><?= $status ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </form>
-
-                    <?php if ($order['order_status'] != 'Canceled') { ?>
-                        <form action="update_order.php" method="POST" style="margin-bottom: 10px;">
-                            <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                            <button type="submit" name="mark_delivered" class="btn btn-complete">Delivered</button>
+                    <?php if ($order['order_status'] != 'Canceled'): ?>
+                        <form action="update_order.php" method="POST" style="margin-bottom: 5px;">
+                            <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                            <button type="submit" name="mark_delivered" class="btn btn-complete">Mark Delivered</button>
                         </form>
-                    <?php } ?>
-
+                    <?php endif; ?>
                     <form action="delete_order.php" method="POST" onsubmit="return confirm('Are you sure you want to remove this order?');">
-                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                        <button type="submit" name="delete_order" class="btn btn-delete">Remove</button>
+                        <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                        <button type="submit" class="btn btn-delete">Remove</button>
                     </form>
                 </td>
             </tr>
@@ -249,11 +256,25 @@ $total_sales = file_get_contents("get_sales.php");
     </table>
 </div>
 
-<!-- Modal for Full Image -->
+<!-- Screenshot Modal -->
 <div id="imageModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <img id="modalImage" src="" style="width: 100%;">
+    </div>
+</div>
+
+<!-- Cancellation Reason Modal -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('cancelModal')">&times;</span>
+        <h3>Edit Cancellation Reason</h3>
+        <form id="cancelForm" method="POST" action="cancel_order2.php">
+            <input type="hidden" id="order_id" name="order_id" value="">
+            <textarea name="reason" required placeholder="Enter your reason" rows="4" style="width: 100%;"></textarea>
+            <br><br>
+            <button type="submit">Update Reason</button>
+        </form>
     </div>
 </div>
 
@@ -263,16 +284,23 @@ $total_sales = file_get_contents("get_sales.php");
         document.getElementById("imageModal").style.display = "block";
     }
 
-    function closeModal() {
-        document.getElementById("imageModal").style.display = "none";
+    function openCancellationReasonModal(orderId, reason) {
+        document.getElementById("order_id").value = orderId;
+        document.querySelector("#cancelForm textarea[name='reason']").value = reason;
+        document.getElementById("cancelModal").style.display = "block";
+    }
+
+    function closeModal(modalId = 'imageModal') {
+        document.getElementById(modalId).style.display = "none";
     }
 
     window.onclick = function(event) {
-        if (event.target == document.getElementById("imageModal")) {
-            closeModal();
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
         }
     };
 </script>
+
 
 </body>
 </html>

@@ -237,7 +237,7 @@ a {
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required>
 
-            <div style="display: flex; align-items: left; gap: 8px; text-align: left; margin-bottom: 10px;">
+            <div style="display: flex; align-items: left; gap: 8px; text-align: left; margin-bottom: 10px;" >
                <input type="checkbox" id="showPassword" onclick="togglePassword()" style=" margin-left: -46%; margin-top: 1.5%;"> 
                  <label for="showPassword" style="margin-left: -50%;">Show Password</label>
             </div>

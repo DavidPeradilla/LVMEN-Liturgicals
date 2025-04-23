@@ -58,6 +58,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             die("Error uploading payment screenshot.");
         }
+    }  $updated = false;
+    if (empty($user['address']) && !empty($_POST['address'])) {
+        $user['address'] = trim($_POST['address']);
+        $updated = true;
+    }
+    if (empty($user['contact_number']) && !empty($_POST['contact_number'])) {
+        $user['contact_number'] = trim($_POST['contact_number']);
+        $updated = true;
+    }
+    
+    if ($updated) {
+        $update_stmt = $conn->prepare("UPDATE users SET address = ?, contact_number = ? WHERE email = ?");
+        $update_stmt->bind_param("sss", $user['address'], $user['contact_number'], $email);
+        $update_stmt->execute();
+        $update_stmt->close();
     }
 
     $conn->begin_transaction();

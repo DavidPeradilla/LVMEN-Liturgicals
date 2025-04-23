@@ -177,93 +177,99 @@ $conn->close();
     <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Checkout</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Checkout Form (Left) -->
-        <form action="gcash_payment.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()" class="space-y-4">
-            <div>
-                <label class="block font-medium text-gray-700">Email Address:</label>
-                <input type="email" name="email" value="<?= htmlspecialchars($email); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
-            </div>
-
-            <div>
-                <label class="block font-medium text-gray-700">Recipient's Name:</label>
-                <input type="text" name="recipient_name" value="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
-            </div>
-
-            <div>
-                <label class="block font-medium text-gray-700">Shipping Address:</label>
-                <input type="text" name="address" value="<?= htmlspecialchars($user['address']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
-            </div>
-
-            <div>
-                <label class="block font-medium text-gray-700">Phone Number:</label>
-                <input type="text" name="contact_number" value="<?= htmlspecialchars($user['contact_number']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
-            </div>
-
-            <div>
-            <div>
-    <label class="block font-medium text-gray-700">GCash Number:</label>
-    <input type="text" name="gcash_number" placeholder="Insert your GCash Number (e.g., 0912-345-6789)" required class="w-full mt-1 p-2 border rounded-md" maxlength="13" pattern="\d{4}-\d{3}-\d{4}" title="GCash number must be in the format: 0912-345-6789">
-</div>
-
-
-<div>
-    <label class="block font-medium text-gray-700">GCash Reference Number:</label>
-    <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required class="w-full mt-1 p-2 border rounded-md" maxlength="16" pattern="\d{16}" title="Reference number must be exactly 16 alphanumeric characters">
-</div>
-
-
-
-            <div>
-                <label class="block font-medium text-gray-700">Upload Payment Screenshot:</label>
-                <div class="flex items-center gap-4 mt-2">
-                    <input type="file" name="payment_screenshot" accept="image/*" required onchange="previewImage(event)" class="w-full">
-                    <img id="preview" class="w-24 h-24 object-cover rounded hidden" alt="Screenshot Preview">
-                </div>
-            </div>
-
-            <input type="hidden" name="payment_method" value="GCash">
-            <input type="hidden" name="total_price" value="<?= $total_order_price; ?>">
-
-            <div class="flex gap-4 mt-4">
-                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md">Confirm Payment</button>
-                <button type="button" onclick="cancelOrder()" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
-            </div>
-        </form>
-
-        <!-- Order Summary (Right) -->
+    <!-- Checkout Form (Left) -->
+    <form action="gcash_payment.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()" class="space-y-4">
         <div>
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Order Summary</h3>
-            <table class="w-full text-sm border">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="text-left p-2 border">Product Name</th>
-                        <th class="text-left p-2 border">Price</th>
-                        <th class="text-left p-2 border">Qty</th>
-                        <th class="text-left p-2 border">Total</th>
+            <label class="block font-medium text-gray-700">Email Address:</label>
+            <input type="email" name="email" value="<?= htmlspecialchars($email); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">Recipient's Name:</label>
+            <input type="text" name="recipient_name" value="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>" readonly required class="w-full mt-1 p-2 border rounded-md bg-gray-100">
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">Shipping Address:</label>
+            <input type="text" name="address" 
+    placeholder="Enter Address" 
+    value="<?= htmlspecialchars($user['address']); ?>" 
+    <?= empty($user['address']) ? '' : 'readonly'; ?> 
+    required class="w-full mt-1 p-2 border rounded-md <?= empty($user['address']) ? '' : 'bg-gray-100'; ?>">
+
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">Phone Number:</label>
+            <input type="text" name="contact_number" 
+    placeholder="Enter Phone Number" 
+    value="<?= htmlspecialchars($user['contact_number']); ?>" 
+    <?= empty($user['contact_number']) ? '' : 'readonly'; ?> 
+    required class="w-full mt-1 p-2 border rounded-md <?= empty($user['contact_number']) ? '' : 'bg-gray-100'; ?>">
+
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">GCash Number:</label>
+            <input type="text" name="gcash_number" placeholder="Insert your GCash Number (e.g., 0912-345-6789)" required class="w-full mt-1 p-2 border rounded-md" maxlength="13" pattern="\d{4}-\d{3}-\d{4}" title="GCash number must be in the format: 0912-345-6789">
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">GCash Reference Number:</label>
+            <input type="text" name="gcash_reference" placeholder="Insert Reference Number" required class="w-full mt-1 p-2 border rounded-md" maxlength="16" pattern="\d{16}" title="Reference number must be exactly 16 numeric characters">
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">Upload Payment Screenshot:</label>
+            <div class="flex items-center gap-4 mt-2">
+                <input type="file" name="payment_screenshot" accept="image/*" required onchange="previewImage(event)" class="w-full">
+                <img id="preview" class="w-24 h-24 object-cover rounded hidden" alt="Screenshot Preview">
+            </div>
+        </div>
+
+        <input type="hidden" name="payment_method" value="GCash">
+        <input type="hidden" name="total_price" value="<?= $total_order_price; ?>">
+
+        <div class="flex gap-4 mt-4">
+            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md">Confirm Payment</button>
+            <button type="button" onclick="cancelOrder()" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+        </div>
+    </form>
+
+    <!-- Order Summary (Right) -->
+    <div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Order Summary</h3>
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-2 border">Product Name</th>
+                    <th class="text-left p-2 border">Price</th>
+                    <th class="text-left p-2 border">Qty</th>
+                    <th class="text-left p-2 border">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($cart_items as $item): ?>
+                    <tr class="border-t">
+                        <td class="p-2 border"><?= htmlspecialchars($item['product_name']); ?></td>
+                        <td class="p-2 border">₱<?= number_format($item['price'], 2); ?></td>
+                        <td class="p-2 border"><?= $item['quantity']; ?></td>
+                        <td class="p-2 border">₱<?= number_format($item['total_price'], 2); ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($cart_items as $item): ?>
-                        <tr class="border-t">
-                            <td class="p-2 border"><?= htmlspecialchars($item['product_name']); ?></td>
-                            <td class="p-2 border">₱<?= number_format($item['price'], 2); ?></td>
-                            <td class="p-2 border"><?= $item['quantity']; ?></td>
-                            <td class="p-2 border">₱<?= number_format($item['total_price'], 2); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-            <div class="text-right mt-4 text-lg font-bold">
-                Total: ₱<?= number_format($total_order_price, 2); ?>
-            </div>
+        <div class="text-right mt-4 text-lg font-bold">
+            Total: ₱<?= number_format($total_order_price, 2); ?>
+        </div>
 
-            <div class="mt-6 bg-blue-100 text-blue-800 p-3 rounded-md">
-                <strong>Payment Method:</strong> GCash: +123-456-7890
-            </div>
+        <div class="mt-6 bg-blue-100 text-blue-800 p-3 rounded-md">
+            <strong>Payment Method:</strong> GCash: +123-456-7890
         </div>
     </div>
 </div>
+
 
 
 <script>
