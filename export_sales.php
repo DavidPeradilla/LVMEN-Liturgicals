@@ -1,4 +1,7 @@
 <?php
+// Include FPDF library
+require('libs/fpdf.php');
+
 $conn = new mysqli("localhost", "root", "", "shopping_cart");
 
 if ($conn->connect_error) {
@@ -52,6 +55,47 @@ $total_products_query = "SELECT SUM(order_items_backup.quantity) AS total_produc
                          WHERE orders.order_status = 'Delivered' OR orders.order_status = 'Removed'";
 $total_products_sold = $conn->query($total_products_query)->fetch_assoc()['total_products_sold'] ?? 0;
 
+// Check if user requested to export PDF
+if (isset($_GET['export_pdf'])) {
+    // Create PDF
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
+
+    // Title
+    $pdf->Cell(200, 10, 'Sales Summary for ' . date("F", mktime(0, 0, 0, $month, 1)) . ' ' . $year, 0, 1, 'C');
+    $pdf->Ln(10); // Line break
+
+    // Table Header
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Cell(100, 10, 'Sales Data', 1, 0, 'C');
+    $pdf->Cell(90, 10, 'Amount', 1, 1, 'C');
+    
+    // Table Content
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(100, 10, 'Monthly Sales', 1);
+    $pdf->Cell(90, 10, number_format($monthly_sales, 2), 1, 1, 'R');
+    
+    $pdf->Cell(100, 10, 'Monthly Canceled Sales', 1);
+    $pdf->Cell(90, 10, number_format($monthly_canceled, 2), 1, 1, 'R');
+    
+    $pdf->Cell(100, 10, 'Yearly Sales', 1);
+    $pdf->Cell(90, 10, number_format($yearly_sales, 2), 1, 1, 'R');
+    
+    $pdf->Cell(100, 10, 'Total Sales (All Time)', 1);
+    $pdf->Cell(90, 10, number_format($total_sales, 2), 1, 1, 'R');
+    
+    $pdf->Cell(100, 10, 'Total Products Sold (All Time)', 1);
+    $pdf->Cell(90, 10, number_format($total_products_sold), 1, 1, 'R');
+    
+    $pdf->Cell(100, 10, 'Total Canceled Orders (All Time)', 1);
+    $pdf->Cell(90, 10, number_format($total_canceled, 2), 1, 1, 'R');
+
+    // Output the PDF
+    $pdf->Output('D', 'Sales_Report_' . date("F", mktime(0, 0, 0, $month, 1)) . '_' . $year . '.pdf');
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +114,11 @@ $total_products_sold = $conn->query($total_products_query)->fetch_assoc()['total
         <!-- Print Button -->
         <div class="flex justify-center mb-6">
             <button class="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300" onclick="window.print();">Print Report</button>
+        </div>
+
+        <!-- Export to PDF Button -->
+        <div class="flex justify-center mb-6">
+            <a href="?export_pdf=1" class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-300">Export to PDF</a>
         </div>
 
         <!-- Sales Data Table -->

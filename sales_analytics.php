@@ -376,7 +376,7 @@ $monthly_products_labels = $all_months;
                 }, {
                     label: 'Canceled Orders Revenue',
                     data: <?php echo json_encode($canceled_sales_data); ?>,
-                    type: 'line',
+                    type: 'bar',
                     backgroundColor: 'rgba(255, 99, 132, 0.6)',
                     tension: 0.10
                 }]

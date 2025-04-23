@@ -13,7 +13,7 @@ $categoryFilter = isset($_GET['category']) ? $_GET['category'] : '';
 $whereClause = $categoryFilter ? "WHERE products.category_id = '$categoryFilter'" : "";
 
 // Pagination setup
-$products_per_page = 13; // You can change this number
+$products_per_page = 15; // You can change this number
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $products_per_page;
 

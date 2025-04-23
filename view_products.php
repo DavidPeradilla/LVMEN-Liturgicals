@@ -14,16 +14,20 @@ if ($conn->connect_error) {
 }
 
 
+// Handle product deletion
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    if ($conn->query("DELETE FROM products WHERE id = $id") === TRUE) {
-        header("Location: view_products.php?deleted=1");
-        exit();
-    } else {
-        echo "Error deleting product: " . $conn->error;
-    }
-}
 
+   
+    $conn->query("DELETE FROM products WHERE id = $id");
+
+    
+    $conn->query("DELETE FROM featured_products WHERE id = $id");
+
+    
+    header("Location: view_products.php?success=deleted");
+    exit;
+}
 // Fetch products with category names
 $sql = "SELECT products.id, products.name, products.price, products.image, 
                products.category_id, products.description, categories.category_name 
@@ -41,6 +45,29 @@ $category_options = [];
 while ($cat = $categories->fetch_assoc()) {
     $category_options[$cat['id']] = $cat['category_name'];
 }
+
+
+$filter_category = isset($_GET['filter_category']) ? intval($_GET['filter_category']) : '';
+
+if ($filter_category) {
+    $stmt = $conn->prepare("SELECT products.id, products.name, products.price, products.image, 
+                                   products.category_id, products.description, categories.category_name 
+                            FROM products 
+                            JOIN categories ON products.category_id = categories.id 
+                            WHERE category_id = ? 
+                            ORDER BY products.id DESC");
+    $stmt->bind_param("i", $filter_category);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    $sql = "SELECT products.id, products.name, products.price, products.image, 
+                   products.category_id, products.description, categories.category_name 
+            FROM products 
+            JOIN categories ON products.category_id = categories.id 
+            ORDER BY products.id DESC";
+    $result = $conn->query($sql);
+}
+
 
 $conn->close();
 ?>
@@ -224,8 +251,22 @@ $conn->close();
     </div>
 </div>
 
+
 <div class="container">
     <h2>Admin - View Products</h2>
+
+<form method="GET" style="margin-bottom: 20px;">
+    <label for="filter_category">Filter by Category:</label>
+    <select name="filter_category" id="filter_category" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        <?php foreach ($category_options as $cat_id => $cat_name) { ?>
+            <option value="<?php echo $cat_id; ?>" <?php if (isset($_GET['filter_category']) && $_GET['filter_category'] == $cat_id) echo 'selected'; ?>>
+                <?php echo $cat_name; ?>
+            </option>
+        <?php } ?>
+    </select>
+</form>
+
 
     <table>
         <tr>
@@ -275,6 +316,15 @@ $conn->close();
     let category = document.getElementById('category_' + id).value;
     let description = document.getElementById('description_' + id).value.trim();
 
+    
+    let currentFilter = document.getElementById('filter_category').value;
+
+  
+    if (currentFilter) {
+        const newUrl = window.location.pathname + "?filter_category=" + encodeURIComponent(currentFilter);
+        window.history.replaceState(null, null, newUrl);
+    }
+
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "update_product.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -288,8 +338,13 @@ $conn->close();
             }
         }
     };
-    xhr.send("id=" + id + "&name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&category_id=" + encodeURIComponent(category) + "&description=" + encodeURIComponent(description));
+
+    xhr.send("id=" + id + "&name=" + encodeURIComponent(name) +
+             "&price=" + encodeURIComponent(price) +
+             "&category_id=" + encodeURIComponent(category) +
+             "&description=" + encodeURIComponent(description));
 }
+
 
 function showToast(message) {
     let toast = document.getElementById("toast");

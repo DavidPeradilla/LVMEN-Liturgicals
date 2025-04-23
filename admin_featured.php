@@ -26,6 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_featured'])) {
     if (isset($_POST['product_id']) && !empty($_POST['product_id'])) {
         $productId = intval($_POST['product_id']);
         
+        // Check if there are already 6 featured products
+        $countResult = $conn->query("SELECT COUNT(*) as total FROM featured_products");
+        $countRow = $countResult->fetch_assoc();
+        $totalFeaturedProducts = $countRow['total'];
+
+        if ($totalFeaturedProducts >= 6) {
+            // Limit reached, display an error message
+            header("Location: admin_featured.php?error=limit_reached");
+            exit;
+        }
+
         // Check if the product is already in the featured products list
         $check = $conn->query("SELECT * FROM featured_products WHERE id = $productId");
         if ($check->num_rows === 0) {
@@ -37,6 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_featured'])) {
                 header("Location: admin_featured.php?error=insert_failed");
                 exit;
             }
+        } else {
+            // Product already featured
+            header("Location: admin_featured.php?error=already_featured");
+            exit;
         }
     }        
 }
@@ -44,27 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_featured'])) {
 // Fetch all products
 $productResult = $conn->query("SELECT * FROM products");
 
-// Fetch all featured products
-$result = $conn->query("SELECT * FROM featured_products");
-
-// Get product count
-$countResult = $conn->query("SELECT COUNT(*) as total FROM featured_products");
-$countRow = $countResult->fetch_assoc();
-$totalProducts = $countRow['total'];
-
-
 // Fetch all featured products with additional product details (including category name)
 $query = "
 SELECT p.id, p.name, p.price, p.image, p.description, c.category_name
 FROM featured_products fp
 JOIN products p ON fp.id = p.id
 JOIN categories c ON p.category_id = c.id
-
+LIMIT 6
 ";
 
 $result = $conn->query($query);
 
-
+// Fetch featured product count
+$countResult = $conn->query("SELECT COUNT(*) as total FROM featured_products");
+$countRow = $countResult->fetch_assoc();
+$totalProducts = $countRow['total'];
 ?>
 
 <!DOCTYPE html>
@@ -108,34 +117,28 @@ $result = $conn->query($query);
 
     <h2 class="text-3xl font-semibold text-gray-800 mb-4">Manage Featured Products</h2>
 
-    <!-- Show messages -->
-    <?php if (isset($_GET['error'])): ?>
-        <?php if ($_GET['error'] === "max_reached"): ?>
-            <div class="bg-red-500 text-white p-2 rounded-md mb-4">⚠️ You can only have 6 featured products. Remove one to add a new one.</div>
-        <?php elseif ($_GET['error'] === "empty_fields"): ?>
-            <div class="bg-red-500 text-white p-2 rounded-md mb-4">⚠️ Please fill in all fields.</div>
-        <?php elseif ($_GET['error'] === "image_error"): ?>
-            <div class="bg-red-500 text-white p-2 rounded-md mb-4">⚠️ There was an error uploading the image.</div>
-        <?php elseif ($_GET['error'] === "already_featured"): ?>
-            <div class="bg-red-500 text-white p-2 rounded-md mb-4">⚠️ This product is already featured.</div>
-        <?php elseif ($_GET['error'] === "empty_selection"): ?>
-            <div class="bg-red-500 text-white p-2 rounded-md mb-4">⚠️ Please select a product to feature.</div>
-        <?php endif; ?>
-    <?php elseif (isset($_GET['success']) && $_GET['success'] === "added"): ?>
-        <div class="bg-green-500 text-white p-2 rounded-md mb-4">✅ Product added to featured products successfully!</div>
+
+<!-- Form to add featured product -->
+<form action="admin_featured.php" method="POST" class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <label for="product_id" class="block text-gray-700 text-lg font-semibold mb-2">Select a Product to Feature</label>
+    <select name="product_id" id="product_id" required class="w-full p-3 border border-gray-300 rounded-md mb-4">
+        <option value="">Select a Product</option>
+        <?php while ($row = $productResult->fetch_assoc()): ?>
+            <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['name']); ?></option>
+        <?php endwhile; ?>
+    </select>
+    
+    <!-- Display message if the limit is reached -->
+    <?php if ($totalProducts >= 6): ?>
+        <p style="color: red; text-align: center; font-weight: bold;">You can only feature up to 6 products.</p>
     <?php endif; ?>
 
-    <!-- Form to add featured product -->
-    <form action="admin_featured.php" method="POST" class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <label for="product_id" class="block text-gray-700 text-lg font-semibold mb-2">Select a Product to Feature</label>
-        <select name="product_id" id="product_id" required class="w-full p-3 border border-gray-300 rounded-md mb-4">
-            <option value="">Select a Product</option>
-            <?php while ($row = $productResult->fetch_assoc()): ?>
-                <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['name']); ?></option>
-            <?php endwhile; ?>
-        </select>
-        <button type="submit" name="add_featured" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700" <?php if ($totalProducts >= 6) echo 'disabled'; ?>>Add Featured Product</button>
-    </form>
+    <!-- Disable button if the limit is reached -->
+    <button type="submit" name="add_featured" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700" <?php if ($totalProducts >= 6) echo 'disabled'; ?>>
+        Add Featured Product
+    </button>
+</form>
+
 
 <!-- Featured Products Table -->
 <div class="overflow-x-auto bg-white p-6 rounded-lg shadow-md">
