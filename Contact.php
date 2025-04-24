@@ -339,9 +339,28 @@ section {
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
       
-      <li><a href="view_cart.php" class="cart-link">
-        <i class="fas fa-shopping-cart"></i>
-      </a></li>
+      <li>
+  <a href="view_cart.php" class="cart-link" style="position: relative;">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" style="
+        position: absolute;
+        top: 2px;
+        right: -3px;
+        width: 18px;
+        height: 18px;
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+      <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+    </span>
+  </a>
+</li>
 
       
       <?php if (!isset($_SESSION['email'])): ?>
@@ -547,6 +566,21 @@ section {
 
     
         </script>
+
+
+
+<script>
+function updateCartCount() {
+    fetch('get_cart_count.php')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('cart-count').innerText = data.count;
+        });
+}
+
+updateCartCount(); // Call on load
+</script>
+
         <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4507.146926638975!2d120.94300497032161!3d14.443054994990002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1717421110521!5m2!1sen!2sph" width="750" height="250" style="border: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 </footer>

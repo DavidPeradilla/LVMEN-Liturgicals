@@ -219,7 +219,7 @@ $monthly_products_labels = $all_months;
     <title>Sales Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -256,7 +256,7 @@ $monthly_products_labels = $all_months;
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Customers</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -295,17 +295,20 @@ $monthly_products_labels = $all_months;
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="card">
-            <h5 class="font-bold">Overall Sales</h5>
-            <p class="text-2xl">₱<?php echo number_format($total_sales, 2); ?></p>
+
+    <div class="card">
+            <h5 class="font-bold"><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales</h5>
+            <p class="text-2xl">₱<?php echo number_format($monthly_sales, 2); ?></p>
         </div>
+
         <div class="card">
             <h5 class="font-bold"><?php echo $selected_year; ?> Sales</h5>
             <p class="text-2xl">₱<?php echo number_format($yearly_sales, 2); ?></p>
         </div>
+
         <div class="card">
-            <h5 class="font-bold"><?php echo date("F", mktime(0, 0, 0, $selected_month, 1)); ?> Sales</h5>
-            <p class="text-2xl">₱<?php echo number_format($monthly_sales, 2); ?></p>
+            <h5 class="font-bold">Overall Sales</h5>
+            <p class="text-2xl">₱<?php echo number_format($total_sales, 2); ?></p>
         </div>
     </div>
 

@@ -1,0 +1,116 @@
+.navbar {
+    width: 75px;
+    height: 100vh;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Add this line to bring it above other elements */
+    transition: width 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden; /* Prevent content from overflowing during transition */
+}
+
+
+/* Logo styles */
+.navbar .logo {
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    background-color: #444;
+    opacity: 0; /* Hide with opacity instead of display */
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Navigation links container */
+.navbar .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure links stretch to full width */
+    justify-content: flex-start;
+    width: 100%;
+    flex-grow: 1; /* Ensure links stretch to fill space above the logout button */
+}
+
+/* Styles for each navigation link */
+.navbar .nav-links a {
+    color: #fff;
+    padding: 15px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease, padding 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Icon styling */
+.navbar .nav-links a i {
+    font-size: 24px;
+    width: 30px;         /* Fixed width for icon */
+    min-width: 30px;     /* Prevents shrinking */
+    text-align: center;
+}
+
+/* Text hidden by default but space preserved for smooth transition */
+.navbar .nav-links a span {
+    opacity: 0;
+    margin-left: 0;
+    transition: opacity 0.3s ease, margin-left 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Hover effect on links */
+.navbar .nav-links a:hover {
+    background-color: #555;
+}
+
+/* Style for the logout button */
+.navbar .logout {
+    background-color: #e74c3c;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto; /* Push the logout to the bottom */
+}
+
+/* Logout button hover effect */
+.navbar .logout:hover {
+    background-color: #c0392b;
+}
+
+/* Make the sidebar expand to show text when hovered */
+.navbar:hover {
+    width: 250px; /* Expand to show full navigation */
+}
+
+/* Smoothly show the logo */
+.navbar:hover .logo {
+    opacity: 1;
+    height: auto;
+}
+
+/* Adjust link layout when expanded */
+.navbar:hover .nav-links a {
+    padding: 15px 20px;
+    text-align: left;
+    justify-content: flex-start; /* Align icon and text to the left */
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* Smoothly show the text when sidebar is expanded */
+.navbar:hover .nav-links a span {
+    opacity: 1;
+    margin-left: 10px; /* Space between icon and text */
+}

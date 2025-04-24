@@ -208,6 +208,17 @@ margin-bottom: 30px ;
 }
 }
 
+.card button{
+    background-color: #ff5733;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        font-size: 10px;
+        border-radius: 5px;
+        transition: background 0.3s;
+}
+
 
         </style>
     </head>
@@ -231,9 +242,29 @@ margin-bottom: 30px ;
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
       
-      <li><a href="view_cart.php" class="cart-link">
-        <i class="fas fa-shopping-cart"></i>
-      </a></li>
+      <li>
+  <a href="view_cart.php" class="cart-link" style="position: relative;">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" style="
+        position: absolute;
+        top: 2px;
+        right: -3px;
+        visibility: hidden;
+        width: 18px;
+        height: 18px;
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+      <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+    </span>
+  </a>
+</li>
 
       
       <?php if (!isset($_SESSION['email'])): ?>
@@ -271,6 +302,27 @@ margin-bottom: 30px ;
     </div>
     </div>
   </div>
+
+
+<script>
+function updateCartCount() {
+    fetch('get_cart_count.php')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('cart-count').innerText = data.count;
+        });
+}
+
+updateCartCount(); // Call on load
+
+window.addEventListener('DOMContentLoaded', () => {
+  const cartCount = document.getElementById('cart-count');
+  // Simulate update
+  cartCount.textContent = localStorage.getItem('cartCount') || 0;
+  cartCount.style.visibility = 'visible';
+});
+
+</script>
 
 
  <!--FOOTER-->

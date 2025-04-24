@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
 
-        // Check if email already exists
+       
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($check->num_rows > 0) {
             $success_message = "<p style='color: red;'>Email already registered!</p>";
         } else {
-            // Insert user
+           
             $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $Fname, $Lname, $email, $password);
 
@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: underline;
         }
 
-        /* Modal Styles */
+    
         .modal {
             display: none;
             position: fixed;
@@ -219,17 +219,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
     </style>
     <script>
-        // Open the Modal
+        
         function openModal() {
             document.getElementById("termsModal").style.display = "block";
         }
 
-        // Close the Modal
+      
         function closeModal() {
             document.getElementById("termsModal").style.display = "none";
         }
 
-        // Ensure checkbox is checked before submitting form
+
         function validateForm() {
             var checkbox = document.getElementById("terms");
             if (!checkbox.checked) {
@@ -239,6 +239,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return true;
         }
     </script>
+
+    
 </head>
 <body>
 
@@ -256,11 +258,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <li><a href="Contact.php"> CONTACT US </a></li>
       <li><a href="FAQs.php"> FAQs </a></li>
       <li><a href="profile.php"><i class="fas fa-user"></i></a></li>
+
       <li>
-        <a href="view_cart.php" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-      </li>
+  <a href="view_cart.php" class="cart-link" style="position: relative;">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" style="
+        position: absolute;
+        top: 2px;
+        right: -3px;
+        width: 18px;
+        height: 18px;
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+      <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+    </span>
+  </a>
+</li>
+      
 
       <?php if (isset($_SESSION['email'])): ?>
         <li class="right-align"><a href="logout.php" class="login-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
@@ -290,7 +311,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="text" name="Lname" id="Lname" required oninput="capitalizeFirstLetter(this)">
 
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required style="text-transform: lowercase;">
+        <input type="email" id="email" name="email" required style=" text-transform: lowercase;">
+        <span id="email-error" style="color: red; font-size: 0.9em;"></span>
+
 
 
         <label for="password">Password:</label>
@@ -395,6 +418,20 @@ function capitalizeFirstLetter(input) {
     input.value = words.join(" ");
 }
 
+
+document.querySelector("form").addEventListener("submit", function (e) {
+    const emailInput = document.getElementById("email");
+    const emailError = document.getElementById("email-error");
+    const email = emailInput.value.trim().toLowerCase();
+
+    if (!email.endsWith("@gmail.com")) {
+        e.preventDefault(); 
+        emailError.textContent = "Only Gmail addresses are allowed.";
+        emailInput.focus();
+    } else {
+        emailError.textContent = ""; 
+    }
+});
 
 </script>
 

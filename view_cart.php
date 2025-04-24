@@ -12,7 +12,7 @@ if ($conn->connect_error) {
 $cartEmpty = true; 
 
 if (!isset($_SESSION['email'])) {
-    echo "Please log in to view your cart.";
+    header("Location: login.php");
     exit;
 }
 
@@ -172,11 +172,29 @@ if (isset($conn) && $conn instanceof mysqli) {
       
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
-      
-      <li><a href="view_cart.php" class="cart-link">
-        <i class="fas fa-shopping-cart"></i>
-      </a></li>
-
+      <li>
+  <a href="view_cart.php" class="cart-link" style="position: relative;">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" style="
+        position: absolute;
+        top: 2px;
+        right: -3px;
+        width: 18px;
+        visibility: hidden;
+        height: 18px;
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+      <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+    </span>
+  </a>
+</li>
       
       <?php if (!isset($_SESSION['email'])): ?>
         <li><a href="login.php" class="login-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</a></li>
@@ -198,51 +216,40 @@ if (isset($conn) && $conn instanceof mysqli) {
     <?php else: ?>
         <div class="space-y-4">
     <?php while ($row = $result->fetch_assoc()) { ?>
-        <div class="cart-item flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm min-h-[80px]">
-            <!-- Image + Details -->
-            <div class="flex items-center gap-4 w-full max-w-[75%]">
-                <img src="<?php echo $row['image']; ?>" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
-                <div class="flex flex-col">
-                    <h3 class="text-base font-medium text-gray-800 max-w-[200px] truncate" title="<?php echo $row['name']; ?>">
-                        <?php echo $row['name']; ?>
-                    </h3>
-                    <p class="text-gray-600 text-sm">₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
-                </div>
-            </div>
+<div class="cart-item flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 p-4 rounded-xl shadow-sm gap-4">
+    <!-- Image + Details -->
+    <div class="flex items-center gap-4 w-full sm:max-w-[75%]">
+        <img src="<?php echo $row['image']; ?>" alt="Product" class="w-16 h-16 rounded-md object-cover border border-gray-200">
+        <div class="flex flex-col">
+            <h3 class="text-base font-medium text-gray-800 max-w-[200px] truncate" title="<?php echo $row['name']; ?>">
+                <?php echo $row['name']; ?>
+            </h3>
+            <p class="text-gray-600 text-sm">₱<span class="price"><?php echo number_format($row['price'], 2); ?></span></p>
+        </div>
+    </div>
 
-            <!-- Quantity Controls -->
-            <div class="flex items-center space-x-0 h-10 min-w-[120px] justify-end">
-                <button
-                    onclick="updateQuantity(<?php echo $row['id']; ?>, -1)"
-                    class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300"
-                >-</button>
+    <!-- Quantity Controls & Remove -->
+    <div class="flex items-center sm:justify-end gap-4 w-full sm:w-auto mt-2 sm:mt-0">
+        <div class="flex items-center space-x-0 h-10">
+            <button onclick="updateQuantity(<?php echo $row['id']; ?>, -1)"
+                    class="w-10 h-10 bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300">-</button>
+            <input type="text" id="quantity-<?php echo $row['id']; ?>"
+                   value="<?php echo $row['quantity']; ?>"
+                   readonly class="w-12 h-10 text-center border-y border-gray-300 text-sm appearance-none" />
+            <button onclick="updateQuantity(<?php echo $row['id']; ?>, 1)"
+                    class="w-10 h-10 bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300">+</button>
+        </div>
 
-                <input
-                    type="text"
-                    id="quantity-<?php echo $row['id']; ?>"
-                    value="<?php echo $row['quantity']; ?>"
-                    readonly
-                    class="w-12 h-10 text-center border-y border-gray-300 text-sm appearance-none"
-                />
-
-                <button
-                    onclick="updateQuantity(<?php echo $row['id']; ?>, 1)"
-                    class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300"
-                >+</button>
-         
-       
+        <!-- Remove Button -->
+        <form action="remove_from_cart.php" method="POST">
+            <input type="hidden" name="cart_id" value="<?php echo $row['id']; ?>">
+            <button type="submit" class="text-red-500 hover:text-red-700 text-lg">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+    </div>
 </div>
 
-
-
-                    <!-- Remove Button -->
-                    <form action="remove_from_cart.php" method="POST" class="ml-3">
-                        <input type="hidden" name="cart_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" class="text-red-500 hover:text-red-700 text-lg">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
-                </div>
             <?php } ?>
         </div>
 
@@ -313,6 +320,25 @@ if (isset($conn) && $conn instanceof mysqli) {
     window.onload = updateTotal;
 </script>
 
+<script>
+function updateCartCount() {
+    fetch('get_cart_count.php')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('cart-count').innerText = data.count;
+        });
+}
+
+updateCartCount(); // Call on load
+
+window.addEventListener('DOMContentLoaded', () => {
+  const cartCount = document.getElementById('cart-count');
+  // Simulate update
+  cartCount.textContent = localStorage.getItem('cartCount') || 0;
+  cartCount.style.visibility = 'visible';
+});
+
+</script>
 
 </body>
 </html>

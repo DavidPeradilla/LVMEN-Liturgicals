@@ -279,9 +279,29 @@ $conn->close();
       <li><a href="profile.php"><i class="fas fa-user"></i> </a></li>
 
       
-      <li><a href="view_cart.php" class="cart-link">
-        <i class="fas fa-shopping-cart"></i>
-      </a></li>
+      <li>
+  <a href="view_cart.php" class="cart-link" style="position: relative;">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count" style="
+        position: absolute;
+        top: 2px;
+        right: -3px;
+        visibility: hidden;
+        width: 18px;
+        height: 18px;
+        background-color: red;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+      <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+    </span>
+  </a>
+</li>
 
       
       <?php if (!isset($_SESSION['email'])): ?>
@@ -324,7 +344,8 @@ $conn->close();
                     <form onsubmit="addToCart(event, <?php echo $row['id']; ?>, this)">
                         <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                         <input type="number" name="quantity" value="1" min="1" max="10" required>
-                        <button type="submit">Add to Cart</button>
+                        <button class="add-to-cart" data-id="123">Add to Cart</button>
+
                     </form>
                     <span id="status-<?php echo $row['id']; ?>" class="status-message"></span>
                 </div>
@@ -404,38 +425,39 @@ function closeDescModal() {
 </script>
 
     <script>
-    function addToCart(event, productId, form) {
-        event.preventDefault(); 
+function addToCart(event, productId, form) {
+    event.preventDefault(); 
 
-        <?php if (!isset($_SESSION['email'])) { ?>
-            alert("Please log in to add items to your cart.");
-            window.location.href = "login.php";
-            return;
-        <?php } ?>
+    <?php if (!isset($_SESSION['email'])) { ?>
+        alert("Please log in to add items to your cart.");
+        window.location.href = "login.php";
+        return;
+    <?php } ?>
 
-        let formData = new FormData(form);
+    let formData = new FormData(form);
 
-        fetch("add_to_cart.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log("Server Response:", data); 
+    fetch("add_to_cart.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Server Response:", data); 
 
-            let statusElement = document.getElementById('status-' + productId);
-            if (data.trim() === "success") {
-                statusElement.innerText = "Added to cart!";
-                statusElement.style.color = "green";
-            } else {
-                statusElement.innerText = "Failed to add: " + data;
-                statusElement.style.color = "red";
-            }
-        })
-        .catch(error => {
-            console.error('Error adding to cart:', error);
-        });
-    }
+        let statusElement = document.getElementById('status-' + productId);
+        if (data.trim() === "success") {
+            statusElement.innerText = "Added to cart!";
+            statusElement.style.color = "green";
+            updateCartCount(); // ✅ Update the cart count dynamically
+        } else {
+            statusElement.innerText = "Failed to add: " + data;
+            statusElement.style.color = "red";
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+    });
+}
 
     </script>
 
@@ -462,6 +484,29 @@ function closeDescModal() {
    </div>
 </footer>
  <!--END--> 
+
+
+
+<script>
+function updateCartCount() {
+    fetch('get_cart_count.php')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('cart-count').innerText = data.count;
+        });
+}
+
+updateCartCount(); // Call on load
+
+window.addEventListener('DOMContentLoaded', () => {
+  const cartCount = document.getElementById('cart-count');
+  // Simulate update
+  cartCount.textContent = localStorage.getItem('cartCount') || 0;
+  cartCount.style.visibility = 'visible';
+});
+
+</script>
+
 
 </body>
 </html>

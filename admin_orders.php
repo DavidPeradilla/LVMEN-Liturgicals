@@ -33,7 +33,7 @@ $total_sales = file_get_contents("get_sales.php");
     <meta charset="UTF-8">
     <title>Admin - Manage Orders</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     <style>
         body {
@@ -167,7 +167,7 @@ $total_sales = file_get_contents("get_sales.php");
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Customers</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>

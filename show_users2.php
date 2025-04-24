@@ -136,7 +136,7 @@ $result = $conn->query($sql);
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Customers</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
@@ -157,7 +157,6 @@ $result = $conn->query($sql);
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
-            <th>Actions</th>
         </tr>
         
         <?php while ($row = $result->fetch_assoc()): ?>
@@ -166,10 +165,7 @@ $result = $conn->query($sql);
             <td><?= $row['first_name'] ?></td>
             <td><?= $row['last_name'] ?></td>
             <td><?= $row['email'] ?></td>
-            <td>
-                
-                <a class="btn1 delete-btn" href="delete_users.php?id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-            </td>
+
         </tr>
         <?php endwhile; ?>
     </table>

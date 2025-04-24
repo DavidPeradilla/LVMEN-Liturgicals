@@ -201,12 +201,7 @@ $conn->close();
 
         <div>
             <label class="block font-medium text-gray-700">Phone Number:</label>
-            <input type="text" name="contact_number" 
-    placeholder="Enter Phone Number" 
-    value="<?= htmlspecialchars($user['contact_number']); ?>" 
-    <?= empty($user['contact_number']) ? '' : 'readonly'; ?> 
-    required class="w-full mt-1 p-2 border rounded-md <?= empty($user['contact_number']) ? '' : 'bg-gray-100'; ?>">
-
+            <input type="text" name="contact_number"  placeholder="Enter your Phone Number (e.g., 0912-345-6789)" value="<?= htmlspecialchars($user['contact_number']); ?>" <?= empty($user['contact_number']) ? '' : 'readonly'; ?> required class="w-full mt-1 p-2 border rounded-md" maxlength="13" pattern="\d{4}-\d{3}-\d{4}" title="Phone number must be in the format: 0912-345-6789" <?= empty($user['contact_number']) ? '' : 'bg-gray-100'; ?> ">
         </div>
 
         <div>

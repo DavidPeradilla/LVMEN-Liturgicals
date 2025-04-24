@@ -181,7 +181,8 @@ $best_selling_result = $conn->query($best_selling_query);
     <title>Overview Sales</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="sidebar2.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -282,29 +283,30 @@ $best_selling_result = $conn->query($best_selling_query);
         margin-top: 20px;
          width: 100%;
     border-collapse: collapse;
-}
+    }
 
-.recent-orders th, .recent-orders td {
-    padding: 12px;
-    text-align: left;
-}
+    .recent-orders th, .recent-orders td {
+        padding: 12px;
+        text-align: left;
+    }
 
-.recent-orders tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+    .recent-orders tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
 
-.recent-orders tr:hover {
-    background-color: #f1f1f1;
-}
+    .recent-orders tr:hover {
+        background-color: #f1f1f1;
+    }
 
-.chart-container, .recent-orders {
-    width: 48%; 
-}
+    .chart-container, .recent-orders {
+        width: 48%; 
+    }
 
-.recent-orders {
-    display: inline-block;
-    vertical-align: top;
-}
+    .recent-orders {
+        display: inline-block;
+        vertical-align: top;
+    }
+
 
 
 .card {
@@ -327,7 +329,7 @@ $best_selling_result = $conn->query($best_selling_query);
         <a href="admin_orders.php"><i class="fas fa-box"></i><span>Manage Orders</span></a>
         <a href="sales_analytics.php"><i class="fas fa-chart-line"></i><span>Check Sales</span></a>
         <a href="content_manager2.php"><i class="fas fa-cogs"></i><span>Content Manager</span></a>
-        <a href="show_users2.php"><i class="fas fa-users"></i><span>Manage Users</span></a>
+        <a href="show_users2.php"><i class="fas fa-users"></i><span>Customers</span></a>
         <a href="logout_admin.php" class="logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
     </div>
 </div>
